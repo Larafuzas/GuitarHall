@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="icono.png">
-    <!-- Cargamos Tone.js vía CDN para garantizar audio estable en iOS y Android -->
+    <!-- Tone.js para síntesis de audio optimizada en móviles -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <style>
@@ -82,7 +82,6 @@
         .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 2px; color: var(--text); text-align: center; }
         .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
         
-        /* Botón Play/Pause dedicado bajo cada acorde */
         .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
         .play-card-btn:hover { opacity: 0.85; }
         .play-card-btn svg { width: 14px; height: 14px; fill: currentColor; }
@@ -139,7 +138,7 @@
                 <span>Favoritos</span>
             </button>
             <button class="nav-item" data-target="sec-settings">
-                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Ajustes</span>
             </button>
         </nav>
@@ -159,7 +158,7 @@
                         </button>
                     </div>
 
-                    <!-- GUÍA DE MODELOS (Colapsable) -->
+                    <!-- GUÍA DE MODELOS -->
                     <div class="card open" id="card-guide">
                         <div class="collapsible-header" onclick="toggleCard('card-guide')">
                             <h3>Guía de Modelos</h3>
@@ -178,7 +177,7 @@
                         </div>
                     </div>
 
-                    <!-- LIBRERÍA DE ACORDES (Colapsable) -->
+                    <!-- LIBRERÍA DE ACORDES -->
                     <div class="card" id="card-chords">
                         <div class="collapsible-header" onclick="toggleCard('card-chords')">
                             <h3>Librería de Acordes</h3>
@@ -201,7 +200,7 @@
                         </div>
                     </div>
 
-                    <!-- CATÁLOGO DE ESCALAS (Colapsable) -->
+                    <!-- CATÁLOGO DE ESCALAS -->
                     <div class="card" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas</h3>
@@ -241,7 +240,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.3.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.4.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -261,13 +260,12 @@
     </div>
 
     <script>
-        const APP_VERSION = "v1.3.0";
+        const APP_VERSION = "v1.4.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
         }
 
-        // --- GUÍAS DE GUITARRA ---
         const guitarData = {
             telecaster: {
                 title: "Fender Telecaster",
@@ -316,7 +314,6 @@
         guitarSelect.addEventListener('change', renderGuitarGuide);
         renderGuitarGuide();
 
-        // --- TEORÍA MUSICAL ---
         const notesSys = [
             { es: 'Do', us: 'C' }, { es: 'Do#', us: 'C#' }, { es: 'Re', us: 'D' }, { es: 'Re#', us: 'D#' },
             { es: 'Mi', us: 'E' }, { es: 'Fa', us: 'F' }, { es: 'Fa#', us: 'F#' }, { es: 'Sol', us: 'G' },
@@ -379,15 +376,14 @@
             blues: { name: "Caja de Blues", pattern: [[0,3], [0,1,2], [0,2], [0,2,3], [0,3], [0,3]] }
         };
 
-        // --- RENDERIZADO SVG CON NÚMERO DE TRASTE AMARILLO DESTACADO ---
+        // --- RENDERIZADO SVG CON NÚMERO DE TRASTE EN AMARILLO Y SIN RECUADRO ---
         function createSVGGrid(baseFret) {
             let svg = `<svg viewBox="0 0 120 150" width="100%" height="auto" stroke="#555" fill="none" stroke-width="2" style="max-width:130px; margin-top: 5px;">`;
             
-            // Si el acorde está en un traste superior, dibujamos la cejuela más delgada y añadimos el número amarillo brillante bien visible
             if (baseFret > 1) {
                 svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="2" stroke="#555"/>`;
-                svg += `<rect x="2" y="28" width="12" height="16" rx="3" fill="#222" stroke="var(--secondary)" stroke-width="1.5"/>`;
-                svg += `<text x="8" y="40" fill="var(--secondary)" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">${baseFret}</text>`;
+                // Número del traste limpio en amarillo brillante (sin cuadro)
+                svg += `<text x="7" y="38" fill="var(--secondary)" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">${baseFret}</text>`;
             } else {
                 svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="4" stroke="#fff"/>`;
             }
@@ -488,7 +484,7 @@
                     <div class="playable-item">
                         <div class="item-title">${rootName}</div>
                         <div class="item-subtitle">${template.name}</div>
-                        <div onclick='playSynth(${payload}, true)'>${svg}</svg></div>
+                        <div>${svg}</svg></div>
                         <button class="play-card-btn" onclick='playSynth(${payload}, true)'>
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Tocar
                         </button>
@@ -522,7 +518,7 @@
                 <div class="playable-item" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width: 100%;">
                     <div class="item-title">${rootName}</div>
                     <div class="item-subtitle">${template.name}</div>
-                    <div onclick='playSynth(${payload}, false)'>${svg}</svg></div>
+                    <div>${svg}</svg></div>
                     <button class="play-card-btn" onclick='playSynth(${payload}, false)'>
                         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Reproducir Escala
                     </button>
@@ -545,7 +541,6 @@
         async function playSynth(notes, isChord) {
             await initTone();
             
-            // Sintetizador tipo pulso/cuerda cálida optimizado para móvil
             const synth = new Tone.Synth({
                 oscillator: { type: "triangle8" },
                 envelope: { attack: 0.005, decay: 1.2, sustain: 0.1, release: 1.2 }
@@ -566,7 +561,6 @@
             setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
         });
 
-        // --- NAVEGACIÓN ---
         const navItems = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view');
         navItems.forEach(item => {
@@ -580,7 +574,6 @@
 
         initUI();
 
-        // --- BUSCADOR ---
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
         let searchTimeout;
@@ -624,7 +617,6 @@
             }
         });
 
-        // --- FAVORITOS Y BACKUP ---
         let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v3')) || [];
         function renderFavs() {
             const favList = document.getElementById('fav-list');
@@ -660,7 +652,6 @@
             }; reader.readAsText(file);
         });
 
-        // --- SISTEMA OTA Y CONTROL DE VERSIONES ---
         document.getElementById('btn-ota').addEventListener('click', () => {
             const status = document.getElementById('ota-status');
             status.style.display = 'block'; 
