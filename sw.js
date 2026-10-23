@@ -1,4 +1,4 @@
-const CACHE_NAME = 'guitarhall-v8';
+const CACHE_NAME = 'guitarhall-v9';
 const ASSETS = [
   './',
   './index.html',
