@@ -7,6 +7,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="icono.png">
+    <!-- Cargamos Tone.js vía CDN para garantizar audio estable en iOS y Android -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <style>
         :root {
@@ -44,11 +46,10 @@
 
         .card { background-color: var(--surface); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #2a2a2a; }
         
-        /* Bloques Colapsables */
         .collapsible-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .collapsible-header svg { transition: transform 0.3s ease; width: 20px; height: 20px; stroke: var(--primary); }
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .card.open .collapsible-content { max-height: 2000px; transition: max-height 0.5s ease-in; margin-top: 15px; }
+        .card.open .collapsible-content { max-height: 2500px; transition: max-height 0.5s ease-in; margin-top: 15px; }
         .card.open .collapsible-header svg { transform: rotate(180deg); }
 
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
@@ -76,13 +77,15 @@
         .guitar-part { margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 8px; font-size: 0.95rem; }
         .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        .svg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 20px; margin-top: 15px; }
-        .playable-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; background: #222; padding: 12px 8px; border-radius: 12px; border: 1px solid #333; position: relative; }
-        .playable-item:hover { transform: translateY(-3px); border-color: var(--primary); background: #2a2a2a; }
-        .playable-item::after { content: '🎵 Tocar'; position: absolute; bottom: 6px; font-size: 0.7rem; color: var(--primary); opacity: 0; transition: opacity 0.2s; }
-        .playable-item:hover::after { opacity: 1; }
-        .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 4px; color: var(--text); text-align: center; }
-        .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; text-align: center; }
+        .svg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 15px; }
+        .playable-item { display: flex; flex-direction: column; align-items: center; background: #222; padding: 12px 8px; border-radius: 12px; border: 1px solid #333; position: relative; }
+        .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 2px; color: var(--text); text-align: center; }
+        .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
+        
+        /* Botón Play/Pause dedicado bajo cada acorde */
+        .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
+        .play-card-btn:hover { opacity: 0.85; }
+        .play-card-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 25px 0; border-top: 1px solid #333; }
         .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 10px; flex: 1; transition: 0.2s; }
@@ -156,7 +159,7 @@
                         </button>
                     </div>
 
-                    <!-- BLOQUE COLAPSIBLES: GUÍA DE GUITARRAS -->
+                    <!-- GUÍA DE MODELOS (Colapsable) -->
                     <div class="card open" id="card-guide">
                         <div class="collapsible-header" onclick="toggleCard('card-guide')">
                             <h3>Guía de Modelos</h3>
@@ -175,14 +178,14 @@
                         </div>
                     </div>
 
-                    <!-- BLOQUE COLAPSIBLES: LIBRERÍA DE ACORDES -->
+                    <!-- LIBRERÍA DE ACORDES (Colapsable) -->
                     <div class="card" id="card-chords">
                         <div class="collapsible-header" onclick="toggleCard('card-chords')">
                             <h3>Librería de Acordes</h3>
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Filtra por nota raíz y tipo. Toca cualquier acorde para escucharlo.</p>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Filtra por nota raíz y tipo. Usa el botón inferior para escuchar cada acorde.</p>
                             <div class="filter-row">
                                 <select id="chord-root"></select>
                                 <select id="chord-type">
@@ -198,14 +201,14 @@
                         </div>
                     </div>
 
-                    <!-- BLOQUE COLAPSIBLES: CATÁLOGO DE ESCALAS -->
+                    <!-- CATÁLOGO DE ESCALAS (Colapsable) -->
                     <div class="card" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas</h3>
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Toca el gráfico para escuchar la escala.</p>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Usa el botón inferior para reproducir la escala.</p>
                             <div class="filter-row">
                                 <select id="scale-root"></select>
                                 <select id="scale-type">
@@ -238,7 +241,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.2.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.3.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -258,15 +261,13 @@
     </div>
 
     <script>
-        const APP_VERSION = "v1.2.0";
+        const APP_VERSION = "v1.3.0";
 
-        // --- FUNCIONALIDAD COLAPSIBLES ---
         function toggleCard(cardId) {
-            const card = document.getElementById(cardId);
-            card.classList.toggle('open');
+            document.getElementById(cardId).classList.toggle('open');
         }
 
-        // --- GUÍAS DE GUITARRA CON ARCHIVOS LOCALES ---
+        // --- GUÍAS DE GUITARRA ---
         const guitarData = {
             telecaster: {
                 title: "Fender Telecaster",
@@ -315,7 +316,7 @@
         guitarSelect.addEventListener('change', renderGuitarGuide);
         renderGuitarGuide();
 
-        // --- TEORÍA MUSICAL Y MOTOR ALGORÍTMICO ---
+        // --- TEORÍA MUSICAL ---
         const notesSys = [
             { es: 'Do', us: 'C' }, { es: 'Do#', us: 'C#' }, { es: 'Re', us: 'D' }, { es: 'Re#', us: 'D#' },
             { es: 'Mi', us: 'E' }, { es: 'Fa', us: 'F' }, { es: 'Fa#', us: 'F#' }, { es: 'Sol', us: 'G' },
@@ -323,7 +324,6 @@
         ];
 
         let notationES = true;
-
         const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
         const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
@@ -379,9 +379,19 @@
             blues: { name: "Caja de Blues", pattern: [[0,3], [0,1,2], [0,2], [0,2,3], [0,3], [0,3]] }
         };
 
-        function createSVGGrid() {
+        // --- RENDERIZADO SVG CON NÚMERO DE TRASTE AMARILLO DESTACADO ---
+        function createSVGGrid(baseFret) {
             let svg = `<svg viewBox="0 0 120 150" width="100%" height="auto" stroke="#555" fill="none" stroke-width="2" style="max-width:130px; margin-top: 5px;">`;
-            svg += `<line x1="15" y1="20" x2="105" y2="20" class="nut-line" stroke-width="4" stroke="#fff"/>`;
+            
+            // Si el acorde está en un traste superior, dibujamos la cejuela más delgada y añadimos el número amarillo brillante bien visible
+            if (baseFret > 1) {
+                svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="2" stroke="#555"/>`;
+                svg += `<rect x="2" y="28" width="12" height="16" rx="3" fill="#222" stroke="var(--secondary)" stroke-width="1.5"/>`;
+                svg += `<text x="8" y="40" fill="var(--secondary)" font-size="11" font-weight="bold" font-family="sans-serif" text-anchor="middle">${baseFret}</text>`;
+            } else {
+                svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="4" stroke="#fff"/>`;
+            }
+
             for(let i=1; i<=5; i++) svg += `<line x1="15" y1="${20 + i*24}" x2="105" y2="${20 + i*24}"/>`;
             for(let i=0; i<6; i++) svg += `<line x1="${15 + i*18}" y1="20" x2="${15 + i*18}" y2="140"/>`;
             return svg;
@@ -432,13 +442,11 @@
             generateScales();
         }
 
-        // --- BOTÓN NOMENCLATURA CORREGIDO ---
         document.getElementById('btn-toggle-not').addEventListener('click', function() {
             notationES = !notationES;
             document.getElementById('not-label').textContent = notationES ? 'ES' : 'US';
             document.body.classList.toggle('notation-us', !notationES);
             
-            // Actualizar selectores dinámicamente
             const chordSel = document.getElementById('chord-root');
             const scaleSel = document.getElementById('scale-root');
             const cVal = chordSel.value;
@@ -465,13 +473,8 @@
                 const chordData = template.get(rE, rA);
                 if(!chordData) return;
 
-                let svgRaw = createSVGGrid();
                 let baseLabel = chordData.baseFret > 1 && !chordData.overrideBase ? chordData.baseFret : 1;
-                
-                if (baseLabel > 1) {
-                    svgRaw = svgRaw.replace('stroke-width="4" stroke="#fff"', 'stroke-width="2" stroke="#555"');
-                    svgRaw += `<text x="2" y="38" fill="#a0a0a0" font-size="11" font-family="sans-serif">${baseLabel}fr</text>`;
-                }
+                let svgRaw = createSVGGrid(baseLabel);
 
                 const { svg, notesToPlay } = drawChordNotes(svgRaw, chordData.strings);
                 const finalNotes = notesToPlay.map(n => ({
@@ -479,11 +482,16 @@
                     fret: n.fret !== undefined ? n.fret : (n.localFret - 1 + baseLabel)
                 }));
 
+                const payload = JSON.stringify(finalNotes).replace(/"/g, '&quot;');
+
                 html += `
-                    <div class="playable-item" onclick='playSynth(${JSON.stringify(finalNotes)}, true)'>
+                    <div class="playable-item">
                         <div class="item-title">${rootName}</div>
                         <div class="item-subtitle">${template.name}</div>
-                        ${svg}</svg>
+                        <div onclick='playSynth(${payload}, true)'>${svg}</svg></div>
+                        <button class="play-card-btn" onclick='playSynth(${payload}, true)'>
+                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Tocar
+                        </button>
                     </div>
                 `;
             });
@@ -501,74 +509,64 @@
             const template = scaleTemplates[type];
             let baseLabel = rE === 0 ? 1 : rE;
 
-            let svgRaw = createSVGGrid();
-            if (baseLabel > 1) {
-                svgRaw = svgRaw.replace('stroke-width="4" stroke="#fff"', 'stroke-width="2" stroke="#555"');
-                svgRaw += `<text x="2" y="38" fill="#a0a0a0" font-size="11" font-family="sans-serif">${baseLabel}fr</text>`;
-            }
-
+            let svgRaw = createSVGGrid(baseLabel);
             const { svg, notesToPlay } = drawScaleNotes(svgRaw, template.pattern);
             const finalNotes = notesToPlay.map(n => ({
                 string: n.string,
                 fret: (n.localFret - 1 + baseLabel)
             })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : b.string - a.string);
 
+            const payload = JSON.stringify(finalNotes).replace(/"/g, '&quot;');
+
             let html = `
-                <div class="playable-item" onclick='playSynth(${JSON.stringify(finalNotes)}, false)' style="grid-column: 1 / -1; max-width: 250px; margin: 0 auto;">
+                <div class="playable-item" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width: 100%;">
                     <div class="item-title">${rootName}</div>
                     <div class="item-subtitle">${template.name}</div>
-                    ${svg}</svg>
+                    <div onclick='playSynth(${payload}, false)'>${svg}</svg></div>
+                    <button class="play-card-btn" onclick='playSynth(${payload}, false)'>
+                        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Reproducir Escala
+                    </button>
                 </div>
             `;
             container.innerHTML = html;
         }
 
-        // --- SINTETIZADOR AUDIO API (Reparado para desbloqueo táctil iOS/Android) ---
-        let audioCtx = null;
+        // --- SINTETIZADOR ROBUSTO CON TONE.JS ---
         const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
+        let synthReady = false;
 
-        function initAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
+        async function initTone() {
+            if (!synthReady) {
+                await Tone.start();
+                synthReady = true;
             }
         }
 
-        function playSynth(notes, isChord) {
-            initAudioContext();
-            const now = audioCtx.currentTime;
+        async function playSynth(notes, isChord) {
+            await initTone();
+            
+            // Sintetizador tipo pulso/cuerda cálida optimizado para móvil
+            const synth = new Tone.Synth({
+                oscillator: { type: "triangle8" },
+                envelope: { attack: 0.005, decay: 1.2, sustain: 0.1, release: 1.2 }
+            }).toDestination();
 
+            const now = Tone.now();
             notes.forEach((note, index) => {
                 const freq = stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12);
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, now);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                const delay = isChord ? index * 0.03 : index * 0.12;
-                const startTime = now + delay;
-                
-                gain.gain.setValueAtTime(0, startTime);
-                gain.gain.linearRampToValueAtTime(0.7, startTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.8);
-                
-                osc.start(startTime);
-                osc.stop(startTime + 1.8);
+                const delay = isChord ? index * 0.035 : index * 0.12;
+                synth.triggerAttackRelease(freq, "1.5", now + delay);
             });
         }
 
-        document.getElementById('btn-play-tone').addEventListener('click', function() {
+        document.getElementById('btn-play-tone').addEventListener('click', async function() {
+            await initTone();
             playSynth([{string: 5, fret: 0}], true);
             this.style.backgroundColor = 'var(--primary)'; this.style.color = '#000';
             setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
         });
 
-        // --- NAVEGACIÓN SPA ---
+        // --- NAVEGACIÓN ---
         const navItems = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view');
         navItems.forEach(item => {
@@ -582,7 +580,7 @@
 
         initUI();
 
-        // --- BUSCADOR CORREGIDO (Endpoint estable y compatible con CORS) ---
+        // --- BUSCADOR ---
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
         let searchTimeout;
@@ -662,7 +660,7 @@
             }; reader.readAsText(file);
         });
 
-        // --- SISTEMA OTA ROBUSTO Y CONTROL DE VERSIONES ---
+        // --- SISTEMA OTA Y CONTROL DE VERSIONES ---
         document.getElementById('btn-ota').addEventListener('click', () => {
             const status = document.getElementById('ota-status');
             status.style.display = 'block'; 
