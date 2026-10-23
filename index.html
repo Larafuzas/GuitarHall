@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GuitarHall</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121212">
+    <link rel="apple-touch-icon" href="icono.png">
+    
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface: #1e1e1e;
+            --primary: #FF5E00; /* Actualizado al Naranja Neón */
+            --secondary: #FFEA00; /* Actualizado al Amarillo Neón */
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+        }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: var(--surface); border-bottom: 1px solid #333; z-index: 10; }
+        .logo { display: flex; align-items: center; gap: 12px; color: var(--text); }
+        .logo h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
+        .icon-btn { background: none; border: none; font-size: 1.5rem; color: var(--text); cursor: pointer; transition: color 0.2s; }
+        .icon-btn:hover { color: var(--primary); }
+
+        .app-body { display: flex; flex: 1; overflow: hidden; flex-direction: column; }
+        
+        main { flex: 1; overflow-y: auto; padding: 20px; }
+        .main-content { max-width: 1200px; margin: 0 auto; width: 100%; }
+
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        .card { background-color: var(--surface); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #2a2a2a; }
+        .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        select, input[type="search"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; }
+        select:focus, input:focus { outline: none; border-color: var(--primary); }
+
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        .tool-btn:hover { background-color: var(--primary); color: var(--bg-color); }
+
+        .results-list { display: flex; flex-direction: column; gap: 12px; }
+        .song-item { background: var(--surface); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a2a2a; }
+
+        /* Navegación - Modo Móvil por defecto */
+        .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 20px 0; border-top: 1px solid #333; }
+        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 10px; flex: 1; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-icon { font-size: 1.4rem; }
+
+        /* MEDIA QUERIES: Adaptación a Tablet y Escritorio */
+        @media (min-width: 768px) {
+            .app-body { flex-direction: row; }
+            .app-nav { flex-direction: column; width: 220px; justify-content: flex-start; padding: 20px 0; border-top: none; border-right: 1px solid #333; gap: 10px; }
+            .nav-item { flex-direction: row; padding: 15px 25px; font-size: 1rem; flex: none; justify-content: flex-start; gap: 15px; border-left: 3px solid transparent; }
+            .nav-item.active { background-color: #2a2a2a; border-left-color: var(--primary); }
+            main { padding: 40px; }
+            .tools-grid { grid-template-columns: repeat(4, 1fr); }
+            h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="logo">
+            <!-- Icono SVG integrado en cabecera (Sin fondo negro, simplificado para 32px) -->
+            <svg viewBox="0 0 100 100" width="32" height="32">
+                <defs>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="2" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g transform="rotate(135 50 50)" filter="url(#glow)">
+                    <!-- Pastillas Neón Naranja -->
+                    <g fill="none" stroke="#FF5E00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Humbucker -->
+                        <rect x="32.5" y="11" width="5" height="4" rx="1" />
+                        <rect x="32.5" y="85" width="5" height="4" rx="1" />
+                        <rect x="25" y="15" width="20" height="70" rx="4" />
+                        <circle cx="30" cy="25" r="1.5" /><circle cx="30" cy="50" r="1.5" /><circle cx="30" cy="75" r="1.5" />
+                        <!-- Single Coil -->
+                        <rect x="60" y="15" width="10" height="70" rx="4" />
+                        <circle cx="65" cy="25" r="1.5" /><circle cx="65" cy="50" r="1.5" /><circle cx="65" cy="75" r="1.5" />
+                    </g>
+                    <!-- Cuerdas Neón Amarillo -->
+                    <g fill="none" stroke="#FFEA00" stroke-width="1.5" stroke-linecap="round">
+                        <line x1="10" y1="25" x2="90" y2="25" />
+                        <line x1="5"  y1="42" x2="95" y2="42" />
+                        <line x1="15" y1="58" x2="85" y2="58" />
+                        <line x1="10" y1="75" x2="90" y2="75" />
+                    </g>
+                </g>
+            </svg>
+            <h1>GuitarHall</h1>
+        </div>
+        <button id="btn-backup" class="icon-btn" title="Copia de seguridad">💾</button>
+    </header>
+
+    <div class="app-body">
+        <nav class="app-nav">
+            <button class="nav-item active" data-target="sec-guide">
+                <span class="nav-icon">🎸</span><span>Guía / Referencia</span>
+            </button>
+            <button class="nav-item" data-target="sec-songs">
+                <span class="nav-icon">🔍</span><span>Buscar Canciones</span>
+            </button>
+            <button class="nav-item" data-target="sec-favs">
+                <span class="nav-icon">⭐</span><span>Mis Favoritos</span>
+            </button>
+        </nav>
+
+        <main>
+            <div class="main-content">
+                <!-- SECCIÓN 1: GUÍA Y REFERENCIA -->
+                <section id="sec-guide" class="view active">
+                    <h2>Anatomía y Referencia</h2>
+                    <div class="card">
+                        <div class="control-group">
+                            <label for="guitar-model">Selecciona tu modelo:</label>
+                            <select id="guitar-model">
+                                <option value="stratocaster">Fender Stratocaster</option>
+                                <option value="telecaster">Fender Telecaster</option>
+                            </select>
+                        </div>
+                        <div id="guitar-viewer" style="min-height: 150px; display:flex; align-items:center; justify-content:center; color: var(--text-muted);">
+                            <p>Área interactiva para visualizar componentes (Próximamente)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tools-grid">
+                        <button class="tool-btn" onclick="playTone(329.63)">🎵 Escuchar Mi (E)</button>
+                        <button class="tool-btn" onclick="toggleNotation()">🌐 Notación: <span id="not-type">ES</span></button>
+                        <button class="tool-btn">🎼 Ver Acordes</button>
+                        <button class="tool-btn">📏 Escalas</button>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 2: BUSCADOR DE CANCIONES -->
+                <section id="sec-songs" class="view">
+                    <h2>Buscador Global</h2>
+                    <div class="control-group">
+                        <input type="search" id="search-input" placeholder="Ej: Sultans of Swing, Pink Floyd..." autocomplete="off">
+                    </div>
+                    <div id="search-results" class="results-list">
+                        <!-- Resultados inyectados por JS -->
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 3: FAVORITOS -->
+                <section id="sec-favs" class="view">
+                    <h2>Librería Local</h2>
+                    <div id="fav-list" class="results-list">
+                        <p class="empty-state" style="color: var(--text-muted);">No tienes canciones guardadas.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- NAVEGACIÓN SPA ---
+        const navItems = document.querySelectorAll('.nav-item');
+        const views = document.querySelectorAll('.view');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                views.forEach(view => view.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- MOTOR DE AUDIO ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playTone(frequency) {
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = frequency;
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 1.5);
+            osc.stop(audioCtx.currentTime + 1.5);
+        }
+
+        // --- SISTEMA DE NOTACIÓN ---
+        let notation = 'ES';
+        function toggleNotation() {
+            notation = notation === 'ES' ? 'US' : 'ES';
+            document.getElementById('not-type').textContent = notation;
+        }
+
+        // --- BUSCADOR V1 (Mockup) ---
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if(query.length > 2) {
+                searchResults.innerHTML = `
+                    <div class="song-item">
+                        <div>
+                            <strong>${query} (Versión Pro)</strong><br>
+                            <small style="color:var(--text-muted);">Tablatura visual y acordes</small>
+                        </div>
+                        <button class="tool-btn" onclick="saveFav('${query}')" style="padding: 8px 15px;">⭐ Guardar</button>
+                    </div>
+                `;
+            } else {
+                searchResults.innerHTML = '';
+            }
+        });
+
+        // --- SISTEMA DE DATOS Y BACKUP ---
+        let favorites = JSON.parse(localStorage.getItem('guitarhall_favs')) || [];
+        
+        function renderFavs() {
+            const favList = document.getElementById('fav-list');
+            if(favorites.length === 0) {
+                favList.innerHTML = '<p class="empty-state" style="color: var(--text-muted);">No tienes canciones guardadas.</p>';
+                return;
+            }
+            favList.innerHTML = favorites.map(song => `
+                <div class="song-item">
+                    <strong>${song}</strong>
+                    <button class="icon-btn" onclick="removeFav('${song}')">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function saveFav(songName) {
+            if(!favorites.includes(songName)) {
+                favorites.push(songName);
+                localStorage.setItem('guitarhall_favs', JSON.stringify(favorites));
+                renderFavs();
+                alert('Canción añadida a tu librería.');
+            }
+        }
+
+        function removeFav(songName) {
+            favorites = favorites.filter(s => s !== songName);
+            localStorage.setItem('guitarhall_favs', JSON.stringify(favorites));
+            renderFavs();
+        }
+
+        document.getElementById('btn-backup').addEventListener('click', () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(favorites));
+            const anchor = document.createElement('a');
+            anchor.setAttribute("href", dataStr);
+            anchor.setAttribute("download", "guitarhall_backup.json");
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+        });
+
+        // Inicializar vistas
+        renderFavs();
+
+        // --- REGISTRO PWA / OTA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err));
+            });
+        }
+    </script>
+</body>
+</html>
