@@ -1,9 +1,12 @@
-const CACHE_NAME = 'guitarhall-v1';
+const CACHE_NAME = 'guitarhall-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icono.png'
+  './icono.png',
+  './telecaster.jpeg',
+  './stratocaster.jpeg',
+  './lespaul.jpeg'
 ];
 
 self.addEventListener('install', event => {
