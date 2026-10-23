@@ -1,7 +1,8 @@
-const CACHE_NAME = 'guitarhall-v7';
+const CACHE_NAME = 'guitarhall-v8';
 const ASSETS = [
   './',
   './index.html',
+  './reference.html',
   './manifest.json',
   './icono.png',
   './telecaster.jpeg',
@@ -26,7 +27,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Dejar pasar peticiones a APIs externas (como iTunes) directamente a la red sin meterlas en la caché local
   if (url.origin !== self.location.origin) {
     return;
   }
