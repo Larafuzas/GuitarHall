@@ -52,15 +52,33 @@
         .collapsible-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .collapsible-header svg { transition: transform 0.3s ease; width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .card.open .collapsible-content { max-height: 3500px; transition: max-height 0.5s ease-in; margin-top: 15px; }
+        .card.open .collapsible-content { max-height: 3800px; transition: max-height 0.5s ease-in; margin-top: 15px; }
         .card.open .collapsible-header svg { transform: rotate(180deg); }
 
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
         select, input[type="search"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; appearance: none; }
         select:focus, input:focus { outline: none; border-color: var(--primary); }
         
-        .filter-row { display: flex; gap: 10px; margin-bottom: 20px; }
-        .filter-row select { flex: 1; padding: 10px; font-size: 0.95rem; }
+        .filter-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .filter-row select { flex: 1; min-width: 135px; padding: 10px 12px; font-size: 0.92rem; }
+
+        .scale-formula-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #161616;
+            border: 1px solid #333;
+            border-left: 3px solid var(--secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #ddd;
+            margin-bottom: 14px;
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .scale-formula-badge strong { color: var(--secondary); font-family: monospace; font-size: 0.95rem; }
 
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
@@ -90,6 +108,7 @@
             padding: 12px 6px;
             scrollbar-width: thin;
             scrollbar-color: var(--primary) #1a1a1a;
+            scroll-behavior: smooth;
         }
         .fretboard-scroll-wrapper::-webkit-scrollbar { height: 6px; }
         .fretboard-scroll-wrapper::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
@@ -266,27 +285,28 @@
                         </div>
                     </div>
 
-                    <!-- 4. CATÁLOGO DE ESCALAS -->
+                    <!-- 4. CATÁLOGO DE ESCALAS CON SELECTOR DE POSICIÓN -->
                     <div class="card open" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
-                            <h3>Catálogo de Escalas</h3>
+                            <h3>Catálogo de Escalas y Posiciones</h3>
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">
-                                Mástil deslizable de 12 trastes. En <strong style="color:var(--secondary)">amarillo</strong> se resalta la Tónica (T).
+                                Selecciona tónica, escala y posición en el diapasón. En <strong style="color:var(--secondary)">amarillo</strong> se resalta la Tónica (T).
                             </p>
                             <div class="filter-row">
-                                <select id="scale-root"></select>
-                                <select id="scale-type">
+                                <select id="scale-root" title="Tónica de la escala"></select>
+                                <select id="scale-type" title="Tipo de escala">
                                     <optgroup label="Fase 1: Imprescindibles">
                                         <option value="pentamin">Pentatónica Menor</option>
                                         <option value="pentamaj">Pentatónica Mayor</option>
-                                        <option value="major">Mayor / Jónica</option>
-                                        <option value="minor">Menor Natural / Eólica</option>
+                                        <option value="major">Mayor / Modo Jónico</option>
+                                        <option value="minor">Menor Natural / Eólico</option>
                                     </optgroup>
-                                    <optgroup label="Fase 2: Color y Modos">
-                                        <option value="blues">Escala de Blues (Menor)</option>
+                                    <optgroup label="Fase 2: Blues y Modos Griegos">
+                                        <option value="blues">Blues Menor (con ♭5)</option>
+                                        <option value="blues_maj">Blues Mayor</option>
                                         <option value="dorian">Modo Dórico</option>
                                         <option value="phrygian">Modo Frigio</option>
                                         <option value="lydian">Modo Lidio</option>
@@ -296,19 +316,50 @@
                                     <optgroup label="Fase 3: Armonía Avanzada">
                                         <option value="harm_minor">Menor Armónica</option>
                                         <option value="mel_minor">Menor Melódica</option>
+                                        <option value="altered">Alterada (Superlocria)</option>
+                                        <option value="lydian_b7">Lidia ♭7 (Overtone)</option>
+                                        <option value="phrygian_dom">Frigia Dominante (Española)</option>
+                                        <option value="bebop_dom">Bebop Dominante</option>
                                     </optgroup>
                                     <optgroup label="Fase 4: Simétricas">
-                                        <option value="dim">Disminuida (Tono-Semitono)</option>
+                                        <option value="dim_wh">Disminuida (Tono-Semitono)</option>
+                                        <option value="dim_hw">Disminuida (Semitono-Tono)</option>
                                         <option value="wholetone">Por Tonos (Whole Tone)</option>
+                                        <option value="chromatic">Escala Cromática</option>
+                                    </optgroup>
+                                    <optgroup label="Fase 5: Exóticas y Orientales">
+                                        <option value="hirajoshi">Hirajoshi (Japonesa)</option>
+                                        <option value="kumoi">Kumoi</option>
+                                        <option value="insen">In-Sen (Japonesa)</option>
+                                        <option value="hungarian">Húngara Gipsy</option>
+                                        <option value="persian">Persa</option>
+                                        <option value="arabic">Arábiga (Doble Armónica)</option>
+                                        <option value="neapolitan_min">Napolitana Menor</option>
+                                        <option value="neapolitan_maj">Napolitana Mayor</option>
+                                        <option value="enigmatic">Enigmática</option>
+                                        <option value="oriental">Oriental</option>
                                     </optgroup>
                                 </select>
+                                <select id="scale-pos" title="Posición en el mástil">
+                                    <option value="all">Mapa Completo (Trastes 0-12)</option>
+                                    <option value="pos1">Posición 1 (Tónica en 6ª - Base)</option>
+                                    <option value="pos2">Posición 2 (Caja central)</option>
+                                    <option value="pos3">Posición 3 (Tónica en 5ª)</option>
+                                    <option value="pos4">Posición 4 (Caja aguda)</option>
+                                    <option value="pos5">Posición 5 (Pre-octava)</option>
+                                </select>
+                            </div>
+
+                            <div class="scale-formula-badge">
+                                <span>Fórmula: <strong id="scale-formula-text">1 - ♭3 - 4 - 5 - ♭7</strong></span>
+                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Vista: Trastes 0 al 12</span>
                             </div>
                             
                             <div class="fretboard-scroll-wrapper" id="scale-fretboard-container"></div>
                             
                             <div style="display:flex; justify-content:center; margin-top:15px;">
                                 <button class="play-card-btn" id="btn-play-scale" style="padding: 10px 24px; font-size: 0.95rem;">
-                                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Reproducir Escala
+                                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> <span id="btn-play-scale-label">Reproducir Escala</span>
                                 </button>
                             </div>
                         </div>
@@ -332,7 +383,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.9.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.0.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -360,15 +411,12 @@
         <div id="view-reference">
             <div class="ref-header">
                 <div class="ref-nav-btns">
-                    <!-- Volver a la pestaña de la App -->
                     <button class="ref-btn" id="btn-ref-back" title="Cerrar libro y volver a la app">
                         <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg> Volver
                     </button>
-                    <!-- Subir al inicio del libro -->
                     <button class="ref-btn" id="btn-ref-top" title="Subir al inicio del libro">
                         <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg> Inicio Libro
                     </button>
-                    <!-- Guardar / Ir al marcador -->
                     <button class="ref-btn" id="btn-ref-bookmark" title="Guardar o ir al marcador">
                         <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--secondary)" fill="none" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Marcador
                     </button>
@@ -404,7 +452,7 @@
     </nav>
 
     <script>
-        const APP_VERSION = "v1.9.0";
+        const APP_VERSION = "v2.0.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
@@ -425,8 +473,8 @@
             if (!notes || notes.length === 0) return;
 
             const sampleRate = 22050;
-            const noteInterval = isChord ? 0.065 : 0.45;
-            const ringDuration = isChord ? 3.4 : 0.85;
+            const noteInterval = isChord ? 0.065 : 0.42;
+            const ringDuration = isChord ? 3.4 : 0.80;
             const totalDuration = ((notes.length - 1) * noteInterval) + ringDuration + 0.15;
             const numSamples = Math.floor(sampleRate * totalDuration);
             const samples = new Float32Array(numSamples);
@@ -783,31 +831,94 @@
             container.innerHTML = html;
         }
 
-        // --- ESCALAS EN MÁSTIL HORIZONTAL ---
-        const scaleIntervals = {
-            pentamin:   [0, 3, 5, 7, 10],
-            pentamaj:   [0, 2, 4, 7, 9],
-            major:      [0, 2, 4, 5, 7, 9, 11],
-            minor:      [0, 2, 3, 5, 7, 8, 10],
-            blues:      [0, 3, 5, 6, 7, 10],
-            dorian:     [0, 2, 3, 5, 7, 9, 10],
-            phrygian:   [0, 1, 3, 5, 7, 8, 10],
-            lydian:     [0, 2, 4, 6, 7, 9, 11],
-            mixolydian: [0, 2, 4, 5, 7, 9, 10],
-            locrian:    [0, 1, 3, 5, 6, 8, 10],
-            harm_minor: [0, 2, 3, 5, 7, 8, 11],
-            mel_minor:  [0, 2, 3, 5, 7, 9, 11],
-            dim:        [0, 2, 3, 5, 6, 8, 9, 11],
-            wholetone:  [0, 2, 4, 6, 8, 10]
+        // --- DICCIONARIO COMPLETO DE 25 ESCALAS Y MOTOR DE POSICIONES ---
+        const scaleCatalog = {
+            // Fase 1
+            pentamin:       { intervals: [0, 3, 5, 7, 10],              formula: "1 - ♭3 - 4 - 5 - ♭7",              boxShift: 0 },
+            pentamaj:       { intervals: [0, 2, 4, 7, 9],               formula: "1 - 2 - 3 - 5 - 6",                boxShift: -1 },
+            major:          { intervals: [0, 2, 4, 5, 7, 9, 11],        formula: "1 - 2 - 3 - 4 - 5 - 6 - 7",        boxShift: -1 },
+            minor:          { intervals: [0, 2, 3, 5, 7, 8, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - ♭7",     boxShift: -1 },
+            // Fase 2
+            blues:          { intervals: [0, 3, 5, 6, 7, 10],           formula: "1 - ♭3 - 4 - ♭5 - 5 - ♭7",         boxShift: 0 },
+            blues_maj:      { intervals: [0, 2, 3, 4, 7, 9],            formula: "1 - 2 - ♭3 - 3 - 5 - 6",           boxShift: -1 },
+            dorian:         { intervals: [0, 2, 3, 5, 7, 9, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - ♭7",      boxShift: -1 },
+            phrygian:       { intervals: [0, 1, 3, 5, 7, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - ♭7",    boxShift: 0 },
+            lydian:         { intervals: [0, 2, 4, 6, 7, 9, 11],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - 7",       boxShift: -1 },
+            mixolydian:     { intervals: [0, 2, 4, 5, 7, 9, 10],        formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7",       boxShift: -1 },
+            locrian:        { intervals: [0, 1, 3, 5, 6, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - ♭5 - ♭6 - ♭7",   boxShift: 0 },
+            // Fase 3
+            harm_minor:     { intervals: [0, 2, 3, 5, 7, 8, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - 7",      boxShift: -1 },
+            mel_minor:      { intervals: [0, 2, 3, 5, 7, 9, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - 7",       boxShift: -1 },
+            altered:        { intervals: [0, 1, 3, 4, 6, 8, 10],        formula: "1 - ♭2 - ♯2 - 3 - ♭5 - ♭6 - ♭7",   boxShift: 0 },
+            lydian_b7:      { intervals: [0, 2, 4, 6, 7, 9, 10],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - ♭7",      boxShift: -1 },
+            phrygian_dom:   { intervals: [0, 1, 4, 5, 7, 8, 10],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - ♭7",     boxShift: 0 },
+            bebop_dom:      { intervals: [0, 2, 4, 5, 7, 9, 10, 11],    formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7 - 7",   boxShift: -1 },
+            // Fase 4
+            dim_wh:         { intervals: [0, 2, 3, 5, 6, 8, 9, 11],     formula: "1 - 2 - ♭3 - 4 - ♭5 - ♭6 - 6 - 7", boxShift: 0 },
+            dim_hw:         { intervals: [0, 1, 3, 4, 6, 7, 9, 10],     formula: "1 - ♭2 - ♯2 - 3 - ♯4 - 5 - 6 - ♭7",boxShift: 0 },
+            wholetone:      { intervals: [0, 2, 4, 6, 8, 10],           formula: "1 - 2 - 3 - ♯4 - ♯5 - ♭7",         boxShift: 0 },
+            chromatic:      { intervals: [0,1,2,3,4,5,6,7,8,9,10,11],   formula: "12 Semitonos (Escala Cromática)",  boxShift: 0 },
+            // Fase 5: Exóticas y Orientales
+            hirajoshi:      { intervals: [0, 2, 3, 7, 8],               formula: "1 - 2 - ♭3 - 5 - ♭6",              boxShift: 0 },
+            kumoi:          { intervals: [0, 2, 3, 7, 9],               formula: "1 - 2 - ♭3 - 5 - 6",               boxShift: 0 },
+            insen:          { intervals: [0, 1, 5, 7, 10],              formula: "1 - ♭2 - 4 - 5 - ♭7",              boxShift: 0 },
+            hungarian:      { intervals: [0, 2, 3, 6, 7, 8, 11],        formula: "1 - 2 - ♭3 - ♯4 - 5 - ♭6 - 7",     boxShift: 0 },
+            persian:        { intervals: [0, 1, 4, 5, 6, 8, 11],        formula: "1 - ♭2 - 3 - 4 - ♭5 - ♭6 - 7",     boxShift: 0 },
+            arabic:         { intervals: [0, 1, 4, 5, 7, 8, 11],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - 7",      boxShift: 0 },
+            neapolitan_min: { intervals: [0, 1, 3, 5, 7, 8, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - 7",     boxShift: 0 },
+            neapolitan_maj: { intervals: [0, 1, 3, 5, 7, 9, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - 6 - 7",      boxShift: 0 },
+            enigmatic:      { intervals: [0, 1, 4, 6, 8, 10, 11],       formula: "1 - ♭2 - 3 - ♯4 - ♯5 - ♯6 - 7",    boxShift: 0 },
+            oriental:       { intervals: [0, 1, 4, 5, 6, 9, 10],        formula: "1 - ♭2 - 3 - 4 - ♭5 - 6 - ♭7",     boxShift: 0 }
         };
+
+        // Calcula la ventana de trastes [minFret, maxFret] de cada una de las 5 posiciones CAGED en el diapasón (0 a 12)
+        function getScalePositionWindow(rE, posKey, boxShift) {
+            if (posKey === 'all') return { min: 0, max: 12, label: "Vista: Trastes 0 al 12" };
+
+            // Desplazamientos en semitonos para las 5 cajas clásicas a partir de la tónica en 6ª cuerda
+            const posOffsets = {
+                pos1: 0,
+                pos2: 2,
+                pos3: 5,
+                pos4: 7,
+                pos5: 9
+            };
+
+            const offset = posOffsets[posKey] || 0;
+            let anchorFret = (rE + offset) % 12;
+            let minFret = anchorFret + (posKey === 'pos1' ? boxShift : 0);
+            if (minFret < 0) minFret = 0;
+
+            let maxFret = minFret + 4;
+            if (maxFret > 12) {
+                maxFret = 12;
+                minFret = Math.max(0, 12 - 4);
+            }
+
+            return {
+                min: minFret,
+                max: maxFret,
+                label: `Caja activa: Trastes ${minFret} al ${maxFret}`
+            };
+        }
 
         let currentScaleAudioNotes = [];
 
         function renderScaleFretboard() {
             const rootIdx = parseInt(document.getElementById('scale-root').value);
             const scaleType = document.getElementById('scale-type').value;
+            const posKey = document.getElementById('scale-pos').value;
             const container = document.getElementById('scale-fretboard-container');
-            const intervals = scaleIntervals[scaleType] || scaleIntervals.pentamin;
+            
+            const scaleObj = scaleCatalog[scaleType] || scaleCatalog.pentamin;
+            const intervals = scaleObj.intervals;
+            const rE = rootOnE[rootIdx];
+            const posWin = getScalePositionWindow(rE, posKey, scaleObj.boxShift);
+
+            // Actualizar etiqueta de fórmula y rango de trastes
+            document.getElementById('scale-formula-text').textContent = scaleObj.formula;
+            document.getElementById('scale-pos-range-text').textContent = posWin.label;
+            document.getElementById('btn-play-scale-label').textContent = posKey === 'all' ? 'Reproducir Escala Completa' : `Reproducir ${document.getElementById('scale-pos').options[document.getElementById('scale-pos').selectedIndex].text.split(' ')[0]} ${document.getElementById('scale-pos').options[document.getElementById('scale-pos').selectedIndex].text.split(' ')[1]}`;
 
             const fretWidth = 76;
             const nutX = 48;
@@ -820,6 +931,14 @@
 
             let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
             svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
+
+            // Si se ha seleccionado una posición concreta (Posición 1 a 5), dibujamos el marco resaltado sobre esos trastes
+            if (posKey !== 'all') {
+                const boxStartX = posWin.min === 0 ? 6 : (nutX + (posWin.min - 1) * fretWidth);
+                const boxEndX = nutX + posWin.max * fretWidth;
+                const boxW = boxEndX - boxStartX;
+                svg += `<rect x="${boxStartX}" y="${topY - 16}" width="${boxW}" height="${5 * stringSpacing + 32}" fill="rgba(255, 94, 0, 0.08)" stroke="#FFEA00" stroke-width="2" stroke-dasharray="6,4" rx="8"/>`;
+            }
 
             const markerFrets = [3, 5, 7, 9, 12];
             for (let f = 1; f <= 12; f++) {
@@ -859,20 +978,24 @@
 
                     if (intervals.includes(semitonesFromRoot)) {
                         const isRoot = (semitonesFromRoot === 0);
+                        const inPosition = (f >= posWin.min && f <= posWin.max);
+                        const opacity = (posKey === 'all' || inPosition) ? '1' : '0.18';
                         const label = notationES ? notesSys[noteIdx].es : notesSys[noteIdx].us;
                         const fillCol = isRoot ? '#FFEA00' : '#FF5E00';
                         const textCol = '#000000';
 
-                        currentScaleAudioNotes.push({
-                            string: synthStr,
-                            fret: f,
-                            noteIdx: noteIdx
-                        });
+                        if (posKey === 'all' || inPosition) {
+                            currentScaleAudioNotes.push({
+                                string: synthStr,
+                                fret: f,
+                                noteIdx: noteIdx
+                            });
+                        }
 
                         if (f === 0) {
                             const x = 22;
                             svg += `
-                                <g class="fret-note-group" onclick="playSingleNote(${synthStr}, 0)">
+                                <g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, 0)">
                                     <circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#ffffff' : '#FFEA00'}" stroke-width="${isRoot ? '2.5' : '1.5'}"/>
                                     <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
                                 </g>
@@ -880,7 +1003,7 @@
                         } else {
                             const x = nutX + (f - 0.5) * fretWidth;
                             svg += `
-                                <g class="fret-note-group" onclick="playSingleNote(${synthStr}, ${f})">
+                                <g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, ${f})">
                                     <circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#ffffff' : '#121212'}" stroke-width="${isRoot ? '2.5' : '1.5'}"/>
                                     <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
                                 </g>
@@ -893,6 +1016,15 @@
             svg += `</svg>`;
             container.innerHTML = svg;
 
+            // Desplazar automáticamente el scroll horizontal para centrar la posición elegida
+            if (posKey !== 'all') {
+                const targetX = Math.max(0, (posWin.min - 1) * fretWidth);
+                container.scrollTo({ left: targetX, behavior: 'smooth' });
+            } else {
+                container.scrollTo({ left: 0, behavior: 'smooth' });
+            }
+
+            // Ordenar las notas de la posición activa de grave (6ª cuerda) a agudo (1ª cuerda)
             currentScaleAudioNotes.sort((a, b) => {
                 if (a.string !== b.string) return a.string - b.string;
                 return a.fret - b.fret;
@@ -924,6 +1056,7 @@
             document.getElementById('chord-type').addEventListener('change', generateChords);
             document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
             document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
+            document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
 
             renderFretboardMap();
             generateChords();
@@ -976,24 +1109,20 @@
             }
         });
 
-        // 1. Botón "< Volver": cierra el libro y vuelve a la pestaña de la App donde estabas
         document.getElementById('btn-ref-back').addEventListener('click', closeReferenceView);
 
-        // 2. Botón "↑ Inicio Libro": sube al inicio del documento reference.html
         document.getElementById('btn-ref-top').addEventListener('click', () => {
             if (refIframe.contentWindow) {
                 refIframe.contentWindow.postMessage({ type: 'SCROLL_TOP' }, '*');
             }
         });
 
-        // 3. Botón "📌 Marcador": guarda el punto actual o te lleva al marcador guardado
         document.getElementById('btn-ref-bookmark').addEventListener('click', () => {
             if (refIframe.contentWindow) {
                 refIframe.contentWindow.postMessage({ type: 'SAVE_BOOKMARK' }, '*');
             }
         });
 
-        // Escuchar el porcentaje de progreso que envía reference.html al hacer scroll
         window.addEventListener('message', (event) => {
             if (!event.data) return;
             if (event.data.type === 'REF_PROGRESS') {
@@ -1004,7 +1133,6 @@
             }
         });
 
-        // Si el usuario pulsa cualquier icono de la barra inferior, también cerramos el libro automáticamente
         const navItems = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view');
         navItems.forEach(item => {
