@@ -63,7 +63,11 @@
         .info-block { display: none; background: #1a1a1a; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); margin-top: 15px; }
         .info-block.active { display: block; animation: fadeIn 0.3s ease; }
         
-        /* Grid para acordes y escalas generados */
+        .guitar-img-container { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background: #fff; max-height: 250px; display: flex; align-items: center; justify-content: center; }
+        .guitar-img-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .guitar-part { margin-bottom: 15px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
+        .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
         .svg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 25px; margin-top: 20px; }
         .playable-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; background: #222; padding: 15px 10px; border-radius: 12px; border: 1px solid #333; position: relative; }
         .playable-item:hover { transform: translateY(-5px); border-color: var(--primary); background: #2a2a2a; }
@@ -151,6 +155,19 @@
                         </button>
                     </div>
 
+                    <!-- GUÍA DE MODELOS -->
+                    <div class="card">
+                        <div class="control-group">
+                            <label for="guitar-model">Selecciona tu modelo para ver su guía:</label>
+                            <select id="guitar-model">
+                                <option value="telecaster">Fender Telecaster</option>
+                                <option value="stratocaster">Fender Stratocaster</option>
+                                <option value="lespaul">Gibson Les Paul</option>
+                            </select>
+                        </div>
+                        <div id="guitar-viewer" class="info-block active" style="display:block;"></div>
+                    </div>
+
                     <!-- LIBRERÍA DE ACORDES -->
                     <div id="chords-panel" class="info-block">
                         <h3>Librería Exhaustiva de Acordes</h3>
@@ -222,20 +239,66 @@
     </div>
 
     <script>
-        // --- MOTOR DE TEORÍA MUSICAL Y GENERACIÓN ALGORÍTMICA ---
+        // --- GUÍAS DE GUITARRA CON ARCHIVOS LOCALES ---
+        const guitarData = {
+            telecaster: {
+                title: "Fender Telecaster",
+                img: "telecaster.jpeg",
+                desc: "Diseño clásico de cuerpo macizo ('single cutaway'). Reconocida por su sonido brillante o 'twang'.",
+                parts: [
+                    { name: "Pastillas", info: "2 Pastillas Single Coil. La del puente es ancha e inclinada, la del mástil es pequeña y con cubierta metálica." },
+                    { name: "Selector", info: "3 posiciones: 1. Puente (Agudo), 2. Medio (Ambas), 3. Mástil (Redondo/cálido)." },
+                    { name: "Mandos", info: "1 Volumen General y 1 Tono General." }
+                ]
+            },
+            stratocaster: {
+                title: "Fender Stratocaster",
+                img: "stratocaster.jpeg",
+                desc: "Diseño ergonómico ('double cutaway'). Muy versátil para rock, blues y pop.",
+                parts: [
+                    { name: "Pastillas", info: "3 Pastillas Single Coil (Mástil, Medio, Puente). Generan su famoso sonido 'quack' en las posiciones intermedias." },
+                    { name: "Selector", info: "5 posiciones combinando las 3 pastillas individualmente o en pares." },
+                    { name: "Mandos", info: "1 Volumen General, 1 Tono (Mástil), 1 Tono (Medio)." }
+                ]
+            },
+            lespaul: {
+                title: "Gibson Les Paul",
+                img: "lespaul.jpeg",
+                desc: "Cuerpo pesado de caoba. Sonido denso, potente y con mucho 'sustain'.",
+                parts: [
+                    { name: "Pastillas", info: "2 Pastillas Humbucker (Doble bobina). Cancelan el ruido de masa y ofrecen un sonido grueso." },
+                    { name: "Selector", info: "Palanca de 3 posiciones (Rhythm/Mástil, Centro, Treble/Puente)." },
+                    { name: "Mandos", info: "2 de Volumen y 2 de Tono independientes." }
+                ]
+            }
+        };
+
+        const guitarSelect = document.getElementById('guitar-model');
+        const guitarViewer = document.getElementById('guitar-viewer');
+
+        function renderGuitarGuide() {
+            const data = guitarData[guitarSelect.value];
+            let html = `<h3>${data.title}</h3>
+                        <div class="guitar-img-container"><img src="${data.img}" alt="${data.title}"></div>
+                        <p style="color:var(--text-muted); margin-bottom:15px;">${data.desc}</p>`;
+            data.parts.forEach(part => {
+                html += `<div class="guitar-part"><strong>${part.name}</strong>: <span style="color:#d0d0d0;">${part.info}</span></div>`;
+            });
+            guitarViewer.innerHTML = html;
+        }
+        guitarSelect.addEventListener('change', renderGuitarGuide);
+        renderGuitarGuide();
+
+        // --- TEORÍA MUSICAL Y MOTOR ALGORÍTMICO ---
         const notesSys = [
             { es: 'Do', us: 'C' }, { es: 'Do#', us: 'C#' }, { es: 'Re', us: 'D' }, { es: 'Re#', us: 'D#' },
             { es: 'Mi', us: 'E' }, { es: 'Fa', us: 'F' }, { es: 'Fa#', us: 'F#' }, { es: 'Sol', us: 'G' },
             { es: 'Sol#', us: 'G#' }, { es: 'La', us: 'A' }, { es: 'La#', us: 'A#' }, { es: 'Si', us: 'B' }
         ];
 
-        // Afinación estándar y mapeo de raíces (Trastes donde se encuentra cada nota en las cuerdas E grave y A)
-        // Cuerda E (0=Mi, 1=Fa, 3=Sol, 5=La, 7=Si, 8=Do...)
         const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
-        // Cuerda A (0=La, 2=Si, 3=Do, 5=Re, 7=Mi...)
         const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
-        // Plantillas estructurales de Acordes (relativas a su cuerda base)
         const chordTemplates = {
             maj: [
                 { name: "Posición Abierta", get: (rE, rA) => getOpenMajor(rE, rA) },
@@ -265,62 +328,63 @@
             ]
         };
 
-        // Diccionario de acordes abiertos fijos (para evitar cejillas innecesarias en notas naturales)
         function getOpenMajor(rE, rA) {
-            if(rA===3) return { strings: ['X',3,2,0,1,0], baseFret: 1 }; // C
-            if(rA===5) return { strings: ['X','X',0,2,3,2], baseFret: 1 }; // D
-            if(rE===0) return { strings: [0,2,2,1,0,0], baseFret: 1 }; // E
-            if(rE===3) return { strings: [3,2,0,0,0,3], baseFret: 1 }; // G
-            if(rA===0) return { strings: ['X',0,2,2,2,0], baseFret: 1 }; // A
+            if(rA===3) return { strings: ['X',3,2,0,1,0], baseFret: 1 };
+            if(rA===5) return { strings: ['X','X',0,2,3,2], baseFret: 1 };
+            if(rE===0) return { strings: [0,2,2,1,0,0], baseFret: 1 };
+            if(rE===3) return { strings: [3,2,0,0,0,3], baseFret: 1 };
+            if(rA===0) return { strings: ['X',0,2,2,2,0], baseFret: 1 };
             return null;
         }
         function getOpenMinor(rE, rA) {
-            if(rA===5) return { strings: ['X','X',0,2,3,1], baseFret: 1 }; // Dm
-            if(rE===0) return { strings: [0,2,2,0,0,0], baseFret: 1 }; // Em
-            if(rA===0) return { strings: ['X',0,2,2,1,0], baseFret: 1 }; // Am
+            if(rA===5) return { strings: ['X','X',0,2,3,1], baseFret: 1 };
+            if(rE===0) return { strings: [0,2,2,0,0,0], baseFret: 1 };
+            if(rA===0) return { strings: ['X',0,2,2,1,0], baseFret: 1 };
             return null;
         }
 
-        // Plantillas de Escalas (Patrones relativos por intervalos)
         const scaleTemplates = {
-            pentamin: { name: "Posición 1", pattern: [[0,3], [0,2], [0,2], [0,2], [0,3], [0,3]], rootString: 0 },
-            pentamaj: { name: "Posición 1", pattern: [[0,2], [0,2], [0,2], [0,2], [0,2], [0,2]], offsets: [0,-1,-1,-1,0,0], rootString: 0 }, // Adaptación visual
-            major: { name: "Patrón Cerrado", pattern: [[0,2,4], [0,2,4], [1,2,4], [1,3,4], [2,4], [0,2,4]], rootString: 0 },
-            minor: { name: "Patrón Cerrado", pattern: [[0,1,3], [0,1,3], [0,2,3], [0,2,4], [1,3], [0,1,3]], rootString: 0 },
-            blues: { name: "Caja de Blues", pattern: [[0,3], [0,1,2], [0,2], [0,2,3], [0,3], [0,3]], rootString: 0 }
+            pentamin: { name: "Posición 1", pattern: [[0,3], [0,2], [0,2], [0,2], [0,3], [0,3]] },
+            pentamaj: { name: "Posición 1", pattern: [[0,2], [0,2], [0,2], [0,2], [0,2], [0,2]] },
+            major: { name: "Patrón Abierto", pattern: [[0,2,4], [0,2,4], [1,2,4], [1,3,4], [2,4], [0,2,4]] },
+            minor: { name: "Patrón Abierto", pattern: [[0,1,3], [0,1,3], [0,2,3], [0,2,4], [1,3], [0,1,3]] },
+            blues: { name: "Caja de Blues", pattern: [[0,3], [0,1,2], [0,2], [0,2,3], [0,3], [0,3]] }
         };
 
-        // --- RENDERIZADORES SVG Y AUDIO ---
-        function createSVGGrid(isScale = false) {
+        function createSVGGrid() {
             let svg = `<svg viewBox="0 0 120 150" width="100%" height="auto" stroke="#555" fill="none" stroke-width="2" style="max-width:140px; margin-top: 10px;">`;
-            svg += `<line x1="15" y1="20" x2="105" y2="20" class="nut-line" stroke-width="4"/>`;
+            svg += `<line x1="15" y1="20" x2="105" y2="20" class="nut-line" stroke-width="4" stroke="#fff"/>`;
             for(let i=1; i<=5; i++) svg += `<line x1="15" y1="${20 + i*24}" x2="105" y2="${20 + i*24}"/>`;
             for(let i=0; i<6; i++) svg += `<line x1="${15 + i*18}" y1="20" x2="${15 + i*18}" y2="140"/>`;
             return svg;
         }
 
-        function drawNotes(svg, strings, isChord = true) {
+        function drawChordNotes(svg, strings) {
             let notesToPlay = [];
             strings.forEach((data, stringIdx) => {
                 const x = 15 + stringIdx*18;
-                if(isChord) {
-                    const fret = data;
-                    if (fret === 'X') {
-                        svg += `<line x1="${x-4}" y1="6" x2="${x+4}" y2="14" stroke="#ff4444"/><line x1="${x+4}" y1="6" x2="${x-4}" y2="14" stroke="#ff4444"/>`;
-                    } else if (fret === 0) {
-                        svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff"/>`;
-                        notesToPlay.push({ string: stringIdx, absoluteFret: 0 });
-                    } else if (fret > 0) {
-                        svg += `<circle cx="${x}" cy="${20 + (fret-0.5)*24}" r="6" fill="var(--primary)" stroke="var(--primary)"/>`;
-                        notesToPlay.push({ string: stringIdx, localFret: fret });
-                    }
-                } else {
-                    // Escalas: array de trastes por cuerda
-                    data.forEach(fret => {
-                        svg += `<circle cx="${x}" cy="${20 + (fret+0.5)*24}" r="5.5" fill="var(--secondary)" stroke="var(--bg-color)"/>`;
-                        notesToPlay.push({ string: stringIdx, localFret: fret + 1 });
-                    });
+                const fret = data;
+                if (fret === 'X') {
+                    svg += `<line x1="${x-4}" y1="6" x2="${x+4}" y2="14" stroke="#ff4444"/><line x1="${x+4}" y1="6" x2="${x-4}" y2="14" stroke="#ff4444"/>`;
+                } else if (fret === 0) {
+                    svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff"/>`;
+                    notesToPlay.push({ string: stringIdx, fret: 0 });
+                } else if (fret > 0) {
+                    svg += `<circle cx="${x}" cy="${20 + (fret-0.5)*24}" r="6" fill="var(--primary)" stroke="var(--primary)"/>`;
+                    notesToPlay.push({ string: stringIdx, localFret: fret });
                 }
+            });
+            return { svg, notesToPlay };
+        }
+
+        function drawScaleNotes(svg, pattern) {
+            let notesToPlay = [];
+            pattern.forEach((frets, stringIdx) => {
+                const x = 15 + stringIdx*18;
+                frets.forEach(fret => {
+                    svg += `<circle cx="${x}" cy="${20 + (fret+0.5)*24}" r="5.5" fill="var(--secondary)" stroke="var(--bg-color)"/>`;
+                    notesToPlay.push({ string: stringIdx, localFret: fret + 1 });
+                });
             });
             return { svg, notesToPlay };
         }
@@ -328,7 +392,7 @@
         function initUI() {
             const rootSelects = [document.getElementById('chord-root'), document.getElementById('scale-root')];
             rootSelects.forEach(sel => {
-                sel.innerHTML = notesSys.map((n, i) => `<option value="${i}"><span class="n-es">${n.es}</span><span class="n-us">${n.us}</span></option>`).join('');
+                sel.innerHTML = notesSys.map((n, i) => `<option value="${i}">${n.es} / ${n.us}</option>`).join('');
             });
             
             document.getElementById('chord-root').addEventListener('change', generateChords);
@@ -338,35 +402,22 @@
 
             generateChords();
             generateScales();
-            updateLanguageDisplay();
         }
 
-        function updateLanguageDisplay() {
-            const opts = document.querySelectorAll('option');
-            opts.forEach(opt => {
-                if(opt.innerHTML.includes('n-es')) {
-                    const spans = opt.querySelectorAll('span');
-                    opt.text = notationES ? spans[0].textContent : spans[1].textContent;
-                }
-            });
-        }
-
+        let notationES = true;
         document.getElementById('btn-toggle-not').addEventListener('click', function() {
             notationES = !notationES;
             document.getElementById('not-label').textContent = notationES ? 'ES' : 'US';
             document.body.classList.toggle('notation-us', !notationES);
-            updateLanguageDisplay();
-            generateChords(); // Refrescar títulos
+            generateChords();
             generateScales();
         });
 
-        // --- GENERADOR ALGORÍTMICO ---
         function generateChords() {
             const rootIdx = parseInt(document.getElementById('chord-root').value);
             const type = document.getElementById('chord-type').value;
             const container = document.getElementById('chords-container');
-            const rootNameES = notesSys[rootIdx].es;
-            const rootNameUS = notesSys[rootIdx].us;
+            const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
             
             const rE = rootOnE[rootIdx];
             const rA = rootOnA[rootIdx];
@@ -376,27 +427,24 @@
                 const chordData = template.get(rE, rA);
                 if(!chordData) return;
 
-                let svgRaw = createSVGGrid(false);
+                let svgRaw = createSVGGrid();
                 let baseLabel = chordData.baseFret > 1 && !chordData.overrideBase ? chordData.baseFret : 1;
                 
                 if (baseLabel > 1) {
-                    svgRaw = svgRaw.replace('class="nut-line" stroke-width="4"', 'stroke-width="2"'); // Quitar cejuela gruesa
-                    svgRaw += `<text x="1" y="38" fill="#a0a0a0" font-size="12" font-family="sans-serif">${baseLabel}fr</text>`;
+                    svgRaw = svgRaw.replace('stroke-width="4" stroke="#fff"', 'stroke-width="2" stroke="#555"');
+                    svgRaw += `<text x="2" y="38" fill="#a0a0a0" font-size="11" font-family="sans-serif">${baseLabel}fr</text>`;
                 }
 
-                const { svg, notesToPlay } = drawNotes(svgRaw, chordData.strings, true);
+                const { svg, notesToPlay } = drawChordNotes(svgRaw, chordData.strings);
                 
-                // Procesar notas absolutas para el sintetizador
                 const finalNotes = notesToPlay.map(n => ({
                     string: n.string,
-                    fret: n.absoluteFret !== undefined ? n.absoluteFret : (n.localFret - 1 + baseLabel)
+                    fret: n.fret !== undefined ? n.fret : (n.localFret - 1 + baseLabel)
                 }));
 
-                const synthData = JSON.stringify(finalNotes);
-
                 html += `
-                    <div class="playable-item" onclick='playSynth(${synthData}, true)'>
-                        <div class="item-title"><span class="n-es">${rootNameES}</span><span class="n-us">${rootNameUS}</span></div>
+                    <div class="playable-item" onclick='playSynth(${JSON.stringify(finalNotes)}, true)'>
+                        <div class="item-title">${rootName}</div>
                         <div class="item-subtitle">${template.name}</div>
                         ${svg}</svg>
                     </div>
@@ -410,31 +458,28 @@
             const type = document.getElementById('scale-type').value;
             const container = document.getElementById('scales-container');
             
-            const rootNameES = notesSys[rootIdx].es;
-            const rootNameUS = notesSys[rootIdx].us;
+            const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
             const rE = rootOnE[rootIdx];
 
             const template = scaleTemplates[type];
-            let baseLabel = rE === 0 ? 1 : rE; // Mover al traste de la raíz
+            let baseLabel = rE === 0 ? 1 : rE;
 
-            let svgRaw = createSVGGrid(true);
+            let svgRaw = createSVGGrid();
             if (baseLabel > 1) {
-                svgRaw = svgRaw.replace('class="nut-line" stroke-width="4"', 'stroke-width="2"');
-                svgRaw += `<text x="1" y="38" fill="#a0a0a0" font-size="12" font-family="sans-serif">${baseLabel}fr</text>`;
+                svgRaw = svgRaw.replace('stroke-width="4" stroke="#fff"', 'stroke-width="2" stroke="#555"');
+                svgRaw += `<text x="2" y="38" fill="#a0a0a0" font-size="11" font-family="sans-serif">${baseLabel}fr</text>`;
             }
 
-            const { svg, notesToPlay } = drawNotes(svgRaw, template.pattern, false);
+            const { svg, notesToPlay } = drawScaleNotes(svgRaw, template.pattern);
 
             const finalNotes = notesToPlay.map(n => ({
                 string: n.string,
                 fret: (n.localFret - 1 + baseLabel)
-            })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : b.string - a.string); // Ordenar de grave a agudo para arpegio
-
-            const synthData = JSON.stringify(finalNotes);
+            })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : b.string - a.string);
 
             let html = `
-                <div class="playable-item" onclick='playSynth(${synthData}, false)' style="grid-column: 1 / -1; max-width: 300px; margin: 0 auto;">
-                    <div class="item-title"><span class="n-es">${rootNameES}</span><span class="n-us">${rootNameUS}</span></div>
+                <div class="playable-item" onclick='playSynth(${JSON.stringify(finalNotes)}, false)' style="grid-column: 1 / -1; max-width: 250px; margin: 0 auto;">
+                    <div class="item-title">${rootName}</div>
                     <div class="item-subtitle">${template.name}</div>
                     ${svg}</svg>
                 </div>
@@ -442,10 +487,8 @@
             container.innerHTML = html;
         }
 
-        // --- SINTETIZADOR WEB AUDIO API ---
+        // --- SINTETIZADOR AUDIO API ---
         let audioCtx;
-        // Frecuencias base cuerdas al aire (E2, A2, D3, G3, B3, E4) -> Índices 0 al 5 (6ª a 1ª)
-        // En nuestro SVG, la cuerda 0 es la 6ª (E grave) y la 5 es la 1ª (e agudo)
         const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
 
         function playSynth(notes, isChord) {
@@ -453,30 +496,25 @@
             if (audioCtx.state === 'suspended') audioCtx.resume();
 
             const now = audioCtx.currentTime;
-            
             notes.forEach((note, index) => {
                 const freq = stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12);
-                
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 
-                // Tipo pluck (onda sierra suavizada o triángulo)
                 osc.type = 'triangle';
                 osc.frequency.value = freq;
-                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 
-                // Delay para simular rasgueo (chords) o arpegio lento (escalas)
-                const delay = isChord ? index * 0.03 : index * 0.15;
+                const delay = isChord ? index * 0.03 : index * 0.12;
                 const startTime = now + delay;
                 
                 gain.gain.setValueAtTime(0, startTime);
-                gain.gain.linearRampToValueAtTime(0.8, startTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 2.0);
+                gain.gain.linearRampToValueAtTime(0.7, startTime + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 1.8);
                 
                 osc.start(startTime);
-                osc.stop(startTime + 2.0);
+                osc.stop(startTime + 1.8);
             });
         }
 
@@ -511,7 +549,6 @@
             });
         });
 
-        // Inicializar app
         initUI();
 
         // --- BUSCADOR ---
