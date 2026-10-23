@@ -33,7 +33,7 @@
 
         .header-actions { display: flex; align-items: center; gap: 12px; }
         .icon-header-btn { background: none; border: none; color: var(--text); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; }
-        .icon-header-btn:hover { color: var(--primary); }
+        .icon-header-btn:hover, .icon-header-btn.active-book { color: var(--primary); }
         .icon-header-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         .app-body { display: flex; flex: 1; overflow: hidden; flex-direction: column; position: relative; }
@@ -80,7 +80,6 @@
         .guitar-part { margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 8px; font-size: 0.95rem; }
         .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        /* Mástil deslizable horizontal */
         .fretboard-scroll-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -121,16 +120,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 18px;
+            padding: 10px 14px;
             background: var(--surface);
             border-bottom: 1px solid #333;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .ref-nav-btns { display: flex; gap: 10px; }
-        .ref-btn { background: #2a2a2a; color: var(--text); border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .ref-btn:active { background: var(--primary); color: #000; }
+        .ref-nav-btns { display: flex; gap: 8px; align-items: center; }
+        .ref-btn { background: #2a2a2a; color: var(--text); border: 1px solid #444; padding: 7px 11px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; user-select: none; }
+        .ref-btn:active { background: var(--primary); color: #000; border-color: var(--primary); }
         .ref-progress-bar-container { width: 100%; height: 4px; background: #222; }
-        .ref-progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.1s; }
-        .ref-frame { flex: 1; width: 100%; border: none; background: #121212; }
+        .ref-progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.15s; }
+        .ref-frame { flex: 1; width: 100%; height: 100%; border: none; background: #121212; }
 
         .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 25px 0; border-top: 1px solid #333; }
         .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 10px; flex: 1; transition: 0.2s; }
@@ -169,8 +170,7 @@
         </div>
 
         <div class="header-actions">
-            <!-- Botón Libro SVG para abrir reference.html -->
-            <button class="icon-header-btn" id="btn-open-reference" title="Abrir Manual de Referencia">
+            <button class="icon-header-btn" id="btn-open-reference" title="Abrir/Cerrar Manual de Teoría">
                 <svg viewBox="0 0 24 24">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
@@ -243,7 +243,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. LIBRERÍA DE ACORDES (Power Chords y Cejillas Corregidos) -->
+                    <!-- 3. LIBRERÍA DE ACORDES -->
                     <div class="card" id="card-chords">
                         <div class="collapsible-header" onclick="toggleCard('card-chords')">
                             <h3>Librería de Acordes</h3>
@@ -266,7 +266,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. CATÁLOGO DE ESCALAS (Nuevo mástil deslizable horizontal de 12 trastes) -->
+                    <!-- 4. CATÁLOGO DE ESCALAS -->
                     <div class="card open" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas</h3>
@@ -274,7 +274,7 @@
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">
-                                Mástil deslizable de 12 trastes contrastado con el documento. En <strong style="color:var(--secondary)">amarillo</strong> se resalta la Tónica (T).
+                                Mástil deslizable de 12 trastes. En <strong style="color:var(--secondary)">amarillo</strong> se resalta la Tónica (T).
                             </p>
                             <div class="filter-row">
                                 <select id="scale-root"></select>
@@ -304,7 +304,6 @@
                                 </select>
                             </div>
                             
-                            <!-- Contenedor del mástil horizontal de la escala -->
                             <div class="fretboard-scroll-wrapper" id="scale-fretboard-container"></div>
                             
                             <div style="display:flex; justify-content:center; margin-top:15px;">
@@ -333,7 +332,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.8.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.9.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -357,19 +356,25 @@
             </div>
         </main>
 
-        <!-- PANTALLA COMPLETA DE REFERENCIA / MANUAL (reference.html) -->
+        <!-- PANTALLA DEL LIBRO DE REFERENCIA (reference.html) -->
         <div id="view-reference">
             <div class="ref-header">
                 <div class="ref-nav-btns">
-                    <button class="ref-btn" id="btn-ref-back">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg> Volver
+                    <!-- Volver a la pestaña de la App -->
+                    <button class="ref-btn" id="btn-ref-back" title="Cerrar libro y volver a la app">
+                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg> Volver
                     </button>
-                    <button class="ref-btn" id="btn-ref-home">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> Inicio
+                    <!-- Subir al inicio del libro -->
+                    <button class="ref-btn" id="btn-ref-top" title="Subir al inicio del libro">
+                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg> Inicio Libro
+                    </button>
+                    <!-- Guardar / Ir al marcador -->
+                    <button class="ref-btn" id="btn-ref-bookmark" title="Guardar o ir al marcador">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--secondary)" fill="none" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Marcador
                     </button>
                 </div>
-                <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: bold;">
-                    Progreso: <span id="ref-progress-text" style="color:var(--secondary)">0%</span>
+                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: bold;">
+                    <span id="ref-progress-text" style="color:var(--secondary)">0%</span>
                 </div>
             </div>
             <div class="ref-progress-bar-container">
@@ -399,7 +404,7 @@
     </nav>
 
     <script>
-        const APP_VERSION = "v1.8.0";
+        const APP_VERSION = "v1.9.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
@@ -560,14 +565,14 @@
         const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
         const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
-        // --- PLANO DE NOTAS DEL MÁSTIL (Trastes 0 a 12) ---
+        // --- PLANO DE NOTAS DEL MÁSTIL ---
         const fretboardStrings = [
-            { openNote: 4, synthStringIdx: 5 }, // 1ª: Mi / E
-            { openNote: 11, synthStringIdx: 4 }, // 2ª: Si / B
-            { openNote: 7, synthStringIdx: 3 }, // 3ª: Sol / G
-            { openNote: 2, synthStringIdx: 2 }, // 4ª: Re / D
-            { openNote: 9, synthStringIdx: 1 }, // 5ª: La / A
-            { openNote: 4, synthStringIdx: 0 }  // 6ª: Mi / E
+            { openNote: 4, synthStringIdx: 5 },
+            { openNote: 11, synthStringIdx: 4 },
+            { openNote: 7, synthStringIdx: 3 },
+            { openNote: 2, synthStringIdx: 2 },
+            { openNote: 9, synthStringIdx: 1 },
+            { openNote: 4, synthStringIdx: 0 }
         ];
 
         function renderFretboardMap() {
@@ -655,7 +660,7 @@
         }
         document.getElementById('fretboard-filter').addEventListener('change', renderFretboardMap);
 
-        // --- ACORDES CORREGIDOS (Power Chords y Cejillas Exactas) ---
+        // --- ACORDES ---
         const chordTemplates = {
             maj: [
                 { name: "Posición Abierta", get: (rE, rA) => getOpenMajor(rE, rA) },
@@ -680,9 +685,7 @@
                 { name: "Menor 7 (Forma La)", get: (rE, rA) => ({ strings: ['X', 0, 2, 0, 1, 0], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
             ],
             power: [
-                // Power Chord estándar con raíz en 6ª cuerda: Fundamental + 5ª + Octava (1-3-3)
                 { name: "Power Chord (Raíz en 6ª)", get: (rE, rA) => ({ strings: [0, 2, 2, 'X', 'X', 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
-                // Power Chord estándar con raíz en 5ª cuerda: Fundamental + 5ª + Octava (X-1-3-3)
                 { name: "Power Chord (Raíz en 5ª)", get: (rE, rA) => ({ strings: ['X', 0, 2, 2, 'X', 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
             ]
         };
@@ -728,10 +731,10 @@
                     svg += `<line x1="${x-4}" y1="6" x2="${x+4}" y2="14" stroke="#ff4444" stroke-width="2"/><line x1="${x+4}" y1="6" x2="${x-4}" y2="14" stroke="#ff4444" stroke-width="2"/>`;
                 } else if (fret === 0) {
                     svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff" stroke-width="2" fill="none"/>`;
-                    notesToPlay.push({ string: 5 - stringIdx, fret: 0 }); // Invertido para que cuerda 0 sea 6ª cuerda en audio
+                    notesToPlay.push({ string: stringIdx, fret: 0 });
                 } else if (fret > 0) {
                     svg += `<circle cx="${x}" cy="${20 + (fret-0.5)*24}" r="6.5" fill="#FF5E00" stroke="none"/>`;
-                    notesToPlay.push({ string: 5 - stringIdx, localFret: fret });
+                    notesToPlay.push({ string: stringIdx, localFret: fret });
                 }
             });
             return { svg, notesToPlay };
@@ -780,28 +783,26 @@
             container.innerHTML = html;
         }
 
-        // --- DICCIONARIO DE ESCALAS CONTRASTADAS CON EL DOCUMENTO ---
-        // Definición de las escalas por intervalos de semitonos desde la tónica (T = 0)
+        // --- ESCALAS EN MÁSTIL HORIZONTAL ---
         const scaleIntervals = {
-            pentamin:   [0, 3, 5, 7, 10],                 // Pentatónica Menor (1 - b3 - 4 - 5 - b7)
-            pentamaj:   [0, 2, 4, 7, 9],                  // Pentatónica Mayor (1 - 2 - 3 - 5 - 6)
-            major:      [0, 2, 4, 5, 7, 9, 11],           // Mayor / Jónica (1 - 2 - 3 - 4 - 5 - 6 - 7)
-            minor:      [0, 2, 3, 5, 7, 8, 10],           // Menor Natural / Eólica (1 - 2 - b3 - 4 - 5 - b6 - b7)
-            blues:      [0, 3, 5, 6, 7, 10],              // Blues Menor con b5 (1 - b3 - 4 - b5 - 5 - b7)
-            dorian:     [0, 2, 3, 5, 7, 9, 10],           // Modo Dórico (1 - 2 - b3 - 4 - 5 - 6 - b7)
-            phrygian:   [0, 1, 3, 5, 7, 8, 10],           // Modo Frigio (1 - b2 - b3 - 4 - 5 - b6 - b7)
-            lydian:     [0, 2, 4, 6, 7, 9, 11],           // Modo Lidio (1 - 2 - 3 - #4 - 5 - 6 - 7)
-            mixolydian: [0, 2, 4, 5, 7, 9, 10],           // Modo Mixolidio (1 - 2 - 3 - 4 - 5 - 6 - b7)
-            locrian:    [0, 1, 3, 5, 6, 8, 10],           // Modo Locrio (1 - b2 - b3 - 4 - b5 - b6 - b7)
-            harm_minor: [0, 2, 3, 5, 7, 8, 11],           // Menor Armónica (1 - 2 - b3 - 4 - 5 - b6 - 7)
-            mel_minor:  [0, 2, 3, 5, 7, 9, 11],           // Menor Melódica (1 - 2 - b3 - 4 - 5 - 6 - 7)
-            dim:        [0, 2, 3, 5, 6, 8, 9, 11],        // Disminuida Tono-Semitono
-            wholetone:  [0, 2, 4, 6, 8, 10]               // Whole Tone (Por Tonos)
+            pentamin:   [0, 3, 5, 7, 10],
+            pentamaj:   [0, 2, 4, 7, 9],
+            major:      [0, 2, 4, 5, 7, 9, 11],
+            minor:      [0, 2, 3, 5, 7, 8, 10],
+            blues:      [0, 3, 5, 6, 7, 10],
+            dorian:     [0, 2, 3, 5, 7, 9, 10],
+            phrygian:   [0, 1, 3, 5, 7, 8, 10],
+            lydian:     [0, 2, 4, 6, 7, 9, 11],
+            mixolydian: [0, 2, 4, 5, 7, 9, 10],
+            locrian:    [0, 1, 3, 5, 6, 8, 10],
+            harm_minor: [0, 2, 3, 5, 7, 8, 11],
+            mel_minor:  [0, 2, 3, 5, 7, 9, 11],
+            dim:        [0, 2, 3, 5, 6, 8, 9, 11],
+            wholetone:  [0, 2, 4, 6, 8, 10]
         };
 
         let currentScaleAudioNotes = [];
 
-        // Genera el mástil interactivo deslizable en horizontal para la escala seleccionada
         function renderScaleFretboard() {
             const rootIdx = parseInt(document.getElementById('scale-root').value);
             const scaleType = document.getElementById('scale-type').value;
@@ -847,7 +848,6 @@
                 svg += `<line x1="${nutX}" y1="${y}" x2="${nutX + 12 * fretWidth}" y2="${y}" stroke="#777" stroke-width="${strokeW}"/>`;
             }
 
-            // Mapeo de notas en el mástil que pertenecen a la escala
             for (let s = 0; s < 6; s++) {
                 const y = topY + s * stringSpacing;
                 const openNoteIdx = fretboardStrings[s].openNote;
@@ -855,13 +855,12 @@
 
                 for (let f = 0; f <= 12; f++) {
                     const noteIdx = (openNoteIdx + f) % 12;
-                    // Distancia en semitonos desde la tónica
                     const semitonesFromRoot = (noteIdx - rootIdx + 12) % 12;
 
                     if (intervals.includes(semitonesFromRoot)) {
                         const isRoot = (semitonesFromRoot === 0);
                         const label = notationES ? notesSys[noteIdx].es : notesSys[noteIdx].us;
-                        const fillCol = isRoot ? '#FFEA00' : '#FF5E00'; // Tónica en amarillo neón, demás en naranja
+                        const fillCol = isRoot ? '#FFEA00' : '#FF5E00';
                         const textCol = '#000000';
 
                         currentScaleAudioNotes.push({
@@ -894,20 +893,18 @@
             svg += `</svg>`;
             container.innerHTML = svg;
 
-            // Ordenar las notas encontradas de la 6ª cuerda a la 1ª (grave a agudo) para reproducir la escala
             currentScaleAudioNotes.sort((a, b) => {
-                if (a.string !== b.string) return a.string - b.string; // 0 (6ª) a 5 (1ª)
+                if (a.string !== b.string) return a.string - b.string;
                 return a.fret - b.fret;
             });
         }
 
         document.getElementById('btn-play-scale').addEventListener('click', function() {
             if (currentScaleAudioNotes.length > 0) {
-                // Filtramos notas para no repetir frecuencias idénticas inmediatas en la reproducción
                 const uniquePitches = [];
                 const seenFreqs = new Set();
                 currentScaleAudioNotes.forEach(n => {
-                    const freqKey = n.string * 100 + n.fret;
+                    const freqKey = Math.round(stringBaseFreqs[n.string] * Math.pow(2, n.fret / 12));
                     if (!seenFreqs.has(freqKey)) {
                         seenFreqs.add(freqKey);
                         uniquePitches.push(n);
@@ -957,11 +954,62 @@
             setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
         });
 
-        // --- NAVEGACIÓN SPA ---
+        // --- NAVEGACIÓN SPA Y CONTROL DEL LIBRO ---
+        const viewReference = document.getElementById('view-reference');
+        const btnOpenRef = document.getElementById('btn-open-reference');
+        const refIframe = document.getElementById('ref-iframe');
+        const refProgressBar = document.getElementById('ref-progress-bar');
+        const refProgressText = document.getElementById('ref-progress-text');
+
+        function closeReferenceView() {
+            viewReference.classList.remove('active');
+            btnOpenRef.classList.remove('active-book');
+        }
+
+        btnOpenRef.addEventListener('click', () => {
+            const isOpening = !viewReference.classList.contains('active');
+            if (isOpening) {
+                viewReference.classList.add('active');
+                btnOpenRef.classList.add('active-book');
+            } else {
+                closeReferenceView();
+            }
+        });
+
+        // 1. Botón "< Volver": cierra el libro y vuelve a la pestaña de la App donde estabas
+        document.getElementById('btn-ref-back').addEventListener('click', closeReferenceView);
+
+        // 2. Botón "↑ Inicio Libro": sube al inicio del documento reference.html
+        document.getElementById('btn-ref-top').addEventListener('click', () => {
+            if (refIframe.contentWindow) {
+                refIframe.contentWindow.postMessage({ type: 'SCROLL_TOP' }, '*');
+            }
+        });
+
+        // 3. Botón "📌 Marcador": guarda el punto actual o te lleva al marcador guardado
+        document.getElementById('btn-ref-bookmark').addEventListener('click', () => {
+            if (refIframe.contentWindow) {
+                refIframe.contentWindow.postMessage({ type: 'SAVE_BOOKMARK' }, '*');
+            }
+        });
+
+        // Escuchar el porcentaje de progreso que envía reference.html al hacer scroll
+        window.addEventListener('message', (event) => {
+            if (!event.data) return;
+            if (event.data.type === 'REF_PROGRESS') {
+                refProgressBar.style.width = event.data.percent + '%';
+                refProgressText.textContent = event.data.percent + '%';
+            } else if (event.data.type === 'BOOKMARK_SAVED') {
+                alert(`Marcador guardado en el ${event.data.percent}% del libro.`);
+            }
+        });
+
+        // Si el usuario pulsa cualquier icono de la barra inferior, también cerramos el libro automáticamente
         const navItems = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view');
         navItems.forEach(item => {
             item.addEventListener('click', () => {
+                closeReferenceView();
                 navItems.forEach(nav => nav.classList.remove('active'));
                 views.forEach(view => view.classList.remove('active'));
                 item.classList.add('active');
@@ -969,74 +1017,9 @@
             });
         });
 
-        // --- SECCIÓN DOCUMENTO DE REFERENCIA (reference.html) ---
-        const viewReference = document.getElementById('view-reference');
-        const refIframe = document.getElementById('ref-iframe');
-        const refProgressBar = document.getElementById('ref-progress-bar');
-        const refProgressText = document.getElementById('ref-progress-text');
-
-        document.getElementById('btn-open-reference').addEventListener('click', () => {
-            viewReference.classList.add('active');
-            // Cargar y restaurar posición guardada
-            try {
-                const savedScroll = parseFloat(localStorage.getItem('guitarhall_ref_scroll')) || 0;
-                setTimeout(() => {
-                    if (refIframe.contentWindow && refIframe.contentDocument) {
-                        const doc = refIframe.contentDocument;
-                        const scrollY = (savedScroll / 100) * (doc.documentElement.scrollHeight - doc.documentElement.clientHeight);
-                        refIframe.contentWindow.scrollTo(0, scrollY);
-                    }
-                }, 350);
-            } catch(e) {}
-        });
-
-        function closeReferenceView() {
-            viewReference.classList.remove('active');
-        }
-
-        document.getElementById('btn-ref-back').addEventListener('click', closeReferenceView);
-        document.getElementById('btn-ref-home').addEventListener('click', () => {
-            closeReferenceView();
-            navItems.forEach(nav => nav.classList.remove('active'));
-            views.forEach(view => view.classList.remove('active'));
-            document.querySelector('[data-target="sec-guide"]').classList.add('active');
-            document.getElementById('sec-guide').classList.add('active');
-        });
-
-        // Monitoreo de scroll dentro del iframe para la barra de progreso y marcador
-        refIframe.addEventListener('load', () => {
-            try {
-                const iWin = refIframe.contentWindow;
-                const iDoc = refIframe.contentDocument;
-                
-                // Aplicar estilos oscuros de GuitarHall al iframe
-                const style = iDoc.createElement('style');
-                style.textContent = `
-                    body { background-color: #121212 !important; color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; padding: 20px !important; line-height: 1.6 !important; }
-                    h1, h2, h3 { color: #FF5E00 !important; margin-top: 1.5em !important; }
-                    a { color: #FFEA00 !important; }
-                    code, pre { background: #1e1e1e !important; color: #FFEA00 !important; border-radius: 6px !important; padding: 4px 8px !important; }
-                    hr { border-color: #333 !important; }
-                `;
-                iDoc.head.appendChild(style);
-
-                iWin.addEventListener('scroll', () => {
-                    const total = iDoc.documentElement.scrollHeight - iDoc.documentElement.clientHeight;
-                    const current = iWin.scrollY;
-                    const percent = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
-                    
-                    refProgressBar.style.width = percent + '%';
-                    refProgressText.textContent = percent + '%';
-                    localStorage.setItem('guitarhall_ref_scroll', percent);
-                });
-            } catch(e) {
-                console.log('Iframe de mismo origen accesible.');
-            }
-        });
-
         initUI();
 
-        // --- BUSCADOR CON APPLE MUSIC, YOUTUBE Y SONGSTERR ---
+        // --- BUSCADOR ---
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
         let searchTimeout;
