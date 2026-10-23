@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Logo GuitarHall</title>
+    <style>
+        body { 
+            background-color: #121212; 
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        button { 
+            background-color: #FF5E00; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-top: 30px; 
+            font-weight: bold; 
+            transition: 0.2s;
+        }
+        button:hover { 
+            background-color: #FFEA00; 
+            color: black; 
+        }
+    </style>
+</head>
+<body>
+    <h2>Visualizador del Icono (Diagonal Ascendente)</h2>
+    
+    <svg id="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="256" height="256">
+        <defs>
+            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="1.5" result="blur1" />
+                <feGaussianBlur stdDeviation="3.5" result="blur2" />
+                <feMerge>
+                    <feMergeNode in="blur2" />
+                    <feMergeNode in="blur1" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+        </defs>
+        
+        <rect width="100" height="100" rx="22" fill="#080808"/>
+        
+        <!-- Rotación ajustada a 135 grados para la diagonal ascendente ( / ) -->
+        <g transform="rotate(135 50 50)" filter="url(#neonGlow)">
+            <!-- Pastillas Neón Naranja -->
+            <g fill="none" stroke="#FF5E00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                
+                <!-- Humbucker con cubierta -->
+                <rect x="32.5" y="11" width="5" height="4" rx="1" />
+                <rect x="32.5" y="85" width="5" height="4" rx="1" />
+                <rect x="25" y="15" width="20" height="70" rx="4" />
+                <circle cx="30" cy="23" r="1.2" /><circle cx="30" cy="34" r="1.2" /><circle cx="30" cy="45" r="1.2" /><circle cx="30" cy="56" r="1.2" /><circle cx="30" cy="67" r="1.2" /><circle cx="30" cy="78" r="1.2" />
+                
+                <!-- Pastilla Single Coil -->
+                <rect x="60" y="15" width="10" height="70" rx="4" />
+                <circle cx="65" cy="23" r="1.2" /><circle cx="65" cy="34" r="1.2" /><circle cx="65" cy="45" r="1.2" /><circle cx="65" cy="56" r="1.2" /><circle cx="65" cy="67" r="1.2" /><circle cx="65" cy="78" r="1.2" />
+            </g>
+            
+            <!-- Cuerdas Neón Amarillo -->
+            <g fill="none" stroke="#FFEA00" stroke-width="0.8" stroke-linecap="round">
+                <line x1="12" y1="23" x2="88" y2="23" />
+                <line x1="5"  y1="34" x2="95" y2="34" />
+                <line x1="18" y1="45" x2="83" y2="45" />
+                <line x1="8"  y1="56" x2="92" y2="56" />
+                <line x1="22" y1="67" x2="78" y2="67" />
+                <line x1="10" y1="78" x2="90" y2="78" />
+            </g>
+        </g>
+    </svg>
+
+    <button onclick="descargarPNG()">⬇️ Descargar icon.png (512x512)</button>
+
+    <script>
+        function descargarPNG() {
+            const svg = document.getElementById('logo-svg');
+            const svgClone = svg.cloneNode(true);
+            svgClone.setAttribute('width', '512');
+            svgClone.setAttribute('height', '512');
+            
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            const canvas = document.createElement("canvas");
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext("2d");
+            
+            const img = new Image();
+            const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+                const pngUrl = canvas.toDataURL("image/png");
+                const downloadLink = document.createElement("a");
+                downloadLink.href = pngUrl;
+                downloadLink.download = "icon.png";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+            img.src = url;
+        }
+    </script>
+</body>
+</html>
