@@ -12,8 +12,8 @@
         :root {
             --bg-color: #121212;
             --surface: #1e1e1e;
-            --primary: #FF5E00; /* Actualizado al Naranja Neón */
-            --secondary: #FFEA00; /* Actualizado al Amarillo Neón */
+            --primary: #FF5E00;
+            --secondary: #FFEA00;
             --text: #ffffff;
             --text-muted: #a0a0a0;
         }
@@ -38,26 +38,34 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary); }
 
         .card { background-color: var(--surface); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #2a2a2a; }
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
         select, input[type="search"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; }
         select:focus, input:focus { outline: none; border-color: var(--primary); }
 
-        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        .tool-btn:hover { background-color: var(--primary); color: var(--bg-color); }
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;}
+        .tool-btn:hover, .tool-btn.active-tool { background-color: var(--primary); color: var(--bg-color); }
 
         .results-list { display: flex; flex-direction: column; gap: 12px; }
         .song-item { background: var(--surface); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a2a2a; }
+        .song-info { flex: 1; }
+        .song-actions { display: flex; gap: 10px; }
 
-        /* Navegación - Modo Móvil por defecto */
+        /* Estilos para el contenido dinámico (Anatomía, Acordes, Escalas) */
+        .info-block { display: none; background: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); margin-top: 15px; }
+        .info-block.active { display: block; animation: fadeIn 0.3s ease; }
+        .guitar-part { margin-bottom: 15px; border-bottom: 1px dashed #333; padding-bottom: 10px; }
+        .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        pre.tab-display { font-family: monospace; background: #000; padding: 10px; border-radius: 6px; color: var(--secondary); overflow-x: auto; font-size: 1rem; line-height: 1.4;}
+
         .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 20px 0; border-top: 1px solid #333; }
         .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 10px; flex: 1; transition: 0.2s; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-icon { font-size: 1.4rem; }
 
-        /* MEDIA QUERIES: Adaptación a Tablet y Escritorio */
         @media (min-width: 768px) {
             .app-body { flex-direction: row; }
             .app-nav { flex-direction: column; width: 220px; justify-content: flex-start; padding: 20px 0; border-top: none; border-right: 1px solid #333; gap: 10px; }
@@ -73,35 +81,24 @@
 
     <header class="app-header">
         <div class="logo">
-            <!-- Icono SVG integrado en cabecera (Sin fondo negro, simplificado para 32px) -->
             <svg viewBox="0 0 100 100" width="32" height="32">
                 <defs>
                     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                         <feGaussianBlur stdDeviation="2" result="blur" />
-                        <feMerge>
-                            <feMergeNode in="blur" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
+                        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
                     </filter>
                 </defs>
                 <g transform="rotate(135 50 50)" filter="url(#glow)">
-                    <!-- Pastillas Neón Naranja -->
                     <g fill="none" stroke="#FF5E00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Humbucker -->
-                        <rect x="32.5" y="11" width="5" height="4" rx="1" />
-                        <rect x="32.5" y="85" width="5" height="4" rx="1" />
+                        <rect x="32.5" y="11" width="5" height="4" rx="1" /><rect x="32.5" y="85" width="5" height="4" rx="1" />
                         <rect x="25" y="15" width="20" height="70" rx="4" />
                         <circle cx="30" cy="25" r="1.5" /><circle cx="30" cy="50" r="1.5" /><circle cx="30" cy="75" r="1.5" />
-                        <!-- Single Coil -->
                         <rect x="60" y="15" width="10" height="70" rx="4" />
                         <circle cx="65" cy="25" r="1.5" /><circle cx="65" cy="50" r="1.5" /><circle cx="65" cy="75" r="1.5" />
                     </g>
-                    <!-- Cuerdas Neón Amarillo -->
                     <g fill="none" stroke="#FFEA00" stroke-width="1.5" stroke-linecap="round">
-                        <line x1="10" y1="25" x2="90" y2="25" />
-                        <line x1="5"  y1="42" x2="95" y2="42" />
-                        <line x1="15" y1="58" x2="85" y2="58" />
-                        <line x1="10" y1="75" x2="90" y2="75" />
+                        <line x1="10" y1="25" x2="90" y2="25" /><line x1="5" y1="42" x2="95" y2="42" />
+                        <line x1="15" y1="58" x2="85" y2="58" /><line x1="10" y1="75" x2="90" y2="75" />
                     </g>
                 </g>
             </svg>
@@ -125,38 +122,70 @@
 
         <main>
             <div class="main-content">
+                
                 <!-- SECCIÓN 1: GUÍA Y REFERENCIA -->
                 <section id="sec-guide" class="view active">
                     <h2>Anatomía y Referencia</h2>
+                    
                     <div class="card">
                         <div class="control-group">
-                            <label for="guitar-model">Selecciona tu modelo:</label>
+                            <label for="guitar-model">Selecciona tu modelo para ver su guía:</label>
                             <select id="guitar-model">
-                                <option value="stratocaster">Fender Stratocaster</option>
                                 <option value="telecaster">Fender Telecaster</option>
+                                <option value="stratocaster">Fender Stratocaster</option>
+                                <option value="lespaul">Gibson Les Paul</option>
                             </select>
                         </div>
-                        <div id="guitar-viewer" style="min-height: 150px; display:flex; align-items:center; justify-content:center; color: var(--text-muted);">
-                            <p>Área interactiva para visualizar componentes (Próximamente)</p>
+                        <div id="guitar-viewer" class="info-block active">
+                            <!-- Inyectado por JS -->
                         </div>
                     </div>
                     
                     <div class="tools-grid">
                         <button class="tool-btn" onclick="playTone(329.63)">🎵 Escuchar Mi (E)</button>
-                        <button class="tool-btn" onclick="toggleNotation()">🌐 Notación: <span id="not-type">ES</span></button>
-                        <button class="tool-btn">🎼 Ver Acordes</button>
-                        <button class="tool-btn">📏 Escalas</button>
+                        <button class="tool-btn" onclick="toggleNotation()">🌐 Notación: <span id="not-type">US</span></button>
+                        <button class="tool-btn" id="btn-chords">🎼 Ver Acordes</button>
+                        <button class="tool-btn" id="btn-scales">📏 Escalas</button>
+                    </div>
+
+                    <!-- Panel de Acordes -->
+                    <div id="chords-panel" class="info-block">
+                        <h3>Acordes Básicos Abiertos</h3>
+                        <p style="color:var(--text-muted); margin-bottom:10px;">Representación en tablatura (Cuerdas: E A D G B E)</p>
+                        <pre class="tab-display" id="chords-display">
+Do  (C) : X  3  2  0  1  0
+Re  (D) : X  X  0  2  3  2
+Mi  (E) : 0  2  2  1  0  0
+Fa  (F) : 1  3  3  2  1  1
+Sol (G) : 3  2  0  0  0  3
+La  (A) : X  0  2  2  2  0
+                        </pre>
+                    </div>
+
+                    <!-- Panel de Escalas -->
+                    <div id="scales-panel" class="info-block">
+                        <h3>Escala Pentatónica Menor</h3>
+                        <p style="color:var(--text-muted); margin-bottom:10px;">Posición 1 (Ejemplo en Mi/E - Trastes 0 y 3)</p>
+                        <pre class="tab-display" id="scales-display">
+e |---|---|-X-| (3)
+B |---|---|-X-| (3)
+G |---|-X-|---| (2)
+D |---|-X-|---| (2)
+A |---|-X-|---| (2)
+E |---|---|-X-| (3)
+(0)
+                        </pre>
                     </div>
                 </section>
 
                 <!-- SECCIÓN 2: BUSCADOR DE CANCIONES -->
                 <section id="sec-songs" class="view">
-                    <h2>Buscador Global</h2>
+                    <h2>Buscador Global (Songsterr)</h2>
                     <div class="control-group">
-                        <input type="search" id="search-input" placeholder="Ej: Sultans of Swing, Pink Floyd..." autocomplete="off">
+                        <input type="search" id="search-input" placeholder="Ej: Pink Floyd The Wall, Sultans of Swing..." autocomplete="off">
                     </div>
                     <div id="search-results" class="results-list">
-                        <!-- Resultados inyectados por JS -->
+                        <!-- Resultados de la API inyectados aquí -->
                     </div>
                 </section>
 
@@ -172,10 +201,83 @@
     </div>
 
     <script>
+        // --- BASE DE DATOS LOCAL DE GUITARRAS ---
+        const guitarData = {
+            telecaster: {
+                title: "Fender Telecaster",
+                desc: "Diseño clásico de cuerpo macizo ('single cutaway'). Reconocida por su sonido brillante o 'twang'.",
+                parts: [
+                    { name: "Pastillas (Pickups)", info: "2 Pastillas Single Coil (Bobina simple). La del puente es ancha e inclinada, la del mástil es pequeña y con cubierta metálica." },
+                    { name: "Selector de Pastillas", info: "Interruptor de 3 posiciones: 1. Puente (Agudo/Afilado), 2. Medio (Ambas pastillas), 3. Mástil (Sonido redondo/cálido)." },
+                    { name: "Potenciómetros", info: "Dos mandos metálicos: 1 Volumen General y 1 Tono General (corta los agudos)." },
+                    { name: "Puente", info: "Puente fijo estilo 'Ashtray' o moderno, las cuerdas atraviesan el cuerpo dando gran resonancia." }
+                ]
+            },
+            stratocaster: {
+                title: "Fender Stratocaster",
+                desc: "Diseño ergonómico de doble cuerno ('double cutaway'). Muy versátil para rock, blues y pop.",
+                parts: [
+                    { name: "Pastillas", info: "3 Pastillas Single Coil (Mástil, Medio, Puente). Generan su famoso sonido 'quack' en las posiciones intermedias." },
+                    { name: "Selector de Pastillas", info: "Interruptor de 5 posiciones combinando las 3 pastillas individualmente o en pares." },
+                    { name: "Potenciómetros", info: "Tres mandos de plástico: 1 Volumen General, 1 Tono (Mástil), 1 Tono (Medio)." },
+                    { name: "Puente", info: "Sistema de trémolo sincronizado con palanca para efectos de vibrato." }
+                ]
+            },
+            lespaul: {
+                title: "Gibson Les Paul",
+                desc: "Cuerpo pesado de caoba con tapa arqueada. Sonido denso, potente y con mucho 'sustain'.",
+                parts: [
+                    { name: "Pastillas", info: "2 Pastillas Humbucker (Doble bobina). Cancelan el ruido de masa y ofrecen un sonido grueso ideal para distorsión." },
+                    { name: "Selector de Pastillas", info: "Interruptor de palanca de 3 posiciones (Rhythm/Mástil, Centro, Treble/Puente)." },
+                    { name: "Potenciómetros", info: "Cuatro mandos: 2 de Volumen (uno por pastilla) y 2 de Tono independientes." },
+                    { name: "Puente", info: "Puente fijo 'Tune-o-matic' con cordal 'Stopbar'. Facilita un ajuste preciso de entonación." }
+                ]
+            }
+        };
+
+        const guitarSelect = document.getElementById('guitar-model');
+        const guitarViewer = document.getElementById('guitar-viewer');
+
+        function renderGuitarGuide() {
+            const data = guitarData[guitarSelect.value];
+            let html = `<h3>${data.title}</h3><p style="color:var(--text-muted); margin-bottom:15px;">${data.desc}</p>`;
+            data.parts.forEach(part => {
+                html += `<div class="guitar-part"><strong>${part.name}</strong>: <span style="color:#d0d0d0;">${part.info}</span></div>`;
+            });
+            guitarViewer.innerHTML = html;
+        }
+        guitarSelect.addEventListener('change', renderGuitarGuide);
+        renderGuitarGuide(); // Inicializar
+
+        // --- SISTEMA DE NOTACIÓN ---
+        let notation = 'US'; // US (C,D,E) o ES (Do,Re,Mi)
+        const notasES = ['Do', 'Re', 'Mi', 'Fa', 'Sol', 'La', 'Si'];
+        const notasUS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+        
+        function toggleNotation() {
+            notation = notation === 'US' ? 'ES' : 'US';
+            document.getElementById('not-type').textContent = notation;
+            // En una versión más avanzada, esto traduciría los bloques de acordes dinámicamente
+        }
+
+        // --- PANELES ACORDES Y ESCALAS ---
+        document.getElementById('btn-chords').addEventListener('click', function() {
+            this.classList.toggle('active-tool');
+            document.getElementById('chords-panel').classList.toggle('active');
+            document.getElementById('scales-panel').classList.remove('active');
+            document.getElementById('btn-scales').classList.remove('active-tool');
+        });
+
+        document.getElementById('btn-scales').addEventListener('click', function() {
+            this.classList.toggle('active-tool');
+            document.getElementById('scales-panel').classList.toggle('active');
+            document.getElementById('chords-panel').classList.remove('active');
+            document.getElementById('btn-chords').classList.remove('active-tool');
+        });
+
         // --- NAVEGACIÓN SPA ---
         const navItems = document.querySelectorAll('.nav-item');
         const views = document.querySelectorAll('.view');
-
         navItems.forEach(item => {
             item.addEventListener('click', () => {
                 navItems.forEach(nav => nav.classList.remove('active'));
@@ -200,36 +302,55 @@
             osc.stop(audioCtx.currentTime + 1.5);
         }
 
-        // --- SISTEMA DE NOTACIÓN ---
-        let notation = 'ES';
-        function toggleNotation() {
-            notation = notation === 'ES' ? 'US' : 'ES';
-            document.getElementById('not-type').textContent = notation;
-        }
-
-        // --- BUSCADOR V1 (Mockup) ---
+        // --- BUSCADOR REAL (API SONGSTERR) ---
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
+        let searchTimeout;
 
         searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
             const query = e.target.value.trim();
+            
             if(query.length > 2) {
-                searchResults.innerHTML = `
-                    <div class="song-item">
-                        <div>
-                            <strong>${query} (Versión Pro)</strong><br>
-                            <small style="color:var(--text-muted);">Tablatura visual y acordes</small>
-                        </div>
-                        <button class="tool-btn" onclick="saveFav('${query}')" style="padding: 8px 15px;">⭐ Guardar</button>
-                    </div>
-                `;
+                searchResults.innerHTML = '<p style="color:var(--text-muted);">Buscando tablaturas en la red...</p>';
+                
+                // Retraso de 500ms para no saturar la API mientras el usuario teclea
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`https://www.songsterr.com/a/ra/songs.json?pattern=${encodeURIComponent(query)}`);
+                        if (!response.ok) throw new Error('Error en red');
+                        
+                        const data = await response.json();
+                        
+                        if(data.length === 0) {
+                            searchResults.innerHTML = '<p style="color:var(--text-muted);">No se encontraron tablaturas para esa búsqueda.</p>';
+                            return;
+                        }
+
+                        // Mostrar los 15 mejores resultados
+                        searchResults.innerHTML = data.slice(0, 15).map(song => `
+                            <div class="song-item">
+                                <div class="song-info">
+                                    <strong>${song.title}</strong><br>
+                                    <small style="color:var(--text-muted);">${song.artist.nameWithoutThePrefix}</small>
+                                </div>
+                                <div class="song-actions">
+                                    <a href="https://www.songsterr.com/a/wa/song?id=${song.id}" target="_blank" class="tool-btn" style="padding: 8px 12px; font-size: 0.9rem;">🎼 Tab</a>
+                                    <button class="tool-btn" onclick="saveFav(${song.id}, '${song.title.replace(/'/g, "\\'")}', '${song.artist.nameWithoutThePrefix.replace(/'/g, "\\'")}')" style="padding: 8px 12px; font-size: 0.9rem;">⭐</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    } catch (error) {
+                        searchResults.innerHTML = `<p style="color:#ff4444;">Error al conectar con la base de datos de canciones.</p>`;
+                    }
+                }, 500);
             } else {
                 searchResults.innerHTML = '';
             }
         });
 
-        // --- SISTEMA DE DATOS Y BACKUP ---
-        let favorites = JSON.parse(localStorage.getItem('guitarhall_favs')) || [];
+        // --- SISTEMA DE DATOS Y BACKUP (JSON LocalStorage) ---
+        let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v2')) || [];
         
         function renderFavs() {
             const favList = document.getElementById('fav-list');
@@ -239,24 +360,32 @@
             }
             favList.innerHTML = favorites.map(song => `
                 <div class="song-item">
-                    <strong>${song}</strong>
-                    <button class="icon-btn" onclick="removeFav('${song}')">🗑️</button>
+                    <div class="song-info">
+                        <strong>${song.title}</strong><br>
+                        <small style="color:var(--text-muted);">${song.artist}</small>
+                    </div>
+                    <div class="song-actions">
+                        <a href="https://www.songsterr.com/a/wa/song?id=${song.id}" target="_blank" class="tool-btn" style="padding: 8px 12px; font-size: 0.9rem;">🎼 Tab</a>
+                        <button class="icon-btn" onclick="removeFav(${song.id})" style="padding: 8px; font-size: 1.2rem;">🗑️</button>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function saveFav(songName) {
-            if(!favorites.includes(songName)) {
-                favorites.push(songName);
-                localStorage.setItem('guitarhall_favs', JSON.stringify(favorites));
+        function saveFav(id, title, artist) {
+            if(!favorites.some(song => song.id === id)) {
+                favorites.push({ id, title, artist });
+                localStorage.setItem('guitarhall_favs_v2', JSON.stringify(favorites));
                 renderFavs();
-                alert('Canción añadida a tu librería.');
+                alert('Tablatura añadida a favoritos.');
+            } else {
+                alert('Esta canción ya está en tus favoritos.');
             }
         }
 
-        function removeFav(songName) {
-            favorites = favorites.filter(s => s !== songName);
-            localStorage.setItem('guitarhall_favs', JSON.stringify(favorites));
+        function removeFav(id) {
+            favorites = favorites.filter(song => song.id !== id);
+            localStorage.setItem('guitarhall_favs_v2', JSON.stringify(favorites));
             renderFavs();
         }
 
@@ -270,15 +399,9 @@
             anchor.remove();
         });
 
-        // Inicializar vistas
+        // Inicializar favoritos al cargar
         renderFavs();
 
-        // --- REGISTRO PWA / OTA ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err));
-            });
-        }
     </script>
 </body>
 </html>
