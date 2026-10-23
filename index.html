@@ -7,8 +7,6 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="icono.png">
-    <!-- Tone.js para síntesis de audio polifónica -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <style>
         :root {
@@ -20,7 +18,7 @@
             --text-muted: #a0a0a0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { background-color: var(--bg-color); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
@@ -37,9 +35,9 @@
         main { flex: 1; overflow-y: auto; padding: 20px; }
         .main-content { max-width: 1200px; margin: 0 auto; width: 100%; padding-bottom: 40px; }
 
-        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view { display: none; animation: fadeIn 0.25s ease; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         h3 { font-size: 1.1rem; color: var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
@@ -49,7 +47,7 @@
         .collapsible-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .collapsible-header svg { transition: transform 0.3s ease; width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .card.open .collapsible-content { max-height: 3000px; transition: max-height 0.5s ease-in; margin-top: 15px; }
+        .card.open .collapsible-content { max-height: 3500px; transition: max-height 0.5s ease-in; margin-top: 15px; }
         .card.open .collapsible-header svg { transform: rotate(180deg); }
 
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
@@ -60,8 +58,8 @@
         .filter-row select { flex: 1; padding: 10px; font-size: 0.95rem; }
 
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;}
-        .tool-btn:hover, .tool-btn.active-tool { background-color: var(--primary); color: var(--bg-color); }
+        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
+        .tool-btn:active, .tool-btn.active-tool { background-color: var(--primary); color: var(--bg-color); }
         .tool-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         .results-list { display: flex; flex-direction: column; gap: 12px; }
@@ -77,7 +75,6 @@
         .guitar-part { margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 8px; font-size: 0.95rem; }
         .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         
-        /* Contenedor deslizable para el Mástil Horizontal (Muestra ~4 trastes en móvil y desliza hasta el 12) */
         .fretboard-scroll-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -93,15 +90,15 @@
         .fretboard-scroll-wrapper::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
         .fretboard-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
         .fret-note-group { cursor: pointer; transition: opacity 0.2s; }
-        .fret-note-group:hover circle { stroke: #ffffff; stroke-width: 2.5px; }
+        .fret-note-group:active circle { stroke: #ffffff; stroke-width: 3px; }
 
         .svg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 15px; }
         .playable-item { display: flex; flex-direction: column; align-items: center; background: #222; padding: 12px 8px; border-radius: 12px; border: 1px solid #333; position: relative; }
         .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 2px; color: var(--text); text-align: center; }
         .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
         
-        .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
-        .play-card-btn:hover { opacity: 0.85; }
+        .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, opacity 0.2s; user-select: none; }
+        .play-card-btn:active { transform: scale(0.95); opacity: 0.85; }
         .play-card-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 25px 0; border-top: 1px solid #333; }
@@ -195,7 +192,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. PLANO DE NOTAS DEL MÁSTIL (NUEVO - Deslizable hasta traste 12) -->
+                    <!-- 2. PLANO DE NOTAS DEL MÁSTIL -->
                     <div class="card open" id="card-fretboard">
                         <div class="collapsible-header" onclick="toggleCard('card-fretboard')">
                             <h3>Plano de Notas del Mástil</h3>
@@ -203,7 +200,7 @@
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">
-                                Desliza horizontalmente para recorrer hasta el traste 12. Se muestran las notas naturales. Toca cualquier nota para escuchar su sonido real.
+                                Desliza horizontalmente hasta el traste 12. Toca cualquier nota del mástil para escuchar su sonido acústico.
                             </p>
                             <div class="filter-row">
                                 <select id="fretboard-filter">
@@ -217,9 +214,7 @@
                                     <option value="11">Destacar Si / B</option>
                                 </select>
                             </div>
-                            <div class="fretboard-scroll-wrapper" id="fretboard-container">
-                                <!-- SVG del mástil generado dinámicamente -->
-                            </div>
+                            <div class="fretboard-scroll-wrapper" id="fretboard-container"></div>
                         </div>
                     </div>
 
@@ -230,7 +225,7 @@
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Filtra por nota raíz y tipo. Usa el botón inferior para escuchar cada acorde.</p>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Filtra por nota raíz y tipo. Pulsa el botón inferior o el diagrama para escuchar el rasgueo.</p>
                             <div class="filter-row">
                                 <select id="chord-root"></select>
                                 <select id="chord-type">
@@ -253,7 +248,7 @@
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Usa el botón inferior para reproducir la escala nota a nota.</p>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Pulsa el botón inferior para reproducir la escala nota a nota.</p>
                             <div class="filter-row">
                                 <select id="scale-root"></select>
                                 <select id="scale-type">
@@ -286,13 +281,19 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.6.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.7.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
+                        <p style="color:var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">En iPhone/iPad se abrirá el menú nativo para guardar en "Archivos" o enviar por AirDrop.</p>
                         <div class="tools-grid">
-                            <button class="tool-btn" id="btn-export" style="font-size: 0.9rem;"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Exportar</button>
-                            <label class="tool-btn" style="cursor:pointer; font-size: 0.9rem;"><input type="file" id="btn-import" accept=".json" style="display:none;"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Importar</label>
+                            <button class="tool-btn" id="btn-export" style="font-size: 0.9rem;">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Exportar
+                            </button>
+                            <label class="tool-btn" style="cursor:pointer; font-size: 0.9rem;">
+                                <input type="file" id="btn-import" accept=".json,application/json,text/plain" style="display:none;">
+                                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> Importar
+                            </label>
                         </div>
                     </div>
                     <div class="card">
@@ -306,10 +307,103 @@
     </div>
 
     <script>
-        const APP_VERSION = "v1.6.0";
+        const APP_VERSION = "v1.7.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
+        }
+
+        // --- MOTOR DE AUDIO ACÚSTICO NATIVO WAV (100% compatible con iOS Standalone / Sin librerías externas) ---
+        // Frecuencias de las 6 cuerdas al aire: 0=6ª(E2), 1=5ª(A2), 2=4ª(D3), 3=3ª(G3), 4=2ª(B3), 5=1ª(E4)
+        const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
+        let htmlAudioPlayer = new Audio();
+        let currentAudioUrl = null;
+
+        function writeWavString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Sintetiza físicamente las cuerdas pulsadas en un archivo WAV en memoria RAM y lo reproduce como audio multimedia nativo
+        function playGuitarAudio(notes, isChord) {
+            if (!notes || notes.length === 0) return;
+
+            const sampleRate = 22050;
+            const noteInterval = isChord ? 0.065 : 0.48; // Rasgueo de 65ms para acordes, 480ms por nota para escalas
+            const ringDuration = isChord ? 3.4 : 0.85;   // Acordes largos de 3.4s
+            const totalDuration = ((notes.length - 1) * noteInterval) + ringDuration + 0.15;
+            const numSamples = Math.floor(sampleRate * totalDuration);
+            const samples = new Float32Array(numSamples);
+
+            notes.forEach((note, index) => {
+                const freq = stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12);
+                const startSample = Math.floor(index * noteInterval * sampleRate);
+                const noteSamples = Math.floor(ringDuration * sampleRate);
+                const omega = 2 * Math.PI * freq / sampleRate;
+
+                for (let i = 0; i < noteSamples; i++) {
+                    if (startSample + i >= numSamples) break;
+                    const t = i / sampleRate;
+
+                    // Envolvente de cuerda pulsada (ataque rápido de púa + caída natural exponencial)
+                    const attack = i < 120 ? (i / 120) : 1.0;
+                    const decay = Math.exp(-t * (isChord ? 1.45 : 3.2));
+
+                    // Riqueza armónica de cuerda de guitarra (fundamental + armónicos que se apagan progresivamente)
+                    const h1 = Math.sin(omega * i);
+                    const h2 = 0.50 * Math.sin(2 * omega * i) * Math.exp(-t * 2.2);
+                    const h3 = 0.25 * Math.sin(3 * omega * i) * Math.exp(-t * 3.8);
+                    const h4 = 0.12 * Math.sin(4 * omega * i) * Math.exp(-t * 5.5);
+
+                    samples[startSample + i] += (h1 + h2 + h3 + h4) * attack * decay;
+                }
+            });
+
+            // Normalización suave para evitar distorsión al sonar 6 cuerdas a la vez
+            let maxPeak = 0;
+            for (let i = 0; i < numSamples; i++) {
+                const abs = Math.abs(samples[i]);
+                if (abs > maxPeak) maxPeak = abs;
+            }
+            const normFactor = maxPeak > 0 ? (0.88 / maxPeak) : 1;
+
+            // Construcción de cabecera RIFF WAV PCM 16-bit
+            const buffer = new ArrayBuffer(44 + numSamples * 2);
+            const view = new DataView(buffer);
+
+            writeWavString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + numSamples * 2, true);
+            writeWavString(view, 8, 'WAVE');
+            writeWavString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, 1, true); // Mono
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeWavString(view, 36, 'data');
+            view.setUint32(40, numSamples * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < numSamples; i++) {
+                let s = Math.max(-1, Math.min(1, samples[i] * normFactor));
+                view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+                offset += 2;
+            }
+
+            const blob = new Blob([buffer], { type: 'audio/wav' });
+            if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+            currentAudioUrl = URL.createObjectURL(blob);
+
+            htmlAudioPlayer.pause();
+            htmlAudioPlayer.src = currentAudioUrl;
+            htmlAudioPlayer.play().catch(err => console.error('Audio play error:', err));
+        }
+
+        function playSingleNote(stringIdx, fret) {
+            playGuitarAudio([{ string: stringIdx, fret: fret }], true);
         }
 
         // --- GUÍAS DE GUITARRA ---
@@ -382,8 +476,6 @@
         const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
         // --- PLANO DE NOTAS DEL MÁSTIL (Trastes 0 a 12) ---
-        // Orden visual de arriba a abajo igual que en la imagen: 1ª(E4), 2ª(B3), 3ª(G3), 4ª(D3), 5ª(A2), 6ª(E2)
-        // stringIdx para el sintetizador: 5 = 1ª cuerda (aguda), 0 = 6ª cuerda (grave)
         const fretboardStrings = [
             { openNote: 4, synthStringIdx: 5 }, // 1ª Cuerda: Mi / E
             { openNote: 11, synthStringIdx: 4 }, // 2ª Cuerda: Si / B
@@ -397,7 +489,7 @@
             const container = document.getElementById('fretboard-container');
             const filterVal = document.getElementById('fretboard-filter').value;
             
-            const fretWidth = 76; // Permite ver exactamente ~4 trastes en pantallas móviles y deslizar
+            const fretWidth = 76;
             const nutX = 48;
             const topY = 38;
             const stringSpacing = 34;
@@ -405,20 +497,14 @@
             const totalHeight = topY + (5 * stringSpacing) + 24;
 
             let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
-
-            // Fondo oscuro del diapasón
             svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
 
-            // Inlays (Marcadores de traste clásicos de fondo y números superiores 3, 5, 7, 9, 12)
             const markerFrets = [3, 5, 7, 9, 12];
             for (let f = 1; f <= 12; f++) {
                 const centerX = nutX + (f - 0.5) * fretWidth;
                 const isMarked = markerFrets.includes(f);
-                
-                // Número del traste arriba
                 svg += `<text x="${centerX}" y="20" fill="${isMarked ? '#FFEA00' : '#666'}" font-size="${isMarked ? '15' : '12'}" font-weight="bold" text-anchor="middle">${f}</text>`;
                 
-                // Puntos guía sutiles en el centro del mástil
                 if ([3, 5, 7, 9].includes(f)) {
                     svg += `<circle cx="${centerX}" cy="${topY + 2.5 * stringSpacing}" r="5" fill="#252525"/>`;
                 } else if (f === 12) {
@@ -427,23 +513,19 @@
                 }
             }
 
-            // Cejuela blanca (Traste 0)
             svg += `<line x1="${nutX}" y1="${topY - 12}" x2="${nutX}" y2="${topY + 5 * stringSpacing + 12}" stroke="#ffffff" stroke-width="5"/>`;
 
-            // Divisiones verticales de los 12 trastes
             for (let f = 1; f <= 12; f++) {
                 const x = nutX + f * fretWidth;
                 svg += `<line x1="${x}" y1="${topY - 12}" x2="${x}" y2="${topY + 5 * stringSpacing + 12}" stroke="#444" stroke-width="2"/>`;
             }
 
-            // Las 6 cuerdas horizontales (grosor progresivo de 1ª aguda a 6ª grave)
             for (let s = 0; s < 6; s++) {
                 const y = topY + s * stringSpacing;
                 const strokeW = 1.2 + (s * 0.35);
                 svg += `<line x1="${nutX}" y1="${y}" x2="${nutX + 12 * fretWidth}" y2="${y}" stroke="#777" stroke-width="${strokeW}"/>`;
             }
 
-            // Dibujar las notas naturales (Trastes 0 al 12)
             for (let s = 0; s < 6; s++) {
                 const y = topY + s * stringSpacing;
                 const openNoteIdx = fretboardStrings[s].openNote;
@@ -452,8 +534,6 @@
                 for (let f = 0; f <= 12; f++) {
                     const noteIdx = (openNoteIdx + f) % 12;
                     const noteObj = notesSys[noteIdx];
-
-                    // Omitimos sostenidos/bemoles tal como se pidió
                     if (!noteObj.isNatural) continue;
 
                     const label = notationES ? noteObj.es : noteObj.us;
@@ -462,7 +542,6 @@
                     const opacity = (isFiltered && !isMatch) ? '0.2' : '1';
 
                     if (f === 0) {
-                        // Nota de la cuerda al aire a la izquierda de la cejuela
                         const x = 22;
                         const fillCol = isMatch ? '#FFEA00' : '#2a2a2a';
                         const textCol = isMatch ? '#000000' : '#FFEA00';
@@ -473,15 +552,13 @@
                             </g>
                         `;
                     } else {
-                        // Notas pisadas en los trastes 1 a 12
                         const x = nutX + (f - 0.5) * fretWidth;
                         const isOctave = (f === 12);
                         const fillCol = isMatch ? '#FFEA00' : (isOctave ? '#FFEA00' : '#FF5E00');
-                        const textCol = '#000000';
                         svg += `
                             <g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, ${f})">
                                 <circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="#121212" stroke-width="1.5"/>
-                                <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
+                                <text x="${x}" y="${y + 4}" fill="#000000" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
                             </g>
                         `;
                     }
@@ -624,6 +701,10 @@
             generateScales();
         });
 
+        // Almacén en memoria para llamadas limpias de audio
+        let chordPayloads = [];
+        let scalePayload = [];
+
         function generateChords() {
             const rootIdx = parseInt(document.getElementById('chord-root').value);
             const type = document.getElementById('chord-type').value;
@@ -634,7 +715,9 @@
             const rA = rootOnA[rootIdx];
 
             let html = '';
-            chordTemplates[type].forEach(template => {
+            chordPayloads = [];
+
+            chordTemplates[type].forEach((template) => {
                 const chordData = template.get(rE, rA);
                 if(!chordData) return;
 
@@ -647,14 +730,15 @@
                     fret: n.fret !== undefined ? n.fret : (n.localFret - 1 + baseLabel)
                 }));
 
-                const payload = JSON.stringify(finalNotes).replace(/"/g, '&quot;');
+                const pIndex = chordPayloads.length;
+                chordPayloads.push(finalNotes);
 
                 html += `
                     <div class="playable-item">
                         <div class="item-title">${rootName}</div>
                         <div class="item-subtitle">${template.name}</div>
-                        <div onclick='playSynth(${payload}, true)' style="cursor:pointer;">${svg}</svg></div>
-                        <button class="play-card-btn" onclick='playSynth(${payload}, true)'>
+                        <div onclick="playGuitarAudio(chordPayloads[${pIndex}], true)" style="cursor:pointer;">${svg}</svg></div>
+                        <button class="play-card-btn" onclick="playGuitarAudio(chordPayloads[${pIndex}], true)">
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Tocar
                         </button>
                     </div>
@@ -676,19 +760,17 @@
 
             let svgRaw = createSVGGrid(baseLabel);
             const { svg, notesToPlay } = drawScaleNotes(svgRaw, template.pattern);
-            const finalNotes = notesToPlay.map(n => ({
+            scalePayload = notesToPlay.map(n => ({
                 string: n.string,
                 fret: (n.localFret - 1 + baseLabel)
             })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : a.string - b.string);
-
-            const payload = JSON.stringify(finalNotes).replace(/"/g, '&quot;');
 
             let html = `
                 <div class="playable-item" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width: 100%;">
                     <div class="item-title">${rootName}</div>
                     <div class="item-subtitle">${template.name}</div>
-                    <div onclick='playSynth(${payload}, false)' style="cursor:pointer;">${svg}</svg></div>
-                    <button class="play-card-btn" onclick='playSynth(${payload}, false)'>
+                    <div onclick="playGuitarAudio(scalePayload, false)" style="cursor:pointer;">${svg}</svg></div>
+                    <button class="play-card-btn" onclick="playGuitarAudio(scalePayload, false)">
                         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Reproducir Escala
                     </button>
                 </div>
@@ -696,52 +778,8 @@
             container.innerHTML = html;
         }
 
-        // --- SINTETIZADOR POLIFÓNICO ---
-        const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
-        let polySynth = null;
-
-        async function initTone() {
-            await Tone.start();
-            if (!polySynth) {
-                polySynth = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: "triangle8" },
-                    envelope: {
-                        attack: 0.01,
-                        decay: 1.8,
-                        sustain: 0.25,
-                        release: 2.5
-                    }
-                }).toDestination();
-                polySynth.volume.value = -4;
-            }
-        }
-
-        async function playSingleNote(stringIdx, fret) {
-            await initTone();
-            polySynth.releaseAll();
-            const freq = stringBaseFreqs[stringIdx] * Math.pow(2, fret / 12);
-            polySynth.triggerAttackRelease(freq, 1.8, Tone.now() + 0.02);
-        }
-
-        async function playSynth(notes, isChord) {
-            await initTone();
-            polySynth.releaseAll();
-
-            const now = Tone.now() + 0.05;
-            notes.forEach((note, index) => {
-                const freq = stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12);
-                if (isChord) {
-                    const delay = index * 0.06;
-                    polySynth.triggerAttackRelease(freq, 3.5, now + delay);
-                } else {
-                    const delay = index * 0.50;
-                    polySynth.triggerAttackRelease(freq, 0.45, now + delay);
-                }
-            });
-        }
-
-        document.getElementById('btn-play-tone').addEventListener('click', async function() {
-            await playSingleNote(5, 0);
+        document.getElementById('btn-play-tone').addEventListener('click', function() {
+            playSingleNote(5, 0);
             this.style.backgroundColor = 'var(--primary)'; this.style.color = '#000';
             setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
         });
@@ -859,47 +897,93 @@
         function removeFav(id) { favorites = favorites.filter(s => s.id !== id); localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); }
         renderFavs();
 
-        document.getElementById('btn-export').addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(favorites));
-            const anchor = document.createElement('a'); anchor.setAttribute("href", dataStr); anchor.setAttribute("download", "guitarhall_backup.json");
-            document.body.appendChild(anchor); anchor.click(); anchor.remove();
-        });
-        document.getElementById('btn-import').addEventListener('change', function(e) {
-            const file = e.target.files[0]; if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if (Array.isArray(importedData)) { favorites = importedData; localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); alert('Copia restaurada con éxito.'); } 
-                    else { throw new Error(); }
-                } catch (error) { alert('Error al leer el archivo JSON.'); }
-            }; reader.readAsText(file);
+        // --- EXPORTACIÓN COMPATIBLE CON iOS STANDALONE PWA (Web Share API + Fallback) ---
+        document.getElementById('btn-export').addEventListener('click', async () => {
+            const jsonString = JSON.stringify(favorites, null, 2);
+            const fileName = "guitarhall_backup.json";
+
+            // 1. Intentar compartir el archivo de forma nativa en iOS / Android
+            try {
+                const file = new File([jsonString], fileName, { type: "application/json" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: "Copia de Seguridad GuitarHall",
+                        text: "Respaldo de canciones favoritas de GuitarHall"
+                    });
+                    return;
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') return; // Usuario cerró el menú compartir
+            }
+
+            // 2. Fallback para escritorio o navegadores tradicionales
+            try {
+                const blob = new Blob([jsonString], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const anchor = document.createElement('a');
+                anchor.href = url;
+                anchor.download = fileName;
+                document.body.appendChild(anchor);
+                anchor.click();
+                setTimeout(() => {
+                    document.body.removeChild(anchor);
+                    URL.revokeObjectURL(url);
+                }, 500);
+            } catch (e) {
+                // 3. Último recurso: copiar al portapapeles
+                if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(jsonString);
+                    alert("El JSON de respaldo se ha copiado al portapapeles.");
+                }
+            }
         });
 
-        document.getElementById('btn-ota').addEventListener('click', () => {
+        document.getElementById('btn-import').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const importedData = JSON.parse(ev.target.result);
+                    if (Array.isArray(importedData)) {
+                        favorites = importedData;
+                        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+                        renderFavs();
+                        alert('Copia de seguridad restaurada con éxito.');
+                    } else {
+                        throw new Error();
+                    }
+                } catch (error) {
+                    alert('Error al leer el archivo JSON.');
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+
+        // --- SISTEMA OTA LIMPIO ---
+        document.getElementById('btn-ota').addEventListener('click', async () => {
             const status = document.getElementById('ota-status');
             status.style.display = 'block'; 
-            status.textContent = 'Buscando actualizaciones en el servidor...';
+            status.textContent = 'Limpiando caché y descargando última versión...';
             
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    if (registrations.length === 0) {
-                        status.textContent = 'No hay Service Worker activo. Recargando...';
-                        setTimeout(() => window.location.reload(true), 1200);
-                        return;
+            try {
+                if ('caches' in window) {
+                    const keys = await caches.keys();
+                    await Promise.all(keys.map(k => caches.delete(k)));
+                }
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (let r of registrations) {
+                        await r.update();
                     }
-                    for(let r of registrations) {
-                        r.update().then(() => {
-                            status.textContent = `¡Actualizado a la versión ${APP_VERSION}! Recargando...`;
-                            setTimeout(() => window.location.reload(true), 1500);
-                        }).catch(() => {
-                            status.textContent = 'Imposible conectar con GitHub Pages. Comprueba tu red.';
-                        });
-                    }
-                });
-            } else {
-                status.textContent = 'Actualizando caché local...';
-                setTimeout(() => window.location.reload(true), 1200);
+                }
+                status.textContent = `¡Actualizado a ${APP_VERSION}! Reiniciando...`;
+                setTimeout(() => window.location.reload(), 1000);
+            } catch (e) {
+                status.textContent = 'Recargando aplicación...';
+                setTimeout(() => window.location.reload(), 1000);
             }
         });
 
