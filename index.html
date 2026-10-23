@@ -7,7 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="icono.png">
-    <!-- Tone.js para síntesis de audio optimizada en móviles -->
+    <!-- Tone.js para síntesis de audio polifónica -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     
     <style>
@@ -82,7 +82,7 @@
         .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 2px; color: var(--text); text-align: center; }
         .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
         
-        .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
+        .play-card-btn { margin-top: 10px; background: var(--primary); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity 0.2s; }
         .play-card-btn:hover { opacity: 0.85; }
         .play-card-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
@@ -138,7 +138,7 @@
                 <span>Favoritos</span>
             </button>
             <button class="nav-item" data-target="sec-settings">
-                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span>Ajustes</span>
             </button>
         </nav>
@@ -207,7 +207,7 @@
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Usa el botón inferior para reproducir la escala.</p>
+                            <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">Patrones por el mástil. Usa el botón inferior para reproducir la escala nota a nota.</p>
                             <div class="filter-row">
                                 <select id="scale-root"></select>
                                 <select id="scale-type">
@@ -240,7 +240,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.4.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v1.5.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -260,7 +260,7 @@
     </div>
 
     <script>
-        const APP_VERSION = "v1.4.0";
+        const APP_VERSION = "v1.5.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
@@ -304,7 +304,7 @@
 
         function renderGuitarGuide() {
             const data = guitarData[guitarSelect.value];
-            let html = `<div class="guitar-img-container"><img src="${data.img}" alt="${data.title}" onerror="this.onerror=null; this.src='icon.png';"></div>
+            let html = `<div class="guitar-img-container"><img src="${data.img}" alt="${data.title}" onerror="this.onerror=null; this.src='icono.png';"></div>
                         <p style="color:var(--text-muted); margin-bottom:15px; font-size:0.9rem;">${data.desc}</p>`;
             data.parts.forEach(part => {
                 html += `<div class="guitar-part"><strong>${part.name}</strong>: <span style="color:#d0d0d0;">${part.info}</span></div>`;
@@ -376,35 +376,42 @@
             blues: { name: "Caja de Blues", pattern: [[0,3], [0,1,2], [0,2], [0,2,3], [0,3], [0,3]] }
         };
 
-        // --- RENDERIZADO SVG CON NÚMERO DE TRASTE EN AMARILLO Y SIN RECUADRO ---
+        // --- RENDERIZADO SVG CORREGIDO ---
+        // Se desplaza la rejilla a x=26..116 para dejar espacio libre a la izquierda para el número en amarillo
         function createSVGGrid(baseFret) {
-            let svg = `<svg viewBox="0 0 120 150" width="100%" height="auto" stroke="#555" fill="none" stroke-width="2" style="max-width:130px; margin-top: 5px;">`;
+            let svg = `<svg viewBox="0 0 130 150" width="100%" height="auto" fill="none" style="max-width:140px; margin-top: 5px;">`;
             
             if (baseFret > 1) {
-                svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="2" stroke="#555"/>`;
-                // Número del traste limpio en amarillo brillante (sin cuadro)
-                svg += `<text x="7" y="38" fill="var(--secondary)" font-size="14" font-weight="bold" font-family="sans-serif" text-anchor="middle">${baseFret}</text>`;
+                svg += `<line x1="26" y1="20" x2="116" y2="20" stroke="#555" stroke-width="2"/>`;
+                // Número amarillo puro (#FFEA00) sin borde (stroke="none") y separado de la cuerda
+                svg += `<text x="11" y="37" fill="#FFEA00" stroke="none" font-size="16" font-weight="bold" font-family="sans-serif" text-anchor="middle">${baseFret}</text>`;
             } else {
-                svg += `<line x1="15" y1="20" x2="105" y2="20" stroke-width="4" stroke="#fff"/>`;
+                svg += `<line x1="26" y1="20" x2="116" y2="20" stroke="#fff" stroke-width="4"/>`;
             }
 
-            for(let i=1; i<=5; i++) svg += `<line x1="15" y1="${20 + i*24}" x2="105" y2="${20 + i*24}"/>`;
-            for(let i=0; i<6; i++) svg += `<line x1="${15 + i*18}" y1="20" x2="${15 + i*18}" y2="140"/>`;
+            // 5 Trastes horizontales
+            for(let i=1; i<=5; i++) {
+                svg += `<line x1="26" y1="${20 + i*24}" x2="116" y2="${20 + i*24}" stroke="#555" stroke-width="2"/>`;
+            }
+            // 6 Cuerdas verticales
+            for(let i=0; i<6; i++) {
+                svg += `<line x1="${26 + i*18}" y1="20" x2="${26 + i*18}" y2="140" stroke="#555" stroke-width="2"/>`;
+            }
             return svg;
         }
 
         function drawChordNotes(svg, strings) {
             let notesToPlay = [];
             strings.forEach((data, stringIdx) => {
-                const x = 15 + stringIdx*18;
+                const x = 26 + stringIdx*18;
                 const fret = data;
                 if (fret === 'X') {
-                    svg += `<line x1="${x-4}" y1="6" x2="${x+4}" y2="14" stroke="#ff4444"/><line x1="${x+4}" y1="6" x2="${x-4}" y2="14" stroke="#ff4444"/>`;
+                    svg += `<line x1="${x-4}" y1="6" x2="${x+4}" y2="14" stroke="#ff4444" stroke-width="2"/><line x1="${x+4}" y1="6" x2="${x-4}" y2="14" stroke="#ff4444" stroke-width="2"/>`;
                 } else if (fret === 0) {
-                    svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff"/>`;
+                    svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff" stroke-width="2" fill="none"/>`;
                     notesToPlay.push({ string: stringIdx, fret: 0 });
                 } else if (fret > 0) {
-                    svg += `<circle cx="${x}" cy="${20 + (fret-0.5)*24}" r="6" fill="var(--primary)" stroke="var(--primary)"/>`;
+                    svg += `<circle cx="${x}" cy="${20 + (fret-0.5)*24}" r="6.5" fill="#FF5E00" stroke="none"/>`;
                     notesToPlay.push({ string: stringIdx, localFret: fret });
                 }
             });
@@ -414,9 +421,10 @@
         function drawScaleNotes(svg, pattern) {
             let notesToPlay = [];
             pattern.forEach((frets, stringIdx) => {
-                const x = 15 + stringIdx*18;
+                const x = 26 + stringIdx*18;
                 frets.forEach(fret => {
-                    svg += `<circle cx="${x}" cy="${20 + (fret+0.5)*24}" r="5.5" fill="var(--secondary)" stroke="var(--bg-color)"/>`;
+                    // Puntos de las escalas en NARANJA (#FF5E00) igual que los acordes
+                    svg += `<circle cx="${x}" cy="${20 + (fret+0.5)*24}" r="6" fill="#FF5E00" stroke="#121212" stroke-width="1.5"/>`;
                     notesToPlay.push({ string: stringIdx, localFret: fret + 1 });
                 });
             });
@@ -484,7 +492,7 @@
                     <div class="playable-item">
                         <div class="item-title">${rootName}</div>
                         <div class="item-subtitle">${template.name}</div>
-                        <div>${svg}</svg></div>
+                        <div onclick='playSynth(${payload}, true)' style="cursor:pointer;">${svg}</svg></div>
                         <button class="play-card-btn" onclick='playSynth(${payload}, true)'>
                             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Tocar
                         </button>
@@ -510,7 +518,7 @@
             const finalNotes = notesToPlay.map(n => ({
                 string: n.string,
                 fret: (n.localFret - 1 + baseLabel)
-            })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : b.string - a.string);
+            })).sort((a,b) => (a.string === b.string) ? a.fret - b.fret : a.string - b.string); // De 6ª cuerda (grave) a 1ª cuerda (aguda)
 
             const payload = JSON.stringify(finalNotes).replace(/"/g, '&quot;');
 
@@ -518,7 +526,7 @@
                 <div class="playable-item" style="grid-column: 1 / -1; max-width: 260px; margin: 0 auto; width: 100%;">
                     <div class="item-title">${rootName}</div>
                     <div class="item-subtitle">${template.name}</div>
-                    <div>${svg}</svg></div>
+                    <div onclick='playSynth(${payload}, false)' style="cursor:pointer;">${svg}</svg></div>
                     <button class="play-card-btn" onclick='playSynth(${payload}, false)'>
                         <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Reproducir Escala
                     </button>
@@ -527,36 +535,49 @@
             container.innerHTML = html;
         }
 
-        // --- SINTETIZADOR ROBUSTO CON TONE.JS ---
+        // --- SINTETIZADOR POLIFÓNICO CON TIEMPOS AJUSTADOS ---
         const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
-        let synthReady = false;
+        let polySynth = null;
 
         async function initTone() {
-            if (!synthReady) {
-                await Tone.start();
-                synthReady = true;
+            await Tone.start();
+            if (!polySynth) {
+                polySynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle8" },
+                    envelope: {
+                        attack: 0.01,
+                        decay: 1.8,
+                        sustain: 0.25,
+                        release: 2.5
+                    }
+                }).toDestination();
+                polySynth.volume.value = -4; // Evitar saturación cuando suenan 6 cuerdas juntas
             }
         }
 
         async function playSynth(notes, isChord) {
             await initTone();
             
-            const synth = new Tone.Synth({
-                oscillator: { type: "triangle8" },
-                envelope: { attack: 0.005, decay: 1.2, sustain: 0.1, release: 1.2 }
-            }).toDestination();
+            // Detener cualquier nota previa en curso para escuchar limpio
+            polySynth.releaseAll();
 
-            const now = Tone.now();
+            const now = Tone.now() + 0.05;
             notes.forEach((note, index) => {
                 const freq = stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12);
-                const delay = isChord ? index * 0.035 : index * 0.12;
-                synth.triggerAttackRelease(freq, "1.5", now + delay);
+                if (isChord) {
+                    // Rasgueo suave (60ms entre cuerda y cuerda) y sonido largo (3.5 segundos)
+                    const delay = index * 0.06;
+                    polySynth.triggerAttackRelease(freq, 3.5, now + delay);
+                } else {
+                    // Escala 4 veces más lenta: 0.50 segundos por cada nota
+                    const delay = index * 0.50;
+                    polySynth.triggerAttackRelease(freq, 0.45, now + delay);
+                }
             });
         }
 
         document.getElementById('btn-play-tone').addEventListener('click', async function() {
-            await initTone();
-            playSynth([{string: 5, fret: 0}], true);
+            await playSynth([{string: 5, fret: 0}], true);
             this.style.backgroundColor = 'var(--primary)'; this.style.color = '#000';
             setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
         });
@@ -678,6 +699,12 @@
                 setTimeout(() => window.location.reload(true), 1200);
             }
         });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err));
+            });
+        }
     </script>
 </body>
 </html>
