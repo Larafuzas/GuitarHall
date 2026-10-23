@@ -2,146 +2,249 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teoría de Guitarra Simplificada - Transcripción Completa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Teoría de Guitarra Simplificada - GuitarHall</title>
     <style>
         :root {
-            --primary-color: #008f7a;
-            --secondary-color: #00b39b;
-            --bg-color: #f9f9f9;
-            --text-color: #333;
-            --sidebar-width: 320px;
+            --bg-color: #121212;
+            --surface: #1e1e1e;
+            --surface-hover: #292929;
+            --primary: #FF5E00;
+            --secondary: #FFEA00;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --sidebar-width: 290px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text);
+            line-height: 1.7;
             display: flex;
-            line-height: 1.6;
+            min-height: 100vh;
         }
 
+        /* Barra lateral de navegación / Índice */
         nav#sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            background-color: #fff;
-            border-right: 2px solid var(--primary-color);
+            background-color: var(--surface);
+            border-right: 1px solid #333;
             overflow-y: auto;
-            padding: 20px;
-            box-sizing: border-box;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 24px 18px 80px 18px;
+            z-index: 100;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--surface);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        nav#sidebar::-webkit-scrollbar { width: 5px; }
+        nav#sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
         nav#sidebar h2 {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            margin-top: 0;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
+            color: var(--primary);
+            font-size: 1.15rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        nav#sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .close-sidebar-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px 8px;
         }
 
+        nav#sidebar ul { list-style: none; }
         nav#sidebar li { margin-bottom: 6px; }
 
         nav#sidebar a {
             text-decoration: none;
-            color: #555;
+            color: #ccc;
             font-size: 0.9rem;
             display: block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background 0.3s, color 0.3s;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
 
-        nav#sidebar a:hover {
-            background-color: var(--primary-color);
-            color: #fff;
+        nav#sidebar a:hover, nav#sidebar a.active-link {
+            background-color: var(--primary);
+            color: #000;
+            font-weight: 600;
         }
 
-        nav#sidebar .sub-menu {
-            padding-left: 15px;
-            font-size: 0.85rem;
-            border-left: 1px solid #ddd;
-            margin-left: 10px;
-            margin-bottom: 10px;
+        /* Botón flotante para abrir el índice en móviles */
+        #mobile-toc-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 18px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(255, 94, 0, 0.4);
+            cursor: pointer;
+            z-index: 99;
+            align-items: center;
+            gap: 8px;
         }
 
+        #mobile-toc-toggle svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Contenedor principal de lectura */
         main {
             margin-left: var(--sidebar-width);
-            padding: 40px;
+            padding: 40px 50px 100px 50px;
             max-width: 900px;
-            box-sizing: border-box;
-            background-color: #fff;
-            min-height: 100vh;
+            width: 100%;
         }
 
-        h1, h2, h3 { color: var(--primary-color); margin-top: 1.5em; }
-        h1 { font-size: 2.2rem; border-bottom: 3px solid var(--secondary-color); padding-bottom: 10px; margin-top: 2em; }
-        h2 { font-size: 1.6rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        h3 { font-size: 1.3rem; }
-        
+        h1 {
+            color: var(--primary);
+            font-size: 2.1rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-top: 2.2em;
+            margin-bottom: 0.8em;
+            scroll-margin-top: 20px;
+        }
+
+        h2 {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 8px;
+            margin-top: 1.8em;
+            margin-bottom: 0.7em;
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: #fff;
+            font-size: 1.15rem;
+            margin-top: 1.5em;
+            margin-bottom: 0.6em;
+        }
+
+        p {
+            color: #dedede;
+            margin-bottom: 1.2em;
+            font-size: 1rem;
+        }
+
+        ul, ol {
+            padding-left: 24px;
+            margin-bottom: 1.4em;
+            color: #dedede;
+        }
+
+        li { margin-bottom: 6px; }
+
         blockquote {
-            border-left: 5px solid var(--secondary-color);
-            background-color: #f0fdfa;
-            margin: 20px 0;
-            padding: 15px 20px;
+            border-left: 4px solid var(--primary);
+            background-color: var(--surface);
+            margin: 25px 0;
+            padding: 18px 24px;
             font-style: italic;
-            font-size: 1.1rem;
-            color: #555;
+            font-size: 1.05rem;
+            color: #f1f1f1;
+            border-radius: 0 8px 8px 0;
         }
 
-        .image-placeholder {
-            background-color: #eaeaea;
-            border: 1px dashed #ccc;
-            padding: 15px;
-            text-align: center;
-            color: #777;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-size: 0.9rem;
+        .glosario {
+            background: #181818;
+            border: 1px solid #333;
+            border-left: 4px solid var(--secondary);
+            padding: 22px;
+            border-radius: 10px;
+            margin: 35px 0;
         }
 
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background-color: var(--primary-color); color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
+        .glosario h3 {
+            color: var(--secondary);
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
 
-        .glosario { background: #f4f6f6; padding: 20px; border-radius: 8px; margin-top: 30px; }
-        .glosario h3 { margin-top: 0; }
+        .glosario li strong { color: var(--primary); }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            nav#sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--primary-color); }
-            main { margin-left: 0; padding: 20px; }
+        strong { color: #ffffff; }
+
+        /* Adaptación fluida para pantallas medianas y móviles */
+        @media (max-width: 860px) {
+            #mobile-toc-toggle { display: flex; }
+            .close-sidebar-btn { display: block; }
+            
+            nav#sidebar {
+                width: 80%;
+                max-width: 310px;
+                transform: translateX(-100%);
+                box-shadow: 4px 0 25px rgba(0, 0, 0, 0.8);
+            }
+
+            nav#sidebar.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                padding: 25px 20px 80px 20px;
+            }
+
+            h1 { font-size: 1.7rem; }
+            h2 { font-size: 1.25rem; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Botón flotante para desplegar el menú en móviles -->
+    <button id="mobile-toc-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <span>Índice</span>
+    </button>
+
     <nav id="sidebar">
-        <h2>Índice del Libro</h2>
+        <h2>
+            <span>Índice del Libro</span>
+            <button class="close-sidebar-btn" onclick="toggleSidebar()">&times;</button>
+        </h2>
         <ul>
-            <li><a href="#introduccion">Introducción</a></li>
-            <li><a href="#capitulo-1">01. Introducción al piano</a></li>
-            <li><a href="#capitulo-2">02. Fundamentos de la guitarra</a></li>
-            <li><a href="#capitulo-3">03. Tonalidades y escalas</a></li>
-            <li><a href="#capitulo-4">04. Armonía: Guía de acordes</a></li>
-            <li><a href="#capitulo-5">05. El sistema CAGED</a></li>
-            <li><a href="#capitulo-6">06. Progresiones y Números Romanos</a></li>
-            <li><a href="#capitulo-7">07. Notación musical</a></li>
-            <li><a href="#capitulo-8">08. Ritmo y tiempo</a></li>
-            <li><a href="#capitulo-9">09. El círculo de quintas</a></li>
-            <li><a href="#nota-autor">Nota del autor y Recomendaciones</a></li>
+            <li><a href="#introduccion" onclick="closeSidebarOnMobile()">Introducción</a></li>
+            <li><a href="#capitulo-1" onclick="closeSidebarOnMobile()">01. Introducción al piano</a></li>
+            <li><a href="#capitulo-2" onclick="closeSidebarOnMobile()">02. Fundamentos de la guitarra</a></li>
+            <li><a href="#capitulo-3" onclick="closeSidebarOnMobile()">03. Tonalidades y escalas</a></li>
+            <li><a href="#capitulo-4" onclick="closeSidebarOnMobile()">04. Armonía: Guía de acordes</a></li>
+            <li><a href="#capitulo-5" onclick="closeSidebarOnMobile()">05. El sistema CAGED</a></li>
+            <li><a href="#capitulo-6" onclick="closeSidebarOnMobile()">06. Progresiones y Números Romanos</a></li>
+            <li><a href="#capitulo-7" onclick="closeSidebarOnMobile()">07. Notación musical</a></li>
+            <li><a href="#capitulo-8" onclick="closeSidebarOnMobile()">08. Ritmo y tiempo</a></li>
+            <li><a href="#capitulo-9" onclick="closeSidebarOnMobile()">09. El círculo de quintas</a></li>
+            <li><a href="#nota-autor" onclick="closeSidebarOnMobile()">Nota del autor y Recomendaciones</a></li>
         </ul>
     </nav>
 
