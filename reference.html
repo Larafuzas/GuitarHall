@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teoría de Guitarra Simplificada - Transcripción Completa</title>
+    <style>
+        :root {
+            --primary-color: #008f7a;
+            --secondary-color: #00b39b;
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --sidebar-width: 320px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            line-height: 1.6;
+        }
+
+        nav#sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #fff;
+            border-right: 2px solid var(--primary-color);
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        nav#sidebar h2 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        nav#sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav#sidebar li { margin-bottom: 6px; }
+
+        nav#sidebar a {
+            text-decoration: none;
+            color: #555;
+            font-size: 0.9rem;
+            display: block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav#sidebar a:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        nav#sidebar .sub-menu {
+            padding-left: 15px;
+            font-size: 0.85rem;
+            border-left: 1px solid #ddd;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        main {
+            margin-left: var(--sidebar-width);
+            padding: 40px;
+            max-width: 900px;
+            box-sizing: border-box;
+            background-color: #fff;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 { color: var(--primary-color); margin-top: 1.5em; }
+        h1 { font-size: 2.2rem; border-bottom: 3px solid var(--secondary-color); padding-bottom: 10px; margin-top: 2em; }
+        h2 { font-size: 1.6rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        h3 { font-size: 1.3rem; }
+        
+        blockquote {
+            border-left: 5px solid var(--secondary-color);
+            background-color: #f0fdfa;
+            margin: 20px 0;
+            padding: 15px 20px;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .image-placeholder {
+            background-color: #eaeaea;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            text-align: center;
+            color: #777;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: var(--primary-color); color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        .glosario { background: #f4f6f6; padding: 20px; border-radius: 8px; margin-top: 30px; }
+        .glosario h3 { margin-top: 0; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            nav#sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 2px solid var(--primary-color); }
+            main { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <h2>Índice del Libro</h2>
+        <ul>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#capitulo-1">01. Introducción al piano</a></li>
+            <li><a href="#capitulo-2">02. Fundamentos de la guitarra</a></li>
+            <li><a href="#capitulo-3">03. Tonalidades y escalas</a></li>
+            <li><a href="#capitulo-4">04. Armonía: Guía de acordes</a></li>
+            <li><a href="#capitulo-5">05. El sistema CAGED</a></li>
+            <li><a href="#capitulo-6">06. Progresiones y Números Romanos</a></li>
+            <li><a href="#capitulo-7">07. Notación musical</a></li>
+            <li><a href="#capitulo-8">08. Ritmo y tiempo</a></li>
+            <li><a href="#capitulo-9">09. El círculo de quintas</a></li>
+            <li><a href="#nota-autor">Nota del autor y Recomendaciones</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="introduccion">
+            <blockquote>
+                "Las obras de arte crean reglas; las reglas no crean obras de arte". - Claude Debussy
+            </blockquote>
+            <p>Me llamo Melvin Tellier, fundador de Musiciangoods y autor de Teoría Musical Simplificada. Mi viaje musical comenzó en 2008 con un teclado MIDI, auriculares y FL Studio. Sin embargo, mis primeros pasos en el mundo de la música se remontan a mi adolescencia, cuando recibí clases de guitarra clásica y eléctrica. A medida que crecía mi pasión por la producción musical, empecé a compartir mis descubrimientos en YouTube bajo el alias «MellaMayne». Si estuviste explorando la producción musical entre 2010 y 2015, puede que te hayas topado con algunos de mis tutoriales.</p>
+            <p>A pesar de mi amor por la música, me costaba entender la teoría musical. Como músico autodidacta, recopilaba conocimientos de tutoriales de YouTube. Aunque conseguía comprender los conceptos básicos, los más avanzados a menudo me parecían inalcanzables. Tras años creando música basada en muestras, empecé a sentirme limitado y decidí dominar la teoría musical para ampliar mis capacidades creativas. Este viaje culminó en mi primer libro, Teoría Musical Simplificada, centrado en los instrumentos de teclado.</p>
+            <p>El libro tuvo una gran acogida, y estoy agradecido de haber podido ayudar a tantos compañeros músicos que comparten la misma pasión. Tras su éxito, muchos lectores solicitaron una versión adaptada específicamente a la guitarra. Como he tocado la guitarra de forma intermitente durante años, soy muy consciente de los retos únicos a los que se enfrentan los guitarristas. Muchos guitarristas, sobre todo en las generaciones más jóvenes, son autodidactas y se basan en formas y posiciones más que en la teoría formal. Incluso leyendas como Jimi Hendrix, que no recibió una formación académica, se basaban en un genio natural que la mayoría de nosotros no poseemos. Aunque el autoaprendizaje puede llevarte lejos, una sólida comprensión de la teoría puede ayudarte a liberar todo tu potencial.</p>
+            <p>Por eso he creado Teoría de Guitarra Simplificada. Este libro está diseñado para ser accesible y fácil de usar, independientemente de tu nivel de habilidad. Está repleto de imágenes, comparaciones con el piano, analogías y hojas de trucos, todo ello para que la teoría de guitarra sea más fácil de entender y puedas desarrollar todo tu potencial musical. También te recomiendo que consultes nuestra hoja de repaso de teoría de guitarra, disponible en nuestro sitio web, que complementa el libro a la perfección.</p>
+            <p>Independientemente de que estés empezando o lleves años tocando, te invito a que me acompañes en este viaje. Juntos, desmenuzaremos las complejidades de la teoría de guitarra y la convertiremos en una herramienta que mejore tu forma de tocar. Hagamos que la teoría de guitarra sea sencilla, porque entender lo que tocas no debería ser un misterio. Estoy deseando ver adónde te lleva este camino.</p>
+
+            <h2>El debate sobre la teoría musical</h2>
+            <p>El debate sobre la necesidad de la teoría musical para crear música excepcional es un tema de discusión constante en el mundo de la música. Basándome en mi propia experiencia como productor musical, puedo confirmar las importantes ventajas que un sólido conocimiento de la teoría musical puede aportar al trabajo creativo de cada uno. Aunque no es un requisito absoluto para la producción musical, creo que desempeña un papel crucial en la mejora de la producción creativa.</p>
+            <p>Recuerdo una época en la que producía música sin conocimientos formales de teoría musical, lo que daba lugar a composiciones un tanto rudimentarias y a una sensación de limitación creativa. Comprender la teoría musical es similar a la alfabetización musical. Sin ella, interpretar música es como intentar leer un libro sólo a través de sus imágenes: puede que te hagas una idea de la historia, pero te perderás las complejidades. Si quieres convertirte en un músico competente, adquirir una base de teoría musical es esencial para lograr la alfabetización musical.</p>
+            <p>Una vez alcanzada esta alfabetización musical, todo encaja. Adquirirás una comprensión más profunda de tus composiciones y de otras canciones, lo que facilitará la comunicación y la colaboración con tus compañeros músicos. Te liberarás de la dependencia de las mieles o progresiones de acordes limitadas, eliminando en última instancia las barreras a tu crecimiento musical.</p>
+            <p>En este libro, abordamos la teoría musical de forma diferente, utilizando ilustraciones y analogías claras para garantizar una comprensión exhaustiva de estos conceptos. Nuestro objetivo es dotarte de una comprensión profunda para que puedas aplicarla fácilmente a tu música, tanto si estás siguiendo una carrera musical como si exploras la música como hobby. Éste no es el típico libro de teoría musical. Como he mencionado antes, hemos eliminado todos los conceptos superfluos y nos hemos centrado en las ideas que realmente te ayudarán a convertir tus visiones creativas en música.</p>
+
+            <h2>Estructura del libro</h2>
+            <p>Al crear este libro, nuestro objetivo era adoptar un enfoque fresco y eficaz para aprender teoría de guitarra. Hemos seleccionado cuidadosamente nueve conceptos fundamentales que consideramos esenciales para adquirir los conocimientos necesarios para crear música desde cero con la guitarra.</p>
+            <p>Aunque puede que ya lo sepas, merece la pena recalcarlo: la teoría musical y la teoría de guitarra son esencialmente lo mismo. La diferencia radica en cómo se aplica la teoría musical a la guitarra. Debido a su disposición única, la aplicación difiere de la de un instrumento de teclado. La teoría musical tradicional suele explicarse utilizando un piano o un teclado porque su disposición hace que los conceptos complejos sean más fáciles de visualizar y comprender. Por esta razón, hemos optado por utilizar el teclado del piano como punto de referencia al explicar estos conceptos teóricos en el contexto de la guitarra.</p>
+            <p>A medida que avances en el libro, verás que los conceptos van profundizando gradualmente en la teoría musical. Por ejemplo, en el primer capítulo, presentamos el alfabeto musical, exploramos los nombres de las notas y explicamos los semitonos y los tonos enteros. En el último capítulo, habremos desmitificado el círculo de quintas. Este enfoque estructurado garantiza que empieces por lo básico y vayas ampliando progresivamente tus conocimientos. Cada uno de los nueve conceptos teóricos está dedicado a su propio capítulo, con lecciones del tamaño de un bocado que desglosan en detalle cada aspecto del concepto.</p>
+            <p>Para facilitar el aprendizaje, hemos incluido muchos elementos visuales. Cada concepto va acompañado de un gráfico o diagrama, que también funciona como una práctica hoja de trucos que puedes consultar en cualquier momento. Al principio de cada capítulo, encontrarás un tiempo estimado de realización y una lista de las herramientas que necesitarás para asimilar plenamente el material. Para enriquecer aún más tu experiencia de aprendizaje, hemos incorporado códigos QR en todo el libro.</p>
+
+            <h2>Cómo leer los gráficos</h2>
+            <p>En este libro, utilizamos con frecuencia ilustraciones de piano y guitarra, junto con gráficos, para ayudarte a comprender los conceptos teóricos de ambos instrumentos. En los primeros capítulos, las notas se mostrarán en cada instrumento por sus nombres de nota. A medida que te sientas más cómodo con estos nombres, introduciremos las posiciones de los dedos para cada nota, orientándote sobre qué dedos utilizar en trastes y cuerdas específicos.</p>
+            <p>Este libro utiliza ilustraciones horizontales y verticales del diapasón para aclarar conceptos guitarrísticos. Una «X» indica una cuerda que no debe tocarse, mientras que una «O» marca una cuerda abierta que debe tocarse sin trastear. Los marcadores de posición se muestran como círculos y números en los trastes 3º, 5º, 7º, 9º y 12º, con el traste 12º típicamente marcado por dos círculos.</p>
+            <p>Cuando no se indiquen los números de los dedos, alinea cada dedo con un traste, asegurando un movimiento mínimo por el diapasón. Utiliza el dedo más cercano a la posición de la nota en el traste. «1» representa el dedo índice, «2» el dedo corazón, «3» el dedo anular y «4» el dedo meñique.</p>
+
+            <h2>Palabras finales</h2>
+            <p>Antes de profundizar en las lecciones, me gustaría compartir algunas reflexiones finales. Es esencial reconocer que la música, en su esencia, no consiste más que en notas, tanto si se tocan individual como simultáneamente. La música, en su esencia, es simplemente una colección de notas. Es crucial no complicarla en exceso.</p>
+            <p>Si alguna vez te cuesta entender un concepto musical, intenta simplificarlo mentalmente como si no fueran más que notas. Este enfoque me ha ayudado a mantener la sensación de simplicidad en la música, incluso cuando me enfrento a composiciones intimidantes o momentos de confusión.</p>
+            <p>En última instancia, tu éxito en el dominio de estos conceptos depende de tu determinación para aprender. Nos hemos esforzado para que este libro sea lo más sencillo y digerible posible, pero aún así necesitas invertir tiempo en leer y comprometerte con el contenido para comprenderlo plenamente. Tómate tu tiempo al leer este libro. Avanza por cada capítulo a tu propio ritmo.</p>
+        </section>
+
+        <section id="capitulo-1">
+            <h1>01. Introducción al piano</h1>
+            <p>Antes de sumergirnos en la teoría de guitarra, es beneficioso empezar por los fundamentos del piano. Entender el piano proporciona una base sólida para comprender los conceptos de la teoría musical. En este capítulo exploraremos los elementos esenciales del piano. Conocerás a fondo la disposición del teclado y aprenderás a reconocer patrones recurrentes. Además, te familiarizarás con los nombres de cada nota y los intervalos entre ellas. Tras esta introducción inicial, explicaremos cómo se aplican estos conceptos a la guitarra.</p>
+            
+            <h2>El patrón de las 12 notas</h2>
+            <p>Echemos un vistazo más de cerca al teclado del piano. Los pianos vienen en varios tamaños, cada uno con un número diferente de teclas. Ante todo, es importante saber que, aunque un teclado de piano completo tiene 88 teclas, sólo hay 12 notas únicas. Estas 12 notas son la base de toda composición musical, en todos los instrumentos.</p>
+            <p>Comprender este concepto es crucial. No importa el género -ya sea hip-hop, jazz, pop, clásica o cualquier otro-, todos los sonidos que oyes en cualquier canción proceden de estas mismas 12 notas. Piensa en ello como si fuera la paleta de un pintor. El patrón comienza en C y continúa por el teclado, incluidas las teclas negras, hasta que se repite en el siguiente C. Este patrón también se denomina escala cromática.</p>
+            <p>Echa un vistazo al piano y verás grupos de teclas negras dispuestas en un patrón repetido por todo el teclado. Estos grupos constan de dos teclas negras seguidas de tres teclas negras. Este patrón continúa de forma constante por todo el teclado. La disposición coherente de las teclas negras sirve como valioso punto de referencia para identificar y tocar diferentes intervalos musicales, escalas y acordes.</p>
+            
+            <h2>El nombre de las notas</h2>
+            <p>Ahora que hemos identificado las 12 teclas o notas utilizadas en la creación musical, vamos a asignar nombres a estas notas para que sean más fáciles de recordar. Para empezar, nos centraremos en las teclas blancas, que servirán de base para aprender las notas negras.</p>
+            <p>Fíjate en que la primera nota del piano es C, mientras que la última antes de llegar a la siguiente C es B. Esta es la razón por la que muchos libros de instrucciones y tutoriales suelen utilizar la tonalidad de C cuando enseñan. Cada nota que sigue a C tiene una altura progresivamente mayor, mientras que cada nota por debajo de C tiene una altura menor.</p>
+            <p>El patrón se repite en todo el teclado del piano, abarcando varias octavas. A medida que desciendes, las notas suenan más graves, y a medida que asciendes, las alturas se vuelven más agudos, pero utilizamos la misma letra para identificar las notas en las distintas partes del teclado.</p>
+            <p>Exploremos ahora los nombres de las notas negras en el teclado del piano. En esencia, los nombres de las notas negras están estrechamente relacionados con los nombres de las notas blancas. Las notas negras pueden verse como modificaciones o variaciones de las notas blancas adyacentes. Al pasar a la derecha de una tecla blanca a una negra, la nota se agudiza (por ejemplo, de C a C#), elevando su tono. Si te mueves a la izquierda de una tecla blanca a una negra, la nota se aplana (por ejemplo, de D a Db), bajando su tono. La nota negra entre C y D puede llamarse C# o Db, que se denominan «equivalentes enarmónicos».</p>
+            <p>No sólo las notas negras pueden modificarse con sostenidos (#) o bemoles (b) en sus nombres; esto también puede afectar a las notas blancas. Por ejemplo, cuando añades un sostenido (#) a E, se convierte en la nota que normalmente se llama F. Por lo tanto, F y E# son equivalentes enarmónicos. En música, un sostenido o un bemol es en realidad una notación utilizada para subir o bajar la altura tonal de una nota.</p>
+
+            <h2>Tonos y Semitonos</h2>
+            <p>Los semitonos y los tonos son elementos cruciales para comprender los intervalos musicales entre notas. Un medio paso, también conocido como semitono, se refiere a la menor distancia posible entre dos teclas adyacentes en el teclado del piano, (o trastes en el diapasón de la guitarra), ya sean teclas blancas o negras. Este intervalo abarca la distancia entre dos teclas consecutivas cualesquiera, como de C a C#, de D a D#, etc.</p>
+            <p>Para moverte un paso entero, te saltas una tecla para llegar a la siguiente. Los pares de notas blancas separadas por una nota negra (A-B, C-D, D-E, F-G, G-A) están separados por un tono entero. Practica contando dos teclas hacia la derecha. Un tono entero por encima de E es la tecla negra junto a F, y un tono entero por encima de B es la tecla negra junto a C.</p>
+            <p>Sin embargo, hay dos pares de teclas blancas, E/F y Si/C, que no tienen teclas negras entre ellas. Esto se debe a que los intervalos entre E y F, así como entre B y C, ya son semitonos en sí mismos.</p>
+            
+            <div class="glosario">
+                <h3>Glosario del Capítulo 1</h3>
+                <ul>
+                    <li><strong>El patrón de 12 notas:</strong> Se refiere a la disposición de las notas musicales dentro del sistema tonal occidental, que consiste en las notas mayores y menores que abarcan las 12 clases de tono en una octava.</li>
+                    <li><strong>Sostenidos y bemoles:</strong> Símbolos utilizados en notación musical para subir o bajar un semitono el tono de una nota.</li>
+                    <li><strong>DAW:</strong> Una estación de trabajo de audio digital, software utilizado para grabar, editar y producir archivos de audio digital.</li>
+                    <li><strong>Alfabeto musical:</strong> La secuencia de nombres de letras utilizados para etiquetar los diferentes tonos de la música occidental, que van de A a G.</li>
+                    <li><strong>C Central:</strong> El tono musical situado cerca del centro del teclado de un piano (tecla 40).</li>
+                    <li><strong>Intervalos:</strong> La distancia o relación entre dos tonos, medida en términos del número de notas o semitonos entre ellos.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-2">
+            <h1>02. Fundamentos de la guitarra</h1>
+            <p>Ahora que ya te has familiarizado con el teclado del piano, su patrón de 12 notas, los nombres de las notas, los intervalos y los sostenidos y bemoles, es hora de aplicar estos conocimientos a la guitarra. Todo lo que acabamos de ver también es aplicable a la guitarra, al igual que a cualquier otro instrumento. La única diferencia es cómo se tocan las notas y su disposición.</p>
+            
+            <h2>Las cuerdas de una guitarra</h2>
+            <p>Empecemos por lo básico: las cuerdas de la guitarra. Cuando pulsas una cuerda, se produce una nota con un tono y una duración determinados. Al pulsar un traste, se eleva el tono de la nota. Pulsando varios trastes y pulsando sus cuerdas, puedes formar acordes, tocando varias notas simultáneamente.</p>
+            <p>Las cuerdas de la guitarra están numeradas desde la más gruesa y grave (6) hasta la más fina y aguda (1). En afinación estándar, son E (6), A (5), D (4), G (3), B (2), y E (1). Hay dos octavas entre la 6ª cuerda abierta (E) y la 1ª cuerda abierta (E), lo que significa que el ciclo del alfabeto musical se repite dos veces. Para recordar el orden, utiliza la mnemotecnia: «Eddie Ate Dynamite, Good Bye Eddie».</p>
+
+            <h2>Piano vs. Guitarra</h2>
+            <p>Para comprender mejor la disposición del diapasón de la guitarra, comparémoslo con la disposición del teclado de un piano para resaltar las diferencias. Examinando ambos, podemos ver cómo la disposición lineal de las notas en el piano contrasta con la estructura segmentada y repetitiva del diapasón de la guitarra.</p>
+            <p>Si observas la imagen de nuestra última lección, verás que las notas del diapasón de la guitarra no están espaciadas uniformemente, excepto de B a C y de E a F, que carecen de teclas negras en el piano y, por tanto, no tienen separación en el diapasón. Para tocar el alfabeto musical (A-B-C-D-E-F-G) en la guitarra, debes saltarte las notas negras. Es crucial saber dónde se producen huecos en el alfabeto musical y dónde no.</p>
+            <p>En música, como te hemos mostrado en el piano en el capítulo anterior, nos movemos en pequeños pasos arriba y abajo del diapasón o teclado del piano, y estos pasos se llaman intervalos. La distancia de dos trastes de la misma cuerda (por ejemplo, de A a B o de C a D) se conoce como tono o tono entero. La distancia de un traste se denomina medio paso o semitono.</p>
+            <p>Los semitonos son más fáciles de ejecutar en una guitarra que en un piano. Esto se debe a que la guitarra no tiene notas negras. Subir o bajar un traste en la guitarra equivale a un semitono. Saltarse un traste equivale a un tono entero.</p>
+
+            <h2>Entendiendo el diapasón</h2>
+            <p>Es importante memorizar a fondo el diapasón de la guitarra, lo que significa conocer cada nota en cada traste y cuerda. Aunque esto pueda parecer desalentador, en realidad es manejable con la práctica. Como principiante, puedes utilizar marcadores o pegatinas para ayudarte a memorizar las notas más fácilmente.</p>
+            <p>Una forma eficaz de aprender las notas del diapasón es utilizar la escala cromática: C, C#/Db, D, D#/Eb, E, F, F#/Gb, G, G#/Ab, A, A#/Bb, B, y luego de vuelta a C. Este patrón se repite independientemente de la nota de partida, estando cada nota separada por un traste.</p>
+            <p>He aquí algunos métodos eficaces para ayudarte a aprender rápidamente las notas del diapasón:</p>
+            <ul>
+                <li>Aprende las cuerdas al aire: Empieza memorizando las notas de las cuerdas al aire: E, A, D, G, B, E.</li>
+                <li>Aprende las notas naturales de las cuerdas graves E y A: Familiarízate con las notas naturales (A, B, C, D, E, F, G) en las cuerdas graves E (6ª) y A (5ª) hasta el duodécimo traste.</li>
+                <li>Utiliza la escala cromática: Comprende la escala cromática, que incluye las 12 notas.</li>
+                <li>Memoriza los trastes de las teclas: Memoriza las notas de los trastes clave, como el 3°, 5°, 7°, 9° y 12°.</li>
+                <li>Practica las formas de octava.</li>
+                <li>Aplica las notas: Toca escalas, acordes y arpegios mientras dices los nombres de las notas en voz alta.</li>
+            </ul>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 2</h3>
+                <ul>
+                    <li><strong>Semítonos / Tonos:</strong> En música, un semitono es el intervalo más pequeño entre dos notas adyacentes en un teclado o un instrumento con trastes, mientras que un tono entero consta de dos semitonos.</li>
+                    <li><strong>Traste:</strong> Una tira metálica elevada en el mástil de la guitarra que discurre perpendicular a las cuerdas. Al pulsar una cuerda detrás de un traste se acorta la longitud de vibración, cambiando la altura.</li>
+                    <li><strong>Escala cromática:</strong> Una escala formada totalmente por semitonos, que abarca los doce tonos de una octava.</li>
+                    <li><strong>Octava:</strong> El intervalo entre dos notas musicales en el que la nota más aguda tiene el doble de frecuencia que la más grave.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-3">
+            <h1>03. Componer: Tonalidades y Escalas</h1>
+            <p>Una vez asentados los fundamentos de nuestro instrumento, adentrémonos en la teoría musical. Este capítulo se centra en el concepto que forma la esencia de cualquier canción: su tonalidad. Aprenderás cómo las escalas sirven de marco fundamental para la composición musical.</p>
+            
+            <h2>¿Qué es una tonalidad?</h2>
+            <p>Si alguna vez has observado a músicos colaborando en un estudio, es probable que te hayas encontrado con la pregunta: «¿En qué clave está esto?». En música, una tonalidad se refiere al conjunto primario de alturas o notas que establecen la estructura armónica fundamental de una composición musical. Normalmente, las alturas utilizadas en una canción pertenecen a una escala específica, que determina la tonalidad de la canción.</p>
+            <p>Por ejemplo, si una canción utiliza exclusivamente notas de la escala de C mayor, es probable que esté "en la tonalidad de C mayor". En este caso, la tonalidad carece de sostenidos y bemoles y consta de las siguientes notas: C-D-E-F-G-A-B-C. En cambio, la escala de A menor comparte la misma ausencia de sostenidos o bemoles. En consecuencia, cuando encuentres una pieza musical sin ningún sostenido o bemol indicado, también podría estar en la tonalidad de A menor.</p>
+
+            <h2>Introducción a las escalas</h2>
+            <p>En música, las escalas son secuencias de notas organizadas de manera específica, siguiendo un orden ascendente o descendente. Generalmente, comienzan y terminan en la misma nota, separadas por una octava. Cada escala sigue un patrón único de intervalos, que son las distancias entre las notas. Estos intervalos se miden en semitonos y tonos enteros, creando el carácter y el estado de ánimo distintivos de cada escala.</p>
+            <p>Para construir escalas en el piano y la guitarra, utilizamos fórmulas de escalas, que son patrones de semitonos y tonos enteros que parten de una nota determinada. Recuerda que «W» significa «tono entero» y «H» significa «semitono».</p>
+
+            <h2>La escala mayor y menor</h2>
+            <p><strong>La escala mayor:</strong> Es la piedra angular de todas las escalas y sirve como punto de referencia para comprender las demás. La secuencia de intervalos necesaria es: Nota fundamental, paso entero, paso entero, semitono, paso entero, paso entero, paso entero, semitono (W-W-H-W-W-W-H).</p>
+            <p><strong>La escala menor natural:</strong> Proporciona un sonido más oscuro y sombrío en comparación con la escala mayor. Sigue un patrón específico de intervalos a partir de la nota fundamental: tono entero, semitono, tono entero, tono entero, semitono, tono entero, tono entero (W-H-W-W-H-W-W). La principal diferencia entre las escalas mayor y menor natural es que los intervalos de 3ª, 6ª y 7ª se aplanan (bajan) un semitono en la escala menor natural.</p>
+
+            <h2>La escala pentatónica</h2>
+            <p>La escala pentatónica es probablemente la escala más importante que aprenderás como guitarrista. «Penta» significa cinco, lo que indica que la escala pentatónica sólo contiene cinco notas.</p>
+            <p><strong>Pentatónica mayor:</strong> Se obtiene eliminando las notas cuarta y séptima de la escala mayor. Fórmula: Tono - Tono - Tono y medio - Tono - Tono y medio (W-W-WH-W-WH).</p>
+            <p><strong>Pentatónica menor:</strong> Derivada de la escala menor natural, se forma eliminando las notas segunda y sexta. Fórmula: Tono y medio - Tono - Tono - Tono y medio - Tono (WH-W-W-WH-W).</p>
+
+            <h2>Tonalidades relativas</h2>
+            <p>Las escalas relativas son escalas mayores y menores que comparten las mismas notas, acordes y armadura. Toda escala mayor tiene una escala menor relativa, y toda escala menor tiene una escala mayor relativa. La escala menor relativa de cualquier escala mayor siempre se encuentra en el 6° grado de la escala mayor. Para determinar la menor relativa, enumera las notas de la escala mayor e identifica la 6ª nota.</p>
+            <p>Otra forma de determinar la tonalidad menor relativa es bajar tres semitonos o una tercera menor, desde la nota tónica de la escala mayor. Por ejemplo, en C mayor, su relativo menor es A menor.</p>
+
+            <h2>Los modos musicales</h2>
+            <p>Los modos en música ofrecen flexibilidad al empezar en diferentes grados de escala en lugar de en la nota raíz. Son como patrones únicos creados a partir del mismo conjunto de notas. Estos son los siete modos:</p>
+            <ul>
+                <li><strong>Modo Jónico:</strong> Es la tonalidad mayor moderna. W-W-H-W-W-W-H</li>
+                <li><strong>Modo Dórico:</strong> Se asemeja a la escala menor natural, diferenciándose en la sexta nota (sexta mayor). W-H-W-W-W-H-W</li>
+                <li><strong>Modo Frigio:</strong> Similar a la escala menor natural, pero con una segunda menor. H-W-W-W-H-W-W</li>
+                <li><strong>Modo Lidio:</strong> Se diferencia del jónico por la cuarta nota afilada (#4). W-W-W-H-W-W-H</li>
+                <li><strong>Modo Mixolidio:</strong> Se diferencia de la escala mayor por su séptima nota aplanada (b7). W-W-H-W-W-H-W</li>
+                <li><strong>Modo Eólico:</strong> Esencialmente la escala menor natural. W-H-W-W-H-W-W</li>
+                <li><strong>Modo Locrio:</strong> Considerado el más oscuro debido a la presencia de una quinta disminuida. H-W-W-H-W-W-W</li>
+            </ul>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 3</h3>
+                <ul>
+                    <li><strong>Tonalidad:</strong> Conjunto específico de notas o alturas dentro de una octava que forman la base de una pieza musical. Incluye una nota tónica y una escala relacionada.</li>
+                    <li><strong>Transposición:</strong> Proceso de cambiar la altura de una pieza musical o de un instrumento musical.</li>
+                    <li><strong>Armadura:</strong> Conjunto de sostenidos (#) o bemoles (b) colocados al principio de un pentagrama musical.</li>
+                    <li><strong>Tónica:</strong> La primera nota o altura de una escala musical. Sirve como altura central o inicial en torno a la cual gira una pieza musical.</li>
+                    <li><strong>Fórmula de escala:</strong> Patrón específico de intervalos que define una escala concreta.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-4">
+            <h1>04. Armonía: Guía de acordes</h1>
+            <p>Ahora que ya dominas el concepto de tonalidad y cómo se forman las escalas, es hora de dar el siguiente paso y sumergirte en el mundo de los acordes y la armonía en la música.</p>
+
+            <h2>Intervalos musicales</h2>
+            <p>Antes de continuar, es esencial comprender la noción de intervalos musicales. Los intervalos miden la distancia entre dos alturas, tanto si las oímos juntas al mismo tiempo (intervalos armónicos) como si las oímos una detrás de otra (intervalos melódicos).</p>
+            <p>Los intervalos se definen por una cualidad y un número. El número especifica la distancia entre dos notas, incluida la nota inicial.</p>
+            <ul>
+                <li><strong>Intervalos Perfectos:</strong> Unísonos, cuartas, quintas y octavas. Tienen un sonido estable y no tienen clasificaciones de mayor o menor.</li>
+                <li><strong>Intervalos Mayores o Menores:</strong> La segunda, tercera, sexta y séptima pueden clasificarse como intervalos mayores o menores. Contribuyen a los aspectos expresivos y emocionales de las melodías y armonías.</li>
+            </ul>
+
+            <h2>Introducción a los acordes</h2>
+            <p>Un acorde es un número de notas musicales que suenan bien cuando se tocan juntas al mismo tiempo. Las notas se seleccionan de una escala musical. Los acordes se construyen en torno a una nota principal llamada «nota raíz». Aunque se pueden hacer acordes con sólo dos notas («power chords»), la mayoría de los acordes tienen al menos tres notas (tríadas) o más (acordes de séptima y extendidos).</p>
+
+            <h2>Tipos de acordes</h2>
+            <p>A efectos prácticos, nos centraremos en tres tipos de acordes:</p>
+            <ul>
+                <li><strong>Tríadas:</strong> Acordes de tres notas con varias cualidades: mayor, menor, disminuida, aumentada o suspendida.</li>
+                <li><strong>Acordes de séptima:</strong> Constan de cuatro notas, incluyen el séptimo grado de la escala por encima de la nota fundamental (7ª mayor, 7ª menor, 7ª dominante).</li>
+                <li><strong>Acordes extendidos:</strong> Amplían las tríadas y los acordes de séptima añadiendo notas extra de sus escalas: la novena, la undécima o la decimotercera.</li>
+            </ul>
+
+            <h2>Acordes abiertos</h2>
+            <p>Los acordes abiertos son acordes que incluyen una o más cuerdas que se tocan sin trastes, lo que permite que la cuerda suene abierta. Se suelen tocar en los primeros trastes de la guitarra y son conocidos por su sonido rico y lleno. Suelen ser los primeros acordes que aprenden los principiantes (C, D, A, G, E).</p>
+
+            <h2>Acordes con cejilla (Barra)</h2>
+            <p>Los acordes de barra utilizan el dedo índice para presionar varias cuerdas a lo largo de un solo traste, creando una «barra» móvil que te permite tocar la misma forma de acorde en distintas posiciones. Esta técnica los hace versátiles y esenciales para tocar una amplia gama de canciones y tonalidades.</p>
+
+            <h2>Power chords</h2>
+            <p>Los Power Chords utilizan dos o tres notas, normalmente la raíz y la quinta, y a veces la octava. Producen un sonido fuerte y limpio, que se utiliza a menudo en la música rock, punk y metal. No son ni mayores ni menores porque carecen del intervalo de tercera.</p>
+
+            <h2>Inversiones de acordes</h2>
+            <p>Los acordes en el piano suelen tocarse de forma estructurada, con la nota más grave como raíz. Sin embargo, en la guitarra, los guitarristas suelen utilizar inversiones de acordes, que consisten en reorganizar el orden de las notas para que la tercera o la quinta sean la nota más grave en lugar de la fundamental.</p>
+            <p>Para una tríada, hay dos inversiones posibles: primera inversión (la tercera en el bajo) y segunda inversión (la quinta en el bajo). Un acorde de séptima puede invertirse tres veces.</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 4</h3>
+                <ul>
+                    <li><strong>Consonancia:</strong> Combinación agradable de elementos como acordes o intervalos, que evoca estabilidad.</li>
+                    <li><strong>Disonancia:</strong> Tensión causada por combinaciones inestables de acordes o intervalos.</li>
+                    <li><strong>Voicing:</strong> Cómo se disponen las notas de un acorde entre instrumentos o voces.</li>
+                    <li><strong>Unísono:</strong> Dos o más partes musicales que tocan o cantan la misma nota en la misma altura.</li>
+                    <li><strong>Cualidades de los acordes:</strong> Características emocionales de los distintos tipos de acordes (mayores brillantes, menores tristes, disminuidos tensos).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-5">
+            <h1>05. El sistema CAGED</h1>
+            <p>A estas alturas, deberías tener una sólida comprensión de cómo las escalas forman los cimientos de la música y cómo los acordes se derivan de estas escalas. Es hora de profundizar en una de las herramientas más poderosas para dominar el diapasón: el sistema CAGED.</p>
+
+            <h2>¿Qué es el sistema CAGED?</h2>
+            <p>El sistema CAGED utiliza formas de acordes abiertos comunes para dividir el mástil de la guitarra en cinco secciones distintas. Se basa en cinco formas fundamentales de acordes abiertos: C, A, G, E y D, de ahí el nombre CAGED. Cada una de estas formas de acordes es móvil, lo que permite tocarlas en varias posiciones a lo largo del diapasón. Normalmente, esto se consigue barrando las notas que caen en el mismo traste, lo que permite que los acordes mantengan su formación a distintas tonalidades.</p>
+
+            <h2>Formas de acordes movibles</h2>
+            <p>Utilizando estos acordes abiertos, puedes tocar cualquier acorde con cualquiera de las cinco formas. Por ejemplo, si quieres tocar un acorde de D, puedes mover la forma de C dos trastes hacia arriba. Sin embargo, ten en cuenta que las cuerdas al aire dejan de estar afinadas al mover la forma. Para corregirlo, tienes que colocar una cejilla dos trastes más arriba, donde estarían las cuerdas al aire.</p>
+            <p>Cuando tocas cualquiera de los acordes abiertos del sistema CAGED, puedes moverlos hacia arriba o hacia abajo en el diapasón para crear el siguiente acorde del alfabeto musical. Si mueves tu forma de acorde de C abierto un traste hacia arriba, obtendrás un acorde de C#. Si la subes otro traste, obtienes un acorde de D.</p>
+            <p>El verdadero poder del sistema CAGED se hace realidad cuando aplicas el concepto de formas de acordes móviles a un solo acorde. Este sistema traza un mapa lógico del diapasón, permitiendo que cualquier acorde dado pueda tocarse por todo el mástil utilizando las formas de acorde CAGED. Cada forma de acorde se conecta perfectamente con la siguiente en un patrón CAGED predecible.</p>
+            <p>Para utilizar eficazmente el sistema CAGED, debes memorizar dónde está la nota raíz en cada forma de acorde. En el sistema CAGED, la nota raíz más grave suele encontrarse en la cuerda E, A o D graves.</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 5</h3>
+                <ul>
+                    <li><strong>El sistema CAGED:</strong> Un método para visualizar y tocar formas de acordes en el diapasón de la guitarra, basado en las formas de acordes abiertos C, A, G, E y D.</li>
+                    <li><strong>Formas movibles:</strong> Formas de acordes o escalas que pueden desplazarse hacia arriba y hacia abajo en el diapasón sin cambiar su estructura.</li>
+                    <li><strong>Cejillas:</strong> Presionar varias cuerdas de un mismo traste con un dedo, normalmente el índice.</li>
+                    <li><strong>Arpegios:</strong> Las notas de un acorde tocadas individualmente y no simultáneamente.</li>
+                    <li><strong>Escalas pentatónicas:</strong> Escalas de cinco notas que se ajustan a las formas CAGED.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-6">
+            <h1>06. Progresiones y Números Romanos</h1>
+            <p>Ahora que tienes una sólida comprensión de las tonalidades, las escalas, los intervalos, los acordes y el sistema CAGED, es hora de elevar aún más nuestros conocimientos. En este capítulo, nos adentramos en el mundo de las progresiones de acordes y los números romanos.</p>
+
+            <h2>Acordes diatónicos</h2>
+            <p>Las progresiones de acordes son una serie de acordes que se tocan en una secuencia específica dentro de una escala, estableciendo una tonalidad basada en una clave. Los acordes de una progresión armonizan cuando están en la misma tonalidad. En una tonalidad (o escala), hay acordes específicos que se adaptan de forma natural a cada nota, conocidos como acordes diatónicos.</p>
+            <p>En la escala de C mayor (C, D, E, F, G, A, B), puedes construir siete acordes diatónicos: C mayor, D menor, E menor, F mayor, G mayor, A menor, y B disminuido. Este patrón de acordes (mayor, menor, menor, mayor, mayor, menor, disminuido) se mantiene constante en las doce tonalidades mayores.</p>
+
+            <h2>Números romanos</h2>
+            <p>Como un número no te dice mucho por sí mismo, optar por números romanos en lugar de nombres de acordes te permite componer sin esfuerzo progresiones de acordes en cualquier tonalidad que desees. Los números romanos no sólo te dicen su posición, sino también su calidad. Las mayúsculas representan acordes mayores, las minúsculas acordes menores, y se añade un pequeño círculo para los acordes disminuidos.</p>
+            <p>En C mayor: <strong>I - ii - iii - IV - V - vi - vii°</strong></p>
+            <p>En tonalidades menores naturales, la disposición es: <strong>i - ii° - III - iv - v - VI - VII</strong>. Las notas inicial, cuarta y quinta producen acordes menores, la tercera, sexta y séptima generan acordes mayores, y la segunda nota se transforma en un acorde disminuido.</p>
+
+            <h2>Grados de escala</h2>
+            <p>En música, una escala se compone de notas ascendentes o descendentes, y cada nota se etiqueta como un «grado» en función de su posición en la escala.</p>
+            <ul>
+                <li><strong>1. Tónica:</strong> Proporciona estabilidad. (C)</li>
+                <li><strong>2. Supertónica:</strong> Ayuda a que las melodías se muevan con fluidez. (D)</li>
+                <li><strong>3. Mediante:</strong> Suele resolverse en la tónica. (E)</li>
+                <li><strong>4. Subdominante:</strong> Añade anticipación y establece cambios. (F)</li>
+                <li><strong>5. Dominante:</strong> Crea tensión y expectación, resuelve a la tónica. (G)</li>
+                <li><strong>6. Submediante:</strong> Añade contraste y variedad. (A)</li>
+                <li><strong>7. Sensible:</strong> Crea tensión y tira fuertemente hacia la tónica. (B)</li>
+            </ul>
+
+            <h2>Progresiones comunes</h2>
+            <p><strong>La progresión I-IV-V:</strong> Es una de las secuencias más frecuentes y reconocibles de la música. Comienza con el acorde de tónica (I), pasa al subdominante (IV) y se resuelve con el dominante (V). Un ejemplo es «Stir It Up» de Bob Marley en A mayor.</p>
+            <p><strong>La progresión I-V-vi-IV:</strong> Es muy reconocida por su cualidad encantadora y edificante. También se conoce como «progresión pop-punk» o «progresión de cuatro acordes». Un ejemplo es «Umbrella» de Rihanna en Db mayor (usa IV-I-V-vi).</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 6</h3>
+                <ul>
+                    <li><strong>Progresión de acordes:</strong> Secuencia de acordes tocados sucesivamente, que forma la columna vertebral armónica de una pieza musical.</li>
+                    <li><strong>Acordes diatónicos:</strong> Acordes construidos utilizando las notas de una escala musical concreta.</li>
+                    <li><strong>Números romanos:</strong> Sistema de notación simbólica utilizado para representar la posición de un acorde dentro de una escala.</li>
+                    <li><strong>Funciones de acordes:</strong> Los papeles que desempeñan los acordes dentro de una progresión armónica (tónica, dominante, subdominante).</li>
+                    <li><strong>Resolución:</strong> La conclusión satisfactoria de una frase o progresión musical.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-7">
+            <h1>07. Notación musical</h1>
+            <p>Ahora vamos a explorar un tema más tradicional de la teoría musical, que es lo que llamamos notación musical. La notación nos ayuda a entender los símbolos de la teoría musical y sienta las bases para comprender el ritmo y el tiempo.</p>
+
+            <h2>Tablatura de guitarra</h2>
+            <p>La tablatura de guitarra o «tab» es una forma simplificada de notación musical que facilita a los guitarristas principiantes aprender canciones rápidamente. Se escribe con seis líneas, cada una de las cuales representa una de las seis cuerdas de la guitarra. Los números se colocan en estas líneas para indicar qué traste debe pulsarse en cada cuerda.</p>
+            <p>Técnicas indicadas en la tablatura:</p>
+            <ul>
+                <li><strong>Hammer-on:</strong> Golpear la cuerda en un traste concreto sólo con la mano izquierda.</li>
+                <li><strong>Pull-off:</strong> Soltar el dedo de la mano izquierda de una cuerda pulsada.</li>
+                <li><strong>Bends:</strong> Estirar una cuerda con los dedos de la mano izquierda para cambiar la altura.</li>
+                <li><strong>Slide:</strong> Deslizar el dedo de la mano izquierda horizontalmente por el diapasón.</li>
+                <li><strong>Vibrato:</strong> Crear una altura oscilante «sacudiendo» el dedo.</li>
+                <li><strong>Acordes:</strong> Números apilados verticalmente indican que las notas deben tocarse simultáneamente.</li>
+            </ul>
+
+            <h2>Las claves</h2>
+            <p>En notación musical, las claves son símbolos utilizados para leer y escribir música.</p>
+            <ul>
+                <li><strong>Clave de Sol (Clave G):</strong> Representa las notas por encima de la C media, que suelen tocarse con la mano derecha en el piano.</li>
+                <li><strong>Clave de Fa (Clave F):</strong> Denota notas más graves que la nota C media. La mano izquierda suele tocar las notas en la clave de Fa.</li>
+            </ul>
+
+            <h2>Figuras musicales</h2>
+            <p>En música, las figuras y sus correspondientes silencios se representan mediante símbolos únicos. La música occidental suele dividir las composiciones en compases, que a menudo constan de cuatro tiempos.</p>
+            <ul>
+                <li><strong>Redondas:</strong> 4 pulsos en compás 4/4.</li>
+                <li><strong>Blancas:</strong> 2 pulsos en compás 4/4.</li>
+                <li><strong>Negras:</strong> 1 pulso.</li>
+                <li><strong>Corcheas:</strong> 1/2 pulso.</li>
+                <li><strong>Semicorcheas:</strong> 1/4 de pulso.</li>
+            </ul>
+            <p>El puntillo en notación musical es una figura normal con un punto a la derecha que alarga su duración a la mitad. Por ejemplo, una negra con puntillo equivale a tres corcheas.</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 7</h3>
+                <ul>
+                    <li><strong>Tablatura:</strong> Sistema de notación utilizado principalmente para instrumentos de cuerda, utilizando números para indicar los trastes.</li>
+                    <li><strong>Pentagrama:</strong> Conjunto de líneas horizontales y espacios en los que se escribe la notación musical.</li>
+                    <li><strong>Compás:</strong> Segmento de tiempo que contiene un número determinado de tiempos.</li>
+                    <li><strong>Silencio:</strong> Indica un periodo de silencio o una pausa en la que no se toca ningún sonido.</li>
+                    <li><strong>Agrupación:</strong> Agrupar una serie de figuras adyacentes con líneas horizontales para clarificar visualmente los ritmos.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-8">
+            <h1>08. Ritmo y tiempo</h1>
+            <p>A continuación, nos adentraremos en el intrigante mundo del ritmo y el tiempo en la música, donde la música adquiere una dimensión matemática. El ritmo es el latido organizado de la música, que agrupa los tiempos en un patrón a un tempo.</p>
+
+            <h2>Pulsaciones por minuto (BPM) y Compás</h2>
+            <p>El BPM, abreviatura de «pulsaciones por minuto», determina la velocidad de tu música. En el software musical, oirás clics cuando pulses play, con un clic más fuerte marcando el punto de inicio de cada compás. Una barra, en este contexto, se refiere a una frase musical que comprende cuatro tiempos.</p>
+            <p>En música, el compás indica el número de tiempos de un compás. En el compás de 4/4, el más común, hay cuatro tiempos. A 60 BPM, cada clic representa un tiempo en un compás de 4/4. Por tanto, tras cuatro pulsaciones, habrás completado un compás de música.</p>
+            <p>Para entender cómo funciona el tiempo en la música, tienes que ver el tiempo como una cuadrícula. Dentro de esta cuadrícula (o compás) es donde se colocan nuestras notas. En un compás de 4/4, tienes la flexibilidad de colocar tus notas en cualquier tiempo o cuenta, o incluso en espacios entre los tiempos.</p>
+
+            <h2>Métrica musical</h2>
+            <p>La métrica en música se refiere a un patrón regular de tiempos fuertes y débiles que forma el ritmo subyacente. Este ritmo se indica al principio de una pieza con un compás. Un compás se escribe con dos números, como una fracción. El número superior muestra cuántos tiempos hay en cada sección musical, mientras que el número inferior indica el tipo de nota que representa un tiempo.</p>
+            <p>La métrica puede agruparse en tres categorías: simple, compuesta y compleja.</p>
+            <ul>
+                <li><strong>Compás 3/4:</strong> Tres tiempos por compás, conocido como compás de vals. Refleja el elegante baile del vals (ej. The Weeknd - Earned It).</li>
+                <li><strong>Compás 4/4:</strong> Cuatro tiempos en cada compás, siendo el primer tiempo el más fuerte. Es la base de muchas canciones populares (ej. Michael Jackson - Billie Jean).</li>
+                <li><strong>Compás 2/4:</strong> Dos tiempos en cada compás, el primer tiempo es fuerte y el segundo es un poco más ligero. Se encuentra a menudo en música animada, como las marchas (ej. The Beach Boys - Surfin' USA).</li>
+            </ul>
+            <p>En un compás común de 4/4, el primer y el tercer tiempo son fuertes, mientras que el segundo y el cuarto tiempo son más suaves. Esta mezcla hace que el ritmo sea interesante y fácil de seguir.</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 8</h3>
+                <ul>
+                    <li><strong>Tiempo compuesto:</strong> Compás musical que divide cada tiempo en subdivisiones más pequeñas e iguales (agrupaciones de tres).</li>
+                    <li><strong>Métrica irregular:</strong> Compases que tienen un número inusual de tiempos (ej. 5/4 o 7/8).</li>
+                    <li><strong>Tiempo común:</strong> Representado con el símbolo «C» y equivale al compás 4/4.</li>
+                    <li><strong>Tiempos fuertes/débiles:</strong> Los tiempos acentuados dentro de un compás vs los menos acentuados.</li>
+                    <li><strong>Pulso/Tiempo:</strong> Una pulsación regular y recurrente en la música que proporciona un sentido de temporalidad.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="capitulo-9">
+            <h1>09. Círculo de quintas</h1>
+            <p>En este capítulo final, exploramos la historia y la utilidad del Círculo de Quintas, una valiosa herramienta para compositores. Piensa en el círculo de quintas como en un mapa musical. Ayuda a los músicos a construir secuencias de acordes y crear música armoniosa.</p>
+
+            <h2>¿Qué es el círculo de quintas?</h2>
+            <p>Es una representación visual de las 12 tonalidades mayores, organizadas por intervalos de quinta perfecta. En la posición de las 12 en nuestro círculo, tenemos C mayor, que es nuestra tonalidad fundamental por su ausencia de sostenidos y bemoles. Cada marca o armadura del Círculo de Quintas es precisamente una quinta perfecta distinta de la anterior. Si empiezas por la nota C y asciendes siete semitonos, llegarás a la nota G.</p>
+            <p>En el círculo de quintas, las tonalidades que están muy próximas entre sí tienden a producir progresiones de acordes más armoniosas. Esto es especialmente eficaz cuando se seleccionan grupos de tres tonalidades, como C-F-G, que forman una clásica progresión de acordes 1-4-5.</p>
+
+            <h2>Tonalidades con sostenidos y bemoles</h2>
+            <p>El círculo de quintas ofrece una valiosa ventaja: indica con precisión cuándo debemos incorporar un sostenido o un bemol en cada tonalidad.</p>
+            <p><strong>Para los sostenidos:</strong> Moviéndonos en el sentido de las agujas del reloj alrededor del Círculo de Quintas, empezando por C mayor (0 sostenidos). Al ascender una quinta a G mayor, necesitamos incluir un F sostenido. Al seguir a D mayor, conlleva dos sostenidos: F# y C#. Cada tonalidad sucesiva introduce un sostenido adicional hasta llegar al recuento máximo de siete sostenidos.</p>
+            <p><strong>Para los bemoles:</strong> Empezaremos en C y nos moveremos en el sentido contrario a las agujas del reloj. En lugar de ascender por una quinta perfecta, descendemos por una quinta perfecta (o ascendemos por una cuarta perfecta). Al tocar la escala mayor comenzando en F, necesitaremos incluir B bemol. Al descender a Bb mayor, se incorpora un segundo bemol en Eb.</p>
+
+            <h2>Tonalidades menores</h2>
+            <p>El círculo de quintas también sirve para comprender las tonalidades menores. Cada tonalidad mayor tiene una contrapartida conocida como tonalidad menor relativa. Puedes determinar el menor relativo de cualquier tonalidad mayor descendiendo una tercera menor (tres semitonos) desde la nota inicial. Por ejemplo, empezar en C y descender tres semitonos revela que el relativo menor de C mayor es A menor. Cada tonalidad menor comparte el mismo número de sostenidos o bemoles que su tonalidad mayor correspondiente.</p>
+
+            <div class="glosario">
+                <h3>Glosario del Capítulo 9</h3>
+                <ul>
+                    <li><strong>Nikolay Diletsky:</strong> Compositor y teórico musical ucraniano del siglo XVII, conocido por sus escritos sobre el círculo de quintas.</li>
+                    <li><strong>Armadura:</strong> Conjunto de símbolos de sostenido o bemol situados al principio de un pentagrama que indica la tonalidad.</li>
+                    <li><strong>Tonalidad Mayor:</strong> Escala diatónica con un sonido brillante y alegre.</li>
+                    <li><strong>Tonalidad Menor:</strong> Escala diatónica con un sonido sombrío o triste.</li>
+                    <li><strong>Cambio de Tonalidad (Modulación):</strong> Cuando una pieza musical pasa de una tonalidad a otra.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="nota-autor">
+            <h1>Nota del autor y Recomendaciones</h1>
+            <p>¡Felicidades! Has llegado con éxito a la conclusión de nuestro libro! Al concluir Teoría de Guitarra Simplificada, quiero expresar mi sincera gratitud por acompañarme en este periplo musical. Este libro ha sido un trabajo de amor, nacido del deseo de hacer que la teoría musical sea accesible a todos, independientemente de su formación o experiencia.</p>
+            <p>Espero que el tiempo que pases leyendo este libro haya sido tan agradable e instructivo como el que yo pasé creándolo. Al igual que me he esforzado por inspirar y guiar a través de mi canal de música y Musiciangoods, confío en que ahora tengas una base más sólida para perseguir tus aspiraciones musicales.</p>
+            <p>No dudes en ponerte en contacto conmigo en las redes sociales si tienes alguna pregunta sobre este libro o sobre la teoría musical en general. Siempre estoy abierto a tus comentarios, y estoy aquí para ayudarte en todo lo que pueda. Tu aportación es inestimable y espero formar parte de tu continua exploración musical.</p>
+            <p>Nuestro compromiso contigo incluye actualizaciones periódicas del contenido de este libro, así como la adición de nuevas lecciones y videotutoriales. Si te suscribes a nuestro boletín o nos sigues en las redes sociales, te mantendrás informado sobre el lanzamiento de versiones mejoradas, disponibles para su descarga gratuita. Tu aprendizaje y crecimiento continuos en la música son nuestras prioridades.</p>
+            <p>No olvides aprovechar las hojas de trucos en PDF gratuitas que acompañan a este libro. Las encontrarás en la carpeta adjunta. Gracias por formar parte de este viaje musical, y te deseo todo lo mejor en tus esfuerzos musicales.</p>
+            <p><strong>SÍGUEME EN:</strong> Instagram: mrtellier</p>
+
+            <h2>Artículos complementarios</h2>
+            <p>Mejora tu experiencia de aprendizaje de la teoría musical con un Mouse Pad sobre Teoría de Guitarra, también disponible para bajo, de Musiciangoods en Musiciangoods.com. Este exclusivo mouse pad, junto con el póster y el PDF digital que lo acompañan, presenta visualmente los conceptos clave de este libro, convirtiéndolo en una práctica referencia al alcance de tu mano.</p>
+            <p>Si también te interesa explorar la teoría musical para instrumentos de teclado, te recomendamos encarecidamente nuestro libro Teoría musical simplificada. Además, también tenemos una edición para bajo de nuestro libro.</p>
+            <p>Sólo tienes que escanear el código QR para acceder a estos recursos. Como valioso lector, no olvides utilizar el código de descuento «theorysimplified» al pagar para disfrutar de un descuento exclusivo del 20% en estas herramientas esenciales.</p>
+        </section>
+
+    </main>
+</body>
+</html>
