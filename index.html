@@ -34,7 +34,7 @@
         .collapsible-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; }
         .collapsible-header svg { transition:transform .3s ease; width:20px; height:20px; stroke:var(--primary); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
         .collapsible-content { max-height:0; overflow:hidden; transition:max-height .3s ease-out; }
-        .card.open .collapsible-content { max-height:3800px; transition:max-height .5s ease-in; margin-top:15px; }
+        .card.open .collapsible-content { max-height:4500px; transition:max-height .5s ease-in; margin-top:15px; }
         .card.open .collapsible-header svg { transform:rotate(180deg); }
         .control-group { margin-bottom:15px; display:flex; flex-direction:column; gap:8px; }
         select, input[type="search"] { width:100%; padding:14px; border-radius:8px; border:1px solid #333; background:#2a2a2a; color:#fff; font-size:1rem; transition:border-color .2s; appearance:none; }
@@ -48,9 +48,21 @@
         .tool-btn:active, .tool-btn.active-tool { background-color:var(--primary); color:var(--bg-color); }
         .tool-btn svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
         .results-list { display:flex; flex-direction:column; gap:12px; }
-        .song-item { background:var(--surface); padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid #2a2a2a; gap:10px; flex-wrap:wrap; }
+        .song-item { background:var(--surface); padding:16px; border-radius:10px; border:1px solid #2a2a2a; display:flex; flex-direction:column; gap:10px; }
+        .song-row { display:flex; justify-content:space-between; align-items:center; width:100%; gap:10px; flex-wrap:wrap; }
         .song-info { flex:1; min-width:180px; }
         .song-actions { display:flex; gap:8px; align-items:center; }
+        
+        /* Panel Gear & Tone */
+        .gear-panel { background:#141414; border:1px solid #333; border-top:2px solid var(--primary); padding:14px; border-radius:8px; font-size:.85rem; color:#ccc; display:none; width:100%; margin-top:6px; animation:fadeIn .2s ease; }
+        .gear-panel.active { display:block; }
+        .gear-panel h4 { color:var(--secondary); font-size:.9rem; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+        .gear-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-top:8px; }
+        .gear-badge { background:#222; padding:8px 10px; border-radius:6px; border:1px solid #333; font-size:.8rem; }
+        .gear-badge span { color:var(--primary); font-weight:bold; display:block; margin-bottom:2px; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px; }
+        .gear-link { display:inline-flex; align-items:center; gap:4px; color:var(--secondary); text-decoration:none; font-size:.8rem; margin-top:8px; font-weight:600; }
+        .gear-link:hover { text-decoration:underline; }
+
         .info-block { background:#1a1a1a; padding:15px; border-radius:8px; border-left:4px solid var(--primary); margin-top:15px; display:none; }
         .info-block.active { display:block; }
         .guitar-img-container { width:100%; border-radius:8px; overflow:hidden; margin-bottom:15px; background:#000; max-height:280px; display:flex; align-items:center; justify-content:center; border:1px solid #333; }
@@ -214,7 +226,7 @@
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:.85rem; margin:10px 0;">
-                                Selecciona tónica, escala y posición. Solo se resaltan las notas exactas de la escala (la caja activa); el resto del mástil se atenúa. En <strong style="color:var(--secondary)">amarillo</strong> la tónica (T).
+                                Selecciona tónica, escala y posición. <strong>Solo se acotan las notas que forman parte de la escala seleccionada</strong> en la caja activa para evitar confusiones. En <strong style="color:var(--secondary)">amarillo</strong> la tónica (T).
                             </p>
                             <div class="filter-row">
                                 <select id="scale-root" title="Tónica de la escala"></select>
@@ -324,7 +336,7 @@
                 <section id="sec-songs" class="view">
                     <h2>Buscador de Canciones y Tabs</h2>
                     <div class="control-group">
-                        <input type="search" id="search-input" placeholder="Ej: Sultans of Swing, Iván Ferreiro, Muse..." autocomplete="off">
+                        <input type="search" id="search-input" placeholder="Ej: Sultans of Swing, Iván Ferreiro, Muse, Pink Floyd..." autocomplete="off">
                     </div>
                     <div id="search-results" class="results-list"></div>
                 </section>
@@ -338,8 +350,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <!-- CAMBIO: v2.1.0 -> v2.2.0 -->
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.2.0</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.3.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -405,8 +416,7 @@
     </nav>
 
 <script>
-// CAMBIO: v2.1.0 -> v2.2.0
-const APP_VERSION = "v2.2.0";
+const APP_VERSION = "v2.3.0";
 
 function toggleCard(cardId) { document.getElementById(cardId).classList.toggle('open'); }
 
@@ -688,7 +698,7 @@ function generateChords() {
     container.innerHTML = html;
 }
 
-// --- CATÁLOGO DE ESCALAS (55 variantes) ---
+// --- DICCIONARIO COMPLETO DE ESCALAS ---
 const scaleCatalog = {
     pentamin:       { intervals: [0,3,5,7,10],            formula: "1 - ♭3 - 4 - 5 - ♭7",            degrees: ["1","♭3","4","5","♭7"], boxShift: 0 },
     pentamaj:       { intervals: [0,2,4,7,9],             formula: "1 - 2 - 3 - 5 - 6",               degrees: ["1","2","3","5","6"], boxShift: -1 },
@@ -858,32 +868,32 @@ function renderScaleFretboard() {
         for (let f = 0; f <= 12; f++) {
             const noteIdx = (openNoteIdx + f) % 12;
             const semitonesFromRoot = (noteIdx - rootIdx + 12) % 12;
+            
+            // ACOTACIÓN ESTRICTA: Si la nota no pertenece a la escala, se omite
             if (!intervals.includes(semitonesFromRoot)) continue;
 
             const isRoot = (semitonesFromRoot === 0);
             const inPosition = (posKey === 'all' || (f >= posWin.min && f <= posWin.max));
-            const opacity = inPosition ? '1' : '0.08';
+            
+            // Si hay una posición seleccionada, NO se dibuja ninguna nota fuera de la caja
+            if (!inPosition) continue;
 
             const degreeIdx = intervals.indexOf(semitonesFromRoot);
             const degreeLabel = scaleObj.degrees ? scaleObj.degrees[degreeIdx] : '';
             const noteLabel = notationES ? notesSys[noteIdx].es : notesSys[noteIdx].us;
-            let label;
-            if (showDegrees) label = isRoot ? 'T' : degreeLabel;
-            else label = noteLabel;
+            let label = showDegrees ? (isRoot ? 'T' : degreeLabel) : noteLabel;
 
             const fillCol = isRoot ? '#FFEA00' : '#FF5E00';
             const strokeCol = isRoot ? '#ffffff' : '#121212';
             const strokeW = isRoot ? '2.5' : '1.5';
 
-            if (posKey === 'all' || inPosition) {
-                currentScaleAudioNotes.push({ string: synthStr, fret: f, noteIdx, isRoot });
-            }
+            currentScaleAudioNotes.push({ string: synthStr, fret: f, noteIdx, isRoot });
 
             if (f === 0) {
-                svg += `<g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, 0)"><circle cx="22" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#fff' : '#FFEA00'}" stroke-width="${strokeW}"/><text x="22" y="${y + 4}" fill="#000" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, 0)"><circle cx="22" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#fff' : '#FFEA00'}" stroke-width="${strokeW}"/><text x="22" y="${y + 4}" fill="#000" font-size="10" font-weight="bold" text-anchor="middle">${label}</text></g>`;
             } else {
                 const x = nutX + (f - 0.5) * fretWidth;
-                svg += `<g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, ${f})"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${strokeCol}" stroke-width="${strokeW}"/><text x="${x}" y="${y + 4}" fill="#000" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, ${f})"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${strokeCol}" stroke-width="${strokeW}"/><text x="${x}" y="${y + 4}" fill="#000" font-size="10" font-weight="bold" text-anchor="middle">${label}</text></g>`;
             }
         }
     }
@@ -955,6 +965,7 @@ document.getElementById('btn-play-tone').addEventListener('click', function() {
     setTimeout(() => { this.style.backgroundColor = 'var(--surface)'; this.style.color = 'var(--primary)'; }, 300);
 });
 
+// --- NAVEGACIÓN SPA Y MANUAL ---
 const viewReference = document.getElementById('view-reference');
 const btnOpenRef = document.getElementById('btn-open-reference');
 const refIframe = document.getElementById('ref-iframe');
@@ -993,33 +1004,94 @@ navItems.forEach(item => {
 
 initUI();
 
+// --- BASE DE DATOS DE GEAR & TONE (AMPLIS, PEDALES Y DISTORSIÓN) ---
+const artistGearDatabase = {
+    "dire straits": { amp: "Fender Twin Reverb / Soldano SLO-100", drive: "Limpio cristalino con ataque dinámico", eq: "Bajos: 5 | Medios: 6 | Agudos: 8.5 | Presencia: 7", pedals: "Dan Armstrong Orange Squeezer (Compresor), Ibanez TS9, Roland Space Echo", equipboard: "https://equipboard.com/pros/mark-knopfler" },
+    "mark knopfler": { amp: "Fender Twin Reverb / Soldano SLO-100", drive: "Limpio cristalino con ataque dinámico", eq: "Bajos: 5 | Medios: 6 | Agudos: 8.5 | Presencia: 7", pedals: "Dan Armstrong Orange Squeezer (Compresor), Ibanez TS9, Roland Space Echo", equipboard: "https://equipboard.com/pros/mark-knopfler" },
+    "pink floyd": { amp: "Hiwatt DR103 Custom 100", drive: "Overdrive suave + Fuzz denso sostenido", eq: "Bajos: 6 | Medios: 5 | Agudos: 7 | Presencia: 6", pedals: "Electro-Harmonix Big Muff Pi, Colorsound Power Boost, Binson Echorec Delay, Boss CE-2 Chorus", equipboard: "https://equipboard.com/pros/david-gilmour" },
+    "david gilmour": { amp: "Hiwatt DR103 Custom 100", drive: "Overdrive suave + Fuzz denso sostenido", eq: "Bajos: 6 | Medios: 5 | Agudos: 7 | Presencia: 6", pedals: "Electro-Harmonix Big Muff Pi, Colorsound Power Boost, Binson Echorec Delay, Boss CE-2 Chorus", equipboard: "https://equipboard.com/pros/david-gilmour" },
+    "metallica": { amp: "Mesa/Boogie Dual Rectifier / Mark IIC+", drive: "High-Gain con medios recortados (Scooped)", eq: "Bajos: 8 | Medios: 2.5 | Agudos: 8.5 | Presencia: 7.5", pedals: "Ibanez TS9 (Level max / Gain 0), Morley Bad Horsie Wah, Boss NS-2 Noise Suppressor", equipboard: "https://equipboard.com/pros/james-hetfield" },
+    "ac/dc": { amp: "Marshall JTM45 / Super Lead 1959 Plexi", drive: "Crunch orgánico de válvulas al límite", eq: "Bajos: 6 | Medios: 7.5 | Agudos: 6.5 | Presencia: 6", pedals: "Sin pedales de distorsión (Guitarra directa a Marshall saturado al 8-10)", equipboard: "https://equipboard.com/pros/angus-young" },
+    "muse": { amp: "Marshall JVM410H / Diezel VH4", drive: "Fuzz caótico con compuerta + Distorsión agresiva", eq: "Bajos: 7.5 | Medios: 4 | Agudos: 8 | Presencia: 7", pedals: "Z.Vex Fuzz Factory, DigiTech Whammy, MXR Phase 90, Line 6 DL4", equipboard: "https://equipboard.com/pros/matthew-bellamy" },
+    "ivan ferreiro": { amp: "Fender Hot Rod Deluxe / Vox AC30", drive: "Indie Rock: De limpio brillante a overdrive cálido", eq: "Bajos: 5.5 | Medios: 6.5 | Agudos: 6 | Presencia: 5.5", pedals: "Fulltone OCD / Boss BD-2 Blues Driver, Strymon Timeline Delay, EHX Holy Grail Reverb", equipboard: "https://equipboard.com/pros/ivan-ferreiro" },
+    "los piratas": { amp: "Vox AC30 / Fender Twin", drive: "Pop-Rock alternativo noventero con saturación natural", eq: "Bajos: 5 | Medios: 7 | Agudos: 6.5 | Presencia: 6", pedals: "Ibanez Tube Screamer, Boss DD-3 Digital Delay, Boss CH-1 Super Chorus", equipboard: "https://equipboard.com/pros/ivan-ferreiro" },
+    "biffy clyro": { amp: "Marshall JCM900 / Peavey Classic", drive: "Distorsión potente y crujiente de rock moderno", eq: "Bajos: 7 | Medios: 5.5 | Agudos: 7.5 | Presencia: 7", pedals: "Boss MT-2 Metal Zone (modificado), Boss DS-1, Strymon Flint", equipboard: "https://equipboard.com/pros/simon-neil" },
+    "red hot chili peppers": { amp: "Marshall Major 200W / Silver Jubilee", drive: "Clean funky roto al presionar fuerte las cuerdas", eq: "Bajos: 6 | Medios: 6 | Agudos: 8 | Presencia: 7.5", pedals: "Boss DS-2 Turbo Distortion, Ibanez WH10 Wah, Electro-Harmonix Holy Grail", equipboard: "https://equipboard.com/pros/john-frusciante" },
+    "nirvana": { amp: "Fender Twin Reverb / Mesa/Boogie Studio .22", drive: "Grunge: Clean rasposo a distorsión pesada", eq: "Bajos: 7 | Medios: 5 | Agudos: 7 | Presencia: 6", pedals: "Boss DS-1 / DS-2, Electro-Harmonix Small Clone Chorus, Tech 21 SansAmp", equipboard: "https://equipboard.com/pros/kurt-cobain" },
+    "jimi hendrix": { amp: "Marshall Super Lead 100W", drive: "Overdrive de etapa de potencia al 10 + Fuzz vintage", eq: "Bajos: 5 | Medios: 6 | Agudos: 8 | Presencia: 8", pedals: "Dallas Arbiter Fuzz Face, Vox Clyde McCoy Wah, Roger Mayer Octavia, Univox Uni-Vibe", equipboard: "https://equipboard.com/pros/jimi-hendrix" },
+    "led zeppelin": { amp: "Marshall SLP 1959 / Supro 1624T", drive: "Hard Rock setentero con sustain cantarín", eq: "Bajos: 5.5 | Medios: 7 | Agudos: 6.5 | Presencia: 7", pedals: "Sola Sound Tone Bender MKII, Maestro Echoplex EP-3, Cry Baby Wah", equipboard: "https://equipboard.com/pros/jimmy-page" }
+};
+
+function getArtistToneProfile(artistName) {
+    const query = artistName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    for (let key in artistGearDatabase) {
+        if (query.includes(key)) return artistGearDatabase[key];
+    }
+    return {
+        amp: "Amplificador de válvulas versátil (Estilo Fender o Marshall)",
+        drive: "Ganancia moderada (Crunch/Overdrive dinámico)",
+        eq: "Bajos: 6 | Medios: 6 | Agudos: 6 | Presencia: 5",
+        pedals: "Overdrive transparente (tipo TS9 o Klon), Reverb de muelles, Delay sutil",
+        equipboard: `https://equipboard.com/search?q=${encodeURIComponent(artistName)}`
+    };
+}
+
+function toggleGearPanel(btnEl, panelId) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    const isActive = panel.classList.toggle('active');
+    btnEl.classList.toggle('active-tool', isActive);
+}
+
+// --- BUSCADOR ---
 const searchInput = document.getElementById('search-input');
 const searchResults = document.getElementById('search-results');
 let searchTimeout;
+
 searchInput.addEventListener('input', (e) => {
     clearTimeout(searchTimeout);
     const query = e.target.value.trim();
     if (query.length > 2) {
-        searchResults.innerHTML = '<p style="color:var(--text-muted);">Buscando canciones y enlaces...</p>';
+        searchResults.innerHTML = '<p style="color:var(--text-muted);">Buscando canciones, tablaturas y tono...</p>';
         searchTimeout = setTimeout(async () => {
             try {
                 const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=12`);
                 if (!response.ok) throw new Error('Error de red');
                 const data = await response.json();
                 if (data.resultCount === 0) { searchResults.innerHTML = '<p style="color:var(--text-muted);">No se encontraron canciones.</p>'; return; }
-                searchResults.innerHTML = data.results.map(song => {
+                
+                searchResults.innerHTML = data.results.map((song, idx) => {
                     const cleanArtist = song.artistName.replace(/'/g, "\\'");
                     const cleanTitle = song.trackName.replace(/'/g, "\\'");
                     const tabUrl = `https://www.songsterr.com/a/wa/search?pattern=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const appleMusicUrl = song.trackViewUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
+                    
+                    const tone = getArtistToneProfile(song.artistName);
+                    const panelId = `gear-panel-${idx}`;
+
                     return `<div class="song-item">
-                        <div class="song-info"><strong>${song.trackName}</strong><br><small style="color:var(--text-muted);">${song.artistName}</small></div>
-                        <div class="song-actions">
-                            <a href="${appleMusicUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
-                            <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
-                            <a href="${tabUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Songsterr"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
-                            <button class="tool-btn" onclick="saveFav(${song.trackId}, '${cleanTitle}', '${cleanArtist}', '${tabUrl}', '${appleMusicUrl}', '${ytUrl}')" style="padding:8px 10px;" title="Guardar"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+                        <div class="song-row">
+                            <div class="song-info"><strong>${song.trackName}</strong><br><small style="color:var(--text-muted);">${song.artistName}</small></div>
+                            <div class="song-actions">
+                                <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales de guitarra">
+                                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                </button>
+                                <a href="${appleMusicUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
+                                <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
+                                <a href="${tabUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura Songsterr"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
+                                <button class="tool-btn" onclick="saveFav(${song.trackId}, '${cleanTitle}', '${cleanArtist}', '${tabUrl}', '${appleMusicUrl}', '${ytUrl}')" style="padding:8px 10px;" title="Guardar Favorito"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+                            </div>
+                        </div>
+                        <div class="gear-panel" id="${panelId}">
+                            <h4><span>🎛️ Ajustes de Tono y Gear de ${song.artistName}</span></h4>
+                            <div class="gear-grid">
+                                <div class="gear-badge"><span>Amplificador</span>${tone.amp}</div>
+                                <div class="gear-badge"><span>Saturación / Drive</span>${tone.drive}</div>
+                                <div class="gear-badge"><span>Ecualización (EQ)</span>${tone.eq}</div>
+                                <div class="gear-badge"><span>Pedales Clave</span>${tone.pedals}</div>
+                            </div>
+                            <a href="${tone.equipboard}" target="_blank" class="gear-link">🔗 Ver equipo completo del artista en Equipboard &rarr;</a>
                         </div>
                     </div>`;
                 }).join('');
@@ -1036,16 +1108,33 @@ let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v3')) || [];
 function renderFavs() {
     const favList = document.getElementById('fav-list');
     if (favorites.length === 0) { favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted);">No tienes canciones guardadas.</p>'; return; }
-    favList.innerHTML = favorites.map(song => {
+    favList.innerHTML = favorites.map((song, idx) => {
         const amUrl = song.appleMusicUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artist + ' ' + song.title)}`;
         const ytUrl = song.ytUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artist + ' ' + song.title)}`;
+        const tone = getArtistToneProfile(song.artist);
+        const panelId = `gear-fav-${idx}`;
         return `<div class="song-item">
-            <div class="song-info"><strong>${song.title}</strong><br><small style="color:var(--text-muted);">${song.artist}</small></div>
-            <div class="song-actions">
-                <a href="${amUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
-                <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
-                <a href="${song.url}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
-                <button class="icon-btn" onclick="removeFav(${song.id})" style="padding:8px;border:1px solid #ff4444;border-radius:8px;color:#ff4444; background:none; cursor:pointer;" title="Eliminar"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+            <div class="song-row">
+                <div class="song-info"><strong>${song.title}</strong><br><small style="color:var(--text-muted);">${song.artist}</small></div>
+                <div class="song-actions">
+                    <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </button>
+                    <a href="${amUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
+                    <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
+                    <a href="${song.url}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
+                    <button class="icon-btn" onclick="removeFav(${song.id})" style="padding:8px;border:1px solid #ff4444;border-radius:8px;color:#ff4444; background:none; cursor:pointer;" title="Eliminar"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+            </div>
+            <div class="gear-panel" id="${panelId}">
+                <h4><span>🎛️ Ajustes de Tono y Gear de ${song.artist}</span></h4>
+                <div class="gear-grid">
+                    <div class="gear-badge"><span>Amplificador</span>${tone.amp}</div>
+                    <div class="gear-badge"><span>Saturación / Drive</span>${tone.drive}</div>
+                    <div class="gear-badge"><span>Ecualización (EQ)</span>${tone.eq}</div>
+                    <div class="gear-badge"><span>Pedales Clave</span>${tone.pedals}</div>
+                </div>
+                <a href="${tone.equipboard}" target="_blank" class="gear-link">🔗 Ver equipo completo del artista en Equipboard &rarr;</a>
             </div>
         </div>`;
     }).join('');
@@ -1063,6 +1152,7 @@ function saveFav(id, title, artist, url, appleMusicUrl, ytUrl) {
 function removeFav(id) { favorites = favorites.filter(s => s.id !== id); localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); }
 renderFavs();
 
+// --- BACKUP ---
 document.getElementById('btn-export').addEventListener('click', async () => {
     const jsonString = JSON.stringify(favorites, null, 2);
     const fileName = "guitarhall_backup.json";
@@ -1104,6 +1194,7 @@ document.getElementById('btn-import').addEventListener('change', function(e) {
     e.target.value = '';
 });
 
+// --- SISTEMA OTA ---
 document.getElementById('btn-ota').addEventListener('click', async () => {
     const status = document.getElementById('ota-status');
     status.style.display = 'block';
