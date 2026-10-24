@@ -52,7 +52,7 @@
         .collapsible-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
         .collapsible-header svg { transition: transform 0.3s ease; width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .card.open .collapsible-content { max-height: 3800px; transition: max-height 0.5s ease-in; margin-top: 15px; }
+        .card.open .collapsible-content { max-height: 4000px; transition: max-height 0.5s ease-in; margin-top: 15px; }
         .card.open .collapsible-header svg { transform: rotate(180deg); }
 
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
@@ -62,23 +62,20 @@
         .filter-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
         .filter-row select { flex: 1; min-width: 135px; padding: 10px 12px; font-size: 0.92rem; }
 
-        .scale-formula-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .scale-info-panel {
             background: #161616;
             border: 1px solid #333;
             border-left: 3px solid var(--secondary);
-            padding: 8px 12px;
+            padding: 12px 15px;
             border-radius: 6px;
             font-size: 0.85rem;
             color: #ddd;
             margin-bottom: 14px;
-            width: 100%;
-            justify-content: space-between;
-            flex-wrap: wrap;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        .scale-formula-badge strong { color: var(--secondary); font-family: monospace; font-size: 0.95rem; }
+        .scale-info-panel strong { color: var(--secondary); }
 
         .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
@@ -125,7 +122,6 @@
         .play-card-btn:active { transform: scale(0.95); opacity: 0.85; }
         .play-card-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
-        /* Vista Documento de Referencia (reference.html) */
         #view-reference {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -212,8 +208,8 @@
                         <button class="tool-btn" id="btn-toggle-not">
                             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> Nomenclatura: <span id="not-label" style="margin-left:5px;">ES</span>
                         </button>
-                        <button class="tool-btn" id="btn-play-tone">
-                            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg> Afinar (Mi/E)
+                        <button class="tool-btn" id="btn-toggle-display-mode">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Ver: <span id="display-mode-label" style="margin-left:5px;">Notas</span>
                         </button>
                     </div>
 
@@ -278,6 +274,12 @@
                                     <option value="7">7ª (Dominante)</option>
                                     <option value="maj7">Mayor 7</option>
                                     <option value="m7">Menor 7</option>
+                                    <option value="m7b5">Semidisminuido (m7♭5)</option>
+                                    <option value="dim7">Disminuido 7 (dim7)</option>
+                                    <option value="mM7">Menor con 7ª Mayor (mMaj7)</option>
+                                    <option value="m6">Menor Sexta (m6)</option>
+                                    <option value="maj7s5">Mayor 7 Aumentada (Maj7♯5)</option>
+                                    <option value="sus4">Dominante Sus4 (7sus4)</option>
                                     <option value="power">Quinta (Power Chord)</option>
                                 </select>
                             </div>
@@ -285,7 +287,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. CATÁLOGO DE ESCALAS CON SELECTOR DE POSICIÓN -->
+                    <!-- 4. CATÁLOGO DE ESCALAS AMPLIADO -->
                     <div class="card open" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas y Posiciones</h3>
@@ -293,11 +295,11 @@
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:0.85rem; margin: 10px 0;">
-                                Selecciona tónica, escala y posición en el diapasón. En <strong style="color:var(--secondary)">amarillo</strong> se resalta la Tónica (T).
+                                Selecciona tónica, escala y posición en el diapasón. Solo se destacan las notas de dicha escala.
                             </p>
                             <div class="filter-row">
-                                <select id="scale-root" title="Tónica de la escala"></select>
-                                <select id="scale-type" title="Tipo de escala">
+                                <select id="scale-root" title="Tónica"></select>
+                                <select id="scale-type" title="Escala">
                                     <optgroup label="Fase 1: Imprescindibles">
                                         <option value="pentamin">Pentatónica Menor</option>
                                         <option value="pentamaj">Pentatónica Mayor</option>
@@ -313,24 +315,26 @@
                                         <option value="mixolydian">Modo Mixolidio</option>
                                         <option value="locrian">Modo Locrio</option>
                                     </optgroup>
-                                    <optgroup label="Fase 3: Armonía Avanzada">
+                                    <optgroup label="Fase 3: Armonía Avanzada y Bebop">
                                         <option value="harm_minor">Menor Armónica</option>
                                         <option value="mel_minor">Menor Melódica</option>
                                         <option value="altered">Alterada (Superlocria)</option>
                                         <option value="lydian_b7">Lidia ♭7 (Overtone)</option>
-                                        <option value="phrygian_dom">Frigia Dominante (Española)</option>
+                                        <option value="phrygian_dom">Frigia Dominante</option>
                                         <option value="bebop_dom">Bebop Dominante</option>
+                                        <option value="bebop_maj">Bebop Mayor</option>
+                                        <option value="bebop_min">Bebop Menor</option>
                                     </optgroup>
-                                    <optgroup label="Fase 4: Simétricas">
+                                    <optgroup label="Fase 4: Simétricas y Cromáticas">
                                         <option value="dim_wh">Disminuida (Tono-Semitono)</option>
                                         <option value="dim_hw">Disminuida (Semitono-Tono)</option>
                                         <option value="wholetone">Por Tonos (Whole Tone)</option>
                                         <option value="chromatic">Escala Cromática</option>
                                     </optgroup>
                                     <optgroup label="Fase 5: Exóticas y Orientales">
-                                        <option value="hirajoshi">Hirajoshi (Japonesa)</option>
+                                        <option value="hirajoshi">Hirajoshi</option>
                                         <option value="kumoi">Kumoi</option>
-                                        <option value="insen">In-Sen (Japonesa)</option>
+                                        <option value="insen">In-Sen</option>
                                         <option value="hungarian">Húngara Gipsy</option>
                                         <option value="persian">Persa</option>
                                         <option value="arabic">Arábiga (Doble Armónica)</option>
@@ -338,21 +342,31 @@
                                         <option value="neapolitan_maj">Napolitana Mayor</option>
                                         <option value="enigmatic">Enigmática</option>
                                         <option value="oriental">Oriental</option>
+                                        <option value="pelog">Pelog</option>
+                                        <option value="china">China</option>
+                                        <option value="algerian">Argelina</option>
+                                        <option value="ritusen">Ritusen</option>
+                                        <option value="jewish">Judía (Ahava Raba)</option>
+                                        <option value="java">Java</option>
+                                        <option value="muhammadan">Mahometana</option>
+                                        <option value="scriabin">Scriabin</option>
+                                        <option value="tcherepnin">Tcherepnin</option>
                                     </optgroup>
                                 </select>
-                                <select id="scale-pos" title="Posición en el mástil">
-                                    <option value="all">Mapa Completo (Trastes 0-12)</option>
-                                    <option value="pos1">Posición 1 (Tónica en 6ª - Base)</option>
-                                    <option value="pos2">Posición 2 (Caja central)</option>
-                                    <option value="pos3">Posición 3 (Tónica en 5ª)</option>
-                                    <option value="pos4">Posición 4 (Caja aguda)</option>
-                                    <option value="pos5">Posición 5 (Pre-octava)</option>
+                                <select id="scale-pos" title="Posición CAGED">
+                                    <option value="all">Mástil Completo (0-12)</option>
+                                    <option value="pos1">Posición 1 (Caja Base)</option>
+                                    <option value="pos2">Posición 2</option>
+                                    <option value="pos3">Posición 3</option>
+                                    <option value="pos4">Posición 4</option>
+                                    <option value="pos5">Posición 5</option>
                                 </select>
                             </div>
 
-                            <div class="scale-formula-badge">
-                                <span>Fórmula: <strong id="scale-formula-text">1 - ♭3 - 4 - 5 - ♭7</strong></span>
-                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Vista: Trastes 0 al 12</span>
+                            <div class="scale-info-panel">
+                                <div>Fórmula: <strong id="scale-formula-text">1 - ♭3 - 4 - 5 - ♭7</strong></div>
+                                <div>Acordes compatibles: <span id="scale-chords-text" style="color:var(--secondary)">-</span></div>
+                                <div id="scale-pos-range-text" style="color:var(--primary); font-weight:bold; margin-top:2px;">Vista: Mástil Completo</div>
                             </div>
                             
                             <div class="fretboard-scroll-wrapper" id="scale-fretboard-container"></div>
@@ -383,7 +397,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.0.0</strong></p>
+                        <p style="color:var(--text-muted); font-size: 0.9rem; margin: 10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.1.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -452,7 +466,7 @@
     </nav>
 
     <script>
-        const APP_VERSION = "v2.0.0";
+        const APP_VERSION = "v2.1.0";
 
         function toggleCard(cardId) {
             document.getElementById(cardId).classList.toggle('open');
@@ -610,6 +624,7 @@
         ];
 
         let notationES = true;
+        let displayModeNotes = true; // true = Notas (Do, Re... / C, D...), false = Grados (T, 2, ♭3...)
         const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
         const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
@@ -732,6 +747,26 @@
                 { name: "Menor 7 (Forma Mi)", get: (rE, rA) => ({ strings: [0, 2, 0, 0, 0, 0], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
                 { name: "Menor 7 (Forma La)", get: (rE, rA) => ({ strings: ['X', 0, 2, 0, 1, 0], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
             ],
+            m7b5: [
+                { name: "Semidisminuido (Forma Mi)", get: (rE, rA) => ({ strings: [0, 1, 0, 0, 'X', 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
+                { name: "Semidisminuido (Forma La)", get: (rE, rA) => ({ strings: ['X', 0, 1, 0, 1, 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+            ],
+            dim7: [
+                { name: "Disminuido 7 (Forma 6ª)", get: (rE, rA) => ({ strings: [0, 'X', 0, 1, 0, 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
+                { name: "Disminuido 7 (Forma 5ª)", get: (rE, rA) => ({ strings: ['X', 0, 1, 0, 1, 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+            ],
+            mM7: [
+                { name: "Menor/Mayor 7", get: (rE, rA) => ({ strings: [0, 2, 1, 0, 0, 0], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) }
+            ],
+            m6: [
+                { name: "Menor Sexta", get: (rE, rA) => ({ strings: [0, 2, 2, 0, 2, 0], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) }
+            ],
+            maj7s5: [
+                { name: "Mayor 7 Aumentada", get: (rE, rA) => ({ strings: ['X', 0, 2, 1, 1, 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+            ],
+            sus4: [
+                { name: "Dominante Sus4", get: (rE, rA) => ({ strings: [0, 2, 2, 2, 0, 0], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) }
+            ],
             power: [
                 { name: "Power Chord (Raíz en 6ª)", get: (rE, rA) => ({ strings: [0, 2, 2, 'X', 'X', 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
                 { name: "Power Chord (Raíz en 5ª)", get: (rE, rA) => ({ strings: ['X', 0, 2, 2, 'X', 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
@@ -831,59 +866,62 @@
             container.innerHTML = html;
         }
 
-        // --- DICCIONARIO COMPLETO DE 25 ESCALAS Y MOTOR DE POSICIONES ---
+        // --- DICCIONARIO COMPLETO DE 36 ESCALAS CON FÓRMULA Y RELACIÓN ACORDE-ESCALA ---
         const scaleCatalog = {
             // Fase 1
-            pentamin:       { intervals: [0, 3, 5, 7, 10],              formula: "1 - ♭3 - 4 - 5 - ♭7",              boxShift: 0 },
-            pentamaj:       { intervals: [0, 2, 4, 7, 9],               formula: "1 - 2 - 3 - 5 - 6",                boxShift: -1 },
-            major:          { intervals: [0, 2, 4, 5, 7, 9, 11],        formula: "1 - 2 - 3 - 4 - 5 - 6 - 7",        boxShift: -1 },
-            minor:          { intervals: [0, 2, 3, 5, 7, 8, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - ♭7",     boxShift: -1 },
+            pentamin:       { intervals: [0, 3, 5, 7, 10],              formula: "1 - ♭3 - 4 - 5 - ♭7",              chords: "Im7, IVm7, Vm7, VIm7", boxShift: 0 },
+            pentamaj:       { intervals: [0, 2, 4, 7, 9],               formula: "1 - 2 - 3 - 5 - 6",                chords: "IMaj7, IVMaj7", boxShift: -1 },
+            major:          { intervals: [0, 2, 4, 5, 7, 9, 11],        formula: "1 - 2 - 3 - 4 - 5 - 6 - 7",        chords: "IMaj7, IVMaj7 (Modo Jónico)", boxShift: -1 },
+            minor:          { intervals: [0, 2, 3, 5, 7, 8, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - ♭7",     chords: "Im7, VIm7 (Menor Natural / Eólica)", boxShift: -1 },
             // Fase 2
-            blues:          { intervals: [0, 3, 5, 6, 7, 10],           formula: "1 - ♭3 - 4 - ♭5 - 5 - ♭7",         boxShift: 0 },
-            blues_maj:      { intervals: [0, 2, 3, 4, 7, 9],            formula: "1 - 2 - ♭3 - 3 - 5 - 6",           boxShift: -1 },
-            dorian:         { intervals: [0, 2, 3, 5, 7, 9, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - ♭7",      boxShift: -1 },
-            phrygian:       { intervals: [0, 1, 3, 5, 7, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - ♭7",    boxShift: 0 },
-            lydian:         { intervals: [0, 2, 4, 6, 7, 9, 11],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - 7",       boxShift: -1 },
-            mixolydian:     { intervals: [0, 2, 4, 5, 7, 9, 10],        formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7",       boxShift: -1 },
-            locrian:        { intervals: [0, 1, 3, 5, 6, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - ♭5 - ♭6 - ♭7",   boxShift: 0 },
+            blues:          { intervals: [0, 3, 5, 6, 7, 10],           formula: "1 - ♭3 - 4 - ♭5 - 5 - ♭7",         chords: "Blues en general, Dominantes 7", boxShift: 0 },
+            blues_maj:      { intervals: [0, 2, 3, 4, 7, 9],            formula: "1 - 2 - ♭3 - 3 - 5 - 6",           chords: "Blues mayor, IMaj7", boxShift: -1 },
+            dorian:         { intervals: [0, 2, 3, 5, 7, 9, 10],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - ♭7",      chords: "IIm7 (Modo Mayor)", boxShift: -1 },
+            phrygian:       { intervals: [0, 1, 3, 5, 7, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - ♭7",    chords: "IIIm7 (Modo Mayor)", boxShift: 0 },
+            lydian:         { intervals: [0, 2, 4, 6, 7, 9, 11],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - 7",       chords: "IVMaj7 (Modo Mayor)", boxShift: -1 },
+            mixolydian:     { intervals: [0, 2, 4, 5, 7, 9, 10],        formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7",       chords: "V7 (Modo Mayor)", boxShift: -1 },
+            locrian:        { intervals: [0, 1, 3, 5, 6, 8, 10],        formula: "1 - ♭2 - ♭3 - 4 - ♭5 - ♭6 - ♭7",   chords: "VIIm7♭5 (Modo Mayor)", boxShift: 0 },
             // Fase 3
-            harm_minor:     { intervals: [0, 2, 3, 5, 7, 8, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - 7",      boxShift: -1 },
-            mel_minor:      { intervals: [0, 2, 3, 5, 7, 9, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - 7",       boxShift: -1 },
-            altered:        { intervals: [0, 1, 3, 4, 6, 8, 10],        formula: "1 - ♭2 - ♯2 - 3 - ♭5 - ♭6 - ♭7",   boxShift: 0 },
-            lydian_b7:      { intervals: [0, 2, 4, 6, 7, 9, 10],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - ♭7",      boxShift: -1 },
-            phrygian_dom:   { intervals: [0, 1, 4, 5, 7, 8, 10],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - ♭7",     boxShift: 0 },
-            bebop_dom:      { intervals: [0, 2, 4, 5, 7, 9, 10, 11],    formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7 - 7",   boxShift: -1 },
+            harm_minor:     { intervals: [0, 2, 3, 5, 7, 8, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - 7",      chords: "Im(Maj7), V7(♭9/♭13)", boxShift: -1 },
+            mel_minor:      { intervals: [0, 2, 3, 5, 7, 9, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - 6 - 7",       chords: "Im6, IIm7", boxShift: -1 },
+            altered:        { intervals: [0, 1, 3, 4, 6, 8, 10],        formula: "1 - ♭2 - ♯2 - 3 - ♭5 - ♭6 - ♭7",   chords: "V7alt (Dominantes alterados)", boxShift: 0 },
+            lydian_b7:      { intervals: [0, 2, 4, 6, 7, 9, 10],        formula: "1 - 2 - 3 - ♯4 - 5 - 6 - ♭7",      chords: "Dominantes sustitutos (7♭5)", boxShift: -1 },
+            phrygian_dom:   { intervals: [0, 1, 4, 5, 7, 8, 10],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - ♭7",     chords: "V7 (Flamenco / Armónica Mod 5)", boxShift: 0 },
+            bebop_dom:      { intervals: [0, 2, 4, 5, 7, 9, 10, 11],    formula: "1 - 2 - 3 - 4 - 5 - 6 - ♭7 - 7",   chords: "V7 (Líneas de jazz)", boxShift: -1 },
+            bebop_maj:      { intervals: [0, 2, 4, 5, 7, 8, 9, 11],     formula: "1 - 2 - 3 - 4 - 5 - ♯5 - 6 - 7",   chords: "IMaj7 (Jazz)", boxShift: -1 },
+            bebop_min:      { intervals: [0, 2, 3, 4, 5, 7, 9, 10],     formula: "1 - 2 - ♭3 - 3 - 4 - 5 - 6 - ♭7",  chords: "Im7", boxShift: -1 },
             // Fase 4
-            dim_wh:         { intervals: [0, 2, 3, 5, 6, 8, 9, 11],     formula: "1 - 2 - ♭3 - 4 - ♭5 - ♭6 - 6 - 7", boxShift: 0 },
-            dim_hw:         { intervals: [0, 1, 3, 4, 6, 7, 9, 10],     formula: "1 - ♭2 - ♯2 - 3 - ♯4 - 5 - 6 - ♭7",boxShift: 0 },
-            wholetone:      { intervals: [0, 2, 4, 6, 8, 10],           formula: "1 - 2 - 3 - ♯4 - ♯5 - ♭7",         boxShift: 0 },
-            chromatic:      { intervals: [0,1,2,3,4,5,6,7,8,9,10,11],   formula: "12 Semitonos (Escala Cromática)",  boxShift: 0 },
+            dim_wh:         { intervals: [0, 2, 3, 5, 6, 8, 9, 11],     formula: "1 - 2 - ♭3 - 4 - ♭5 - ♭6 - 6 - 7", chords: "Acordes disminuidos (dim7)", boxShift: 0 },
+            dim_hw:         { intervals: [0, 1, 3, 4, 6, 7, 9, 10],     formula: "1 - ♭2 - ♯2 - 3 - ♯4 - 5 - 6 - ♭7",chords: "Dominantes con alteraciones", boxShift: 0 },
+            wholetone:      { intervals: [0, 2, 4, 6, 8, 10],           formula: "1 - 2 - 3 - ♯4 - ♯5 - ♭7",         chords: "7aug (Aumentados)", boxShift: 0 },
+            chromatic:      { intervals: [0,1,2,3,4,5,6,7,8,9,10,11],   formula: "12 Semitonos (Cromática de paso)", chords: "Notas de paso", boxShift: 0 },
             // Fase 5: Exóticas y Orientales
-            hirajoshi:      { intervals: [0, 2, 3, 7, 8],               formula: "1 - 2 - ♭3 - 5 - ♭6",              boxShift: 0 },
-            kumoi:          { intervals: [0, 2, 3, 7, 9],               formula: "1 - 2 - ♭3 - 5 - 6",               boxShift: 0 },
-            insen:          { intervals: [0, 1, 5, 7, 10],              formula: "1 - ♭2 - 4 - 5 - ♭7",              boxShift: 0 },
-            hungarian:      { intervals: [0, 2, 3, 6, 7, 8, 11],        formula: "1 - 2 - ♭3 - ♯4 - 5 - ♭6 - 7",     boxShift: 0 },
-            persian:        { intervals: [0, 1, 4, 5, 6, 8, 11],        formula: "1 - ♭2 - 3 - 4 - ♭5 - ♭6 - 7",     boxShift: 0 },
-            arabic:         { intervals: [0, 1, 4, 5, 7, 8, 11],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - 7",      boxShift: 0 },
-            neapolitan_min: { intervals: [0, 1, 3, 5, 7, 8, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - 7",     boxShift: 0 },
-            neapolitan_maj: { intervals: [0, 1, 3, 5, 7, 9, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - 6 - 7",      boxShift: 0 },
-            enigmatic:      { intervals: [0, 1, 4, 6, 8, 10, 11],       formula: "1 - ♭2 - 3 - ♯4 - ♯5 - ♯6 - 7",    boxShift: 0 },
-            oriental:       { intervals: [0, 1, 4, 5, 6, 9, 10],        formula: "1 - ♭2 - 3 - 4 - ♭5 - 6 - ♭7",     boxShift: 0 }
+            hirajoshi:      { intervals: [0, 2, 3, 7, 8],               formula: "1 - 2 - ♭3 - 5 - ♭6",              chords: "Ambiente tradicional japonés", boxShift: 0 },
+            kumoi:          { intervals: [0, 2, 3, 7, 9],               formula: "1 - 2 - ♭3 - 5 - 6",               chords: "Pentatónica exótica japonesa", boxShift: 0 },
+            insen:          { intervals: [0, 1, 5, 7, 10],              formula: "1 - ♭2 - 4 - 5 - ♭7",              chords: "Japonesa modal", boxShift: 0 },
+            hungarian:      { intervals: [0, 2, 3, 6, 7, 8, 11],        formula: "1 - 2 - ♭3 - ♯4 - 5 - ♭6 - 7",     chords: "Gipsy / Gitana menor", boxShift: 0 },
+            persian:        { intervals: [0, 1, 4, 5, 6, 8, 11],        formula: "1 - ♭2 - 3 - 4 - ♭5 - ♭6 - 7",     chords: "Medio Oriente", boxShift: 0 },
+            arabic:         { intervals: [0, 1, 4, 5, 7, 8, 11],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - 7",      chords: "Doble armónica", boxShift: 0 },
+            neapolitan_min: { intervals: [0, 1, 3, 5, 7, 8, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - ♭6 - 7",     chords: "Menor napolitana", boxShift: 0 },
+            neapolitan_maj: { intervals: [0, 1, 3, 5, 7, 9, 11],        formula: "1 - ♭2 - ♭3 - 4 - 5 - 6 - 7",      chords: "Mayor napolitana", boxShift: 0 },
+            enigmatic:      { intervals: [0, 1, 4, 6, 8, 10, 11],       formula: "1 - ♭2 - 3 - ♯4 - ♯5 - ♯6 - 7",    chords: "Verdi / Enigmática", boxShift: 0 },
+            oriental:       { intervals: [0, 1, 4, 5, 6, 9, 10],        formula: "1 - ♭2 - 3 - 4 - ♭5 - 6 - ♭7",     chords: "Escala oriental", boxShift: 0 },
+            pelog:          { intervals: [0, 1, 3, 7, 8],               formula: "1 - ♭2 - ♭3 - 5 - ♭6",              chords: "Gamelán de Java", boxShift: 0 },
+            china:          { intervals: [0, 4, 6, 7, 11],              formula: "1 - 3 - ♯4 - 5 - 7",               chords: "Pentatónica china", boxShift: 0 },
+            algerian:       { intervals: [0, 2, 3, 5, 6, 7, 8, 11],     formula: "1 - 2 - ♭3 - 4 - ♭5 - 5 - ♭6 - 7", chords: "Norte de África", boxShift: 0 },
+            ritusen:        { intervals: [0, 2, 5, 7, 9],               formula: "1 - 2 - 4 - 5 - 6",                chords: "Pentatónica budista", boxShift: 0 },
+            jewish:         { intervals: [0, 1, 4, 5, 7, 8, 10],        formula: "1 - ♭2 - 3 - 4 - 5 - ♭6 - ♭7",     chords: "Klezmer / Ahava Raba", boxShift: 0 },
+            java:           { intervals: [0, 1, 3, 5, 7, 9, 10],        formula: "1 - ♭2 - ♭3 - 4 - 5 - 6 - ♭7",     chords: "Javanesa", boxShift: 0 },
+            muhammadan:     { intervals: [0, 2, 3, 5, 7, 8, 11],        formula: "1 - 2 - ♭3 - 4 - 5 - ♭6 - 7",      chords: "Islámica tradicional", boxShift: 0 },
+            scriabin:       { intervals: [0, 1, 4, 7, 9],               formula: "1 - ♭2 - 3 - 5 - 6",               chords: "Místico (Scriabin)", boxShift: 0 },
+            tcherepnin:     { intervals: [0, 1, 3, 4, 6, 7, 9, 10],     formula: "1 - ♭2 - ♭3 - 3 - ♯4 - 5 - 6 - ♭7",chords: "Moderna / Simétrica", boxShift: 0 }
         };
 
-        // Calcula la ventana de trastes [minFret, maxFret] de cada una de las 5 posiciones CAGED en el diapasón (0 a 12)
+        // Algoritmo de digitalización por posiciones CAGED (Ventanas de trastes y bloqueo de notas fuera de posición)
         function getScalePositionWindow(rE, posKey, boxShift) {
-            if (posKey === 'all') return { min: 0, max: 12, label: "Vista: Trastes 0 al 12" };
+            if (posKey === 'all') return { min: 0, max: 12, label: "Vista: Mástil Completo (0-12)" };
 
-            // Desplazamientos en semitonos para las 5 cajas clásicas a partir de la tónica en 6ª cuerda
-            const posOffsets = {
-                pos1: 0,
-                pos2: 2,
-                pos3: 5,
-                pos4: 7,
-                pos5: 9
-            };
-
+            const posOffsets = { pos1: 0, pos2: 2, pos3: 5, pos4: 7, pos5: 9 };
             const offset = posOffsets[posKey] || 0;
             let anchorFret = (rE + offset) % 12;
             let minFret = anchorFret + (posKey === 'pos1' ? boxShift : 0);
@@ -898,7 +936,7 @@
             return {
                 min: minFret,
                 max: maxFret,
-                label: `Caja activa: Trastes ${minFret} al ${maxFret}`
+                label: `Posición activa: Trastes ${minFret} al ${maxFret}`
             };
         }
 
@@ -915,10 +953,11 @@
             const rE = rootOnE[rootIdx];
             const posWin = getScalePositionWindow(rE, posKey, scaleObj.boxShift);
 
-            // Actualizar etiqueta de fórmula y rango de trastes
+            // Actualizar la etiqueta de fórmula y acordes compatibles en pantalla
             document.getElementById('scale-formula-text').textContent = scaleObj.formula;
+            document.getElementById('scale-chords-text').textContent = scaleObj.chords;
             document.getElementById('scale-pos-range-text').textContent = posWin.label;
-            document.getElementById('btn-play-scale-label').textContent = posKey === 'all' ? 'Reproducir Escala Completa' : `Reproducir ${document.getElementById('scale-pos').options[document.getElementById('scale-pos').selectedIndex].text.split(' ')[0]} ${document.getElementById('scale-pos').options[document.getElementById('scale-pos').selectedIndex].text.split(' ')[1]}`;
+            document.getElementById('btn-play-scale-label').textContent = posKey === 'all' ? 'Reproducir Escala Completa' : `Reproducir ${document.getElementById('scale-pos').options[document.getElementById('scale-pos').selectedIndex].text}`;
 
             const fretWidth = 76;
             const nutX = 48;
@@ -932,7 +971,7 @@
             let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
             svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
 
-            // Si se ha seleccionado una posición concreta (Posición 1 a 5), dibujamos el marco resaltado sobre esos trastes
+            // Marco de la posición CAGED seleccionada
             if (posKey !== 'all') {
                 const boxStartX = posWin.min === 0 ? 6 : (nutX + (posWin.min - 1) * fretWidth);
                 const boxEndX = nutX + posWin.max * fretWidth;
@@ -979,33 +1018,38 @@
                     if (intervals.includes(semitonesFromRoot)) {
                         const isRoot = (semitonesFromRoot === 0);
                         const inPosition = (f >= posWin.min && f <= posWin.max);
-                        const opacity = (posKey === 'all' || inPosition) ? '1' : '0.18';
-                        const label = notationES ? notesSys[noteIdx].es : notesSys[noteIdx].us;
+                        
+                        // SEPARACIÓN VISUAL ESTRICTA: Solo se destacan las notas de dicha escala en esa posición
+                        const showNote = (posKey === 'all' || inPosition);
+                        if (!showNote) continue; // Si no está en la escala/posición seleccionada, se omite por completo
+
+                        const label = displayModeNotes 
+                            ? (notationES ? notesSys[noteIdx].es : notesSys[noteIdx].us)
+                            : (isRoot ? 'T' : getIntervalName(semitonesFromRoot));
+
                         const fillCol = isRoot ? '#FFEA00' : '#FF5E00';
                         const textCol = '#000000';
 
-                        if (posKey === 'all' || inPosition) {
-                            currentScaleAudioNotes.push({
-                                string: synthStr,
-                                fret: f,
-                                noteIdx: noteIdx
-                            });
-                        }
+                        currentScaleAudioNotes.push({
+                            string: synthStr,
+                            fret: f,
+                            noteIdx: noteIdx
+                        });
 
                         if (f === 0) {
                             const x = 22;
                             svg += `
-                                <g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, 0)">
+                                <g class="fret-note-group" onclick="playSingleNote(${synthStr}, 0)">
                                     <circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#ffffff' : '#FFEA00'}" stroke-width="${isRoot ? '2.5' : '1.5'}"/>
-                                    <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
+                                    <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="10" font-weight="bold" text-anchor="middle">${label}</text>
                                 </g>
                             `;
                         } else {
                             const x = nutX + (f - 0.5) * fretWidth;
                             svg += `
-                                <g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, ${f})">
+                                <g class="fret-note-group" onclick="playSingleNote(${synthStr}, ${f})">
                                     <circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="${isRoot ? '#ffffff' : '#121212'}" stroke-width="${isRoot ? '2.5' : '1.5'}"/>
-                                    <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text>
+                                    <text x="${x}" y="${y + 4}" fill="${textCol}" font-size="10" font-weight="bold" text-anchor="middle">${label}</text>
                                 </g>
                             `;
                         }
@@ -1016,7 +1060,6 @@
             svg += `</svg>`;
             container.innerHTML = svg;
 
-            // Desplazar automáticamente el scroll horizontal para centrar la posición elegida
             if (posKey !== 'all') {
                 const targetX = Math.max(0, (posWin.min - 1) * fretWidth);
                 container.scrollTo({ left: targetX, behavior: 'smooth' });
@@ -1024,11 +1067,15 @@
                 container.scrollTo({ left: 0, behavior: 'smooth' });
             }
 
-            // Ordenar las notas de la posición activa de grave (6ª cuerda) a agudo (1ª cuerda)
             currentScaleAudioNotes.sort((a, b) => {
                 if (a.string !== b.string) return a.string - b.string;
                 return a.fret - b.fret;
             });
+        }
+
+        function getIntervalName(semi) {
+            const map = { 1: '♭2', 2: '2', 3: '♭3', 4: '3', 5: '4', 6: '♭5', 7: '5', 8: '♭6', 9: '6', 10: '♭7', 11: '7' };
+            return map[semi] || String(semi);
         }
 
         document.getElementById('btn-play-scale').addEventListener('click', function() {
@@ -1063,6 +1110,7 @@
             renderScaleFretboard();
         }
 
+        // --- CONMUTADOR DE NOMENCLATURA Y MODO VISUAL (NOTAS vs GRADOS) ---
         document.getElementById('btn-toggle-not').addEventListener('click', function() {
             notationES = !notationES;
             document.getElementById('not-label').textContent = notationES ? 'ES' : 'US';
@@ -1078,6 +1126,12 @@
 
             renderFretboardMap();
             generateChords();
+            renderScaleFretboard();
+        });
+
+        document.getElementById('btn-toggle-display-mode').addEventListener('click', function() {
+            displayModeNotes = !displayModeNotes;
+            document.getElementById('display-mode-label').textContent = displayModeNotes ? 'Notas' : 'Grados';
             renderScaleFretboard();
         });
 
@@ -1110,17 +1164,11 @@
         });
 
         document.getElementById('btn-ref-back').addEventListener('click', closeReferenceView);
-
         document.getElementById('btn-ref-top').addEventListener('click', () => {
-            if (refIframe.contentWindow) {
-                refIframe.contentWindow.postMessage({ type: 'SCROLL_TOP' }, '*');
-            }
+            if (refIframe.contentWindow) refIframe.contentWindow.postMessage({ type: 'SCROLL_TOP' }, '*');
         });
-
         document.getElementById('btn-ref-bookmark').addEventListener('click', () => {
-            if (refIframe.contentWindow) {
-                refIframe.contentWindow.postMessage({ type: 'SAVE_BOOKMARK' }, '*');
-            }
+            if (refIframe.contentWindow) refIframe.contentWindow.postMessage({ type: 'SAVE_BOOKMARK' }, '*');
         });
 
         window.addEventListener('message', (event) => {
@@ -1247,7 +1295,7 @@
         function removeFav(id) { favorites = favorites.filter(s => s.id !== id); localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); }
         renderFavs();
 
-        // --- BACKUP NATIVO ---
+        // --- BACKUP ---
         document.getElementById('btn-export').addEventListener('click', async () => {
             const jsonString = JSON.stringify(favorites, null, 2);
             const fileName = "guitarhall_backup.json";
