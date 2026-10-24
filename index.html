@@ -77,7 +77,6 @@
         }
         .scale-info-panel strong { color: var(--secondary); font-family: monospace; font-size: 0.95rem; }
 
-        /* CORRECCIÓN CSS: Ajuste para que no se desborde en pantallas pequeñas */
         .top-tools-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; }
         .top-tools-row .tool-btn { flex: 1 1 140px; min-width: 0; padding: 14px 10px; }
         .tuner-select { flex: 1 1 140px; min-width: 0; padding: 14px 10px; border-radius: 8px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-size: 0.95rem; font-weight: bold; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
@@ -142,7 +141,6 @@
         .harmony-chip .deg { color: var(--secondary); font-weight: bold; font-family: monospace; min-width: 22px; }
         .harmony-chip .chord { color: var(--text); font-weight: 600; }
 
-        /* ARREGLO DEL LIBRO: visibility + opacity para que el iframe tenga dimensiones correctas siempre */
         #view-reference { 
             position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
             background: var(--bg-color); 
@@ -256,7 +254,7 @@
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                         <div class="collapsible-content">
-                            <p style="color:var(--text-muted); font-size:.85rem; margin:10px 0;">Toca una tarjeta para ver acordes compatibles y recomendados para combinar. El botón ▶ reproduce solo.</p>
+                            <p style="color:var(--text-muted); font-size:.85rem; margin:10px 0;">Toca una tarjeta para ver acordes compatibles y recomendados. El botón ▶ reproduce solo.</p>
                             <div class="filter-row">
                                 <select id="chord-root"></select>
                                 <select id="chord-type">
@@ -397,7 +395,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.1</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.2</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -463,7 +461,7 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.5.1";
+const APP_VERSION = "v2.5.2";
 
 function toggleCard(cardId) { document.getElementById(cardId).classList.toggle('open'); }
 
@@ -611,7 +609,7 @@ const fretboardStrings = [
     { openNote: 4, synthStringIdx: 5 }   // fila inferior = 1ª cuerda (E4)
 ];
 
-// --- ACORDES ---
+// --- ACORDES (CORREGIDOS CON FORMAS ABIERTAS) ---
 const chordTemplates = {
     maj: [
         { name: "Posición Abierta", get: (rE, rA) => getOpenMajor(rE, rA) },
@@ -624,16 +622,19 @@ const chordTemplates = {
         { name: "Cejilla (Forma La m)", get: (rE, rA) => rA > 0 ? { strings: ['X', 1, 3, 3, 2, 1], baseFret: rA } : null }
     ],
     '7': [
-        { name: "Dominante (Forma Mi)", get: (rE, rA) => ({ strings: [1, 3, 1, 2, 1, 1], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
-        { name: "Dominante (Forma La)", get: (rE, rA) => ({ strings: ['X', 1, 3, 1, 3, 1], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+        { name: "Posición Abierta", get: (rE, rA) => getOpen7(rE, rA) },
+        { name: "Dominante (Forma Mi)", get: (rE, rA) => rE > 0 ? { strings: [1, 3, 1, 2, 1, 1], baseFret: rE } : null },
+        { name: "Dominante (Forma La)", get: (rE, rA) => rA > 0 ? { strings: ['X', 1, 3, 1, 3, 1], baseFret: rA } : null }
     ],
     maj7: [
-        { name: "Mayor 7 (Forma Mi)", get: (rE, rA) => ({ strings: [1, 'X', 2, 2, 1, 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
-        { name: "Mayor 7 (Forma La)", get: (rE, rA) => ({ strings: ['X', 1, 3, 2, 3, 1], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+        { name: "Posición Abierta", get: (rE, rA) => getOpenMaj7(rE, rA) },
+        { name: "Mayor 7 (Forma Mi)", get: (rE, rA) => rE > 0 ? { strings: [1, 'X', 2, 2, 1, 'X'], baseFret: rE } : null },
+        { name: "Mayor 7 (Forma La)", get: (rE, rA) => rA > 0 ? { strings: ['X', 1, 3, 2, 3, 1], baseFret: rA } : null }
     ],
     m7: [
-        { name: "Menor 7 (Forma Mi)", get: (rE, rA) => ({ strings: [1, 3, 1, 1, 1, 1], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
-        { name: "Menor 7 (Forma La)", get: (rE, rA) => ({ strings: ['X', 1, 3, 1, 2, 1], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+        { name: "Posición Abierta", get: (rE, rA) => getOpenM7(rE, rA) },
+        { name: "Menor 7 (Forma Mi)", get: (rE, rA) => rE > 0 ? { strings: [1, 3, 1, 1, 1, 1], baseFret: rE } : null },
+        { name: "Menor 7 (Forma La)", get: (rE, rA) => rA > 0 ? { strings: ['X', 1, 3, 1, 2, 1], baseFret: rA } : null }
     ],
     m7b5: [
         { name: "m7♭5 (Forma 5ª)", get: (rE, rA) => { let n = rA === 0 ? 12 : rA; return { strings: ['X', 1, 2, 1, 2, 'X'], baseFret: Math.max(1, n) }; } },
@@ -655,8 +656,9 @@ const chordTemplates = {
         { name: "7sus4 (Forma 5ª)", get: (rE, rA) => { let n = rA === 0 ? 12 : rA; return { strings: ['X', 1, 3, 1, 4, 'X'], baseFret: Math.max(1, n) }; } }
     ],
     power: [
-        { name: "Power Chord (6ª)", get: (rE, rA) => ({ strings: [1, 3, 3, 'X', 'X', 'X'], baseFret: rE > 0 ? rE : 1, overrideBase: rE === 0 }) },
-        { name: "Power Chord (5ª)", get: (rE, rA) => ({ strings: ['X', 1, 3, 3, 'X', 'X'], baseFret: rA > 0 ? rA : 1, overrideBase: rA === 0 }) }
+        { name: "Posición Abierta", get: (rE, rA) => getOpenPower(rE, rA) },
+        { name: "Power Chord (6ª)", get: (rE, rA) => rE > 0 ? { strings: [1, 3, 3, 'X', 'X', 'X'], baseFret: rE } : null },
+        { name: "Power Chord (5ª)", get: (rE, rA) => rA > 0 ? { strings: ['X', 1, 3, 3, 'X', 'X'], baseFret: rA } : null }
     ]
 };
 
@@ -672,6 +674,33 @@ function getOpenMinor(rE, rA) {
     if (rA === 5) return { strings: ['X', 'X', 0, 2, 3, 1], baseFret: 1 };
     if (rE === 0) return { strings: [0, 2, 2, 0, 0, 0], baseFret: 1 };
     if (rA === 0) return { strings: ['X', 0, 2, 2, 1, 0], baseFret: 1 };
+    return null;
+}
+function getOpen7(rE, rA) {
+    if (rE === 0) return { strings: [0, 2, 0, 1, 0, 0], baseFret: 1 };
+    if (rA === 0) return { strings: ['X', 0, 2, 0, 2, 0], baseFret: 1 };
+    if (rA === 5) return { strings: ['X', 'X', 0, 2, 1, 2], baseFret: 1 };
+    if (rE === 3) return { strings: [3, 2, 0, 0, 0, 1], baseFret: 1 };
+    if (rA === 3) return { strings: ['X', 3, 2, 3, 1, 0], baseFret: 1 };
+    return null;
+}
+function getOpenMaj7(rE, rA) {
+    if (rE === 0) return { strings: [0, 2, 1, 1, 0, 0], baseFret: 1 };
+    if (rA === 0) return { strings: ['X', 0, 2, 1, 2, 0], baseFret: 1 };
+    if (rA === 5) return { strings: ['X', 'X', 0, 2, 2, 2], baseFret: 1 };
+    if (rE === 3) return { strings: [3, 2, 0, 0, 0, 2], baseFret: 1 };
+    if (rA === 3) return { strings: ['X', 3, 2, 0, 0, 0], baseFret: 1 };
+    return null;
+}
+function getOpenM7(rE, rA) {
+    if (rE === 0) return { strings: [0, 2, 0, 0, 0, 0], baseFret: 1 };
+    if (rA === 0) return { strings: ['X', 0, 2, 0, 1, 0], baseFret: 1 };
+    if (rA === 5) return { strings: ['X', 'X', 0, 2, 1, 1], baseFret: 1 };
+    return null;
+}
+function getOpenPower(rE, rA) {
+    if (rE === 0) return { strings: [0, 2, 2, 'X', 'X', 'X'], baseFret: 1 };
+    if (rA === 0) return { strings: ['X', 0, 2, 2, 'X', 'X'], baseFret: 1 };
     return null;
 }
 
@@ -723,7 +752,6 @@ function buildMiniChordCard(rootIdx, type) {
 
 let chordPayloads = [];
 function generateChords() {
-    // PROTECCIÓN: Si rootIdx es NaN, usar 0
     let rootIdx = parseInt(document.getElementById('chord-root').value);
     if (isNaN(rootIdx)) rootIdx = 0;
     
@@ -905,7 +933,8 @@ function getScalePositionWindow(rE, posKey, boxShift) {
     const offset = posOffsets[posKey] || 0;
     let minFret = ((rE + offset) % 12) + (posKey === 'pos1' ? boxShift : 0);
     if (minFret < 0) minFret = 0;
-    const maxFret = minFret + 4;
+    // Aumentado a 5 trastes para asegurar que la caja siempre incluya la octava perfecta
+    const maxFret = minFret + 5;
     return { min: minFret, max: maxFret, label: `Caja activa: Trastes ${minFret} al ${maxFret}` };
 }
 
@@ -961,7 +990,6 @@ let currentScaleAudioNotes = [];
 let showDegrees = false;
 
 function renderScaleFretboard() {
-    // PROTECCIÓN: Si rootIdx es NaN, usar 0
     let rootIdx = parseInt(document.getElementById('scale-root').value);
     if (isNaN(rootIdx)) rootIdx = 0;
     
@@ -1007,17 +1035,15 @@ function renderScaleFretboard() {
         const y = topY + s * stringSpacing;
         const openNoteIdx = fretboardStrings[s].openNote;
         const synthStr = fretboardStrings[s].synthStringIdx;
-        let notesOnString = 0;
 
         for (let f = 0; f <= 15; f++) {
             const noteIdx = (openNoteIdx + f) % 12;
             const semitonesFromRoot = (noteIdx - rootIdx + 12) % 12;
+            
             if (!intervals.includes(semitonesFromRoot)) continue;
             const isRoot = (semitonesFromRoot === 0);
             const inPosition = (posKey === 'all' || (f >= posWin.min && f <= posWin.max));
             if (!inPosition) continue;
-            if (posKey !== 'all' && notesOnString >= 3 && f > posWin.min + 2) continue;
-            notesOnString++;
 
             const degreeIdx = intervals.indexOf(semitonesFromRoot);
             const degreeLabel = scaleObj.degrees ? scaleObj.degrees[degreeIdx] : '';
@@ -1078,7 +1104,6 @@ document.getElementById('btn-play-scale').addEventListener('click', function() {
 });
 
 function initUI() {
-    // Forzamos 'selected' en el primer option para que el valor nunca sea vacío.
     const rootSelects = [document.getElementById('chord-root'), document.getElementById('scale-root')];
     rootSelects.forEach(sel => {
         sel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i === 0 ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
@@ -1088,7 +1113,6 @@ function initUI() {
     document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
-    
     generateChords();
     renderScaleFretboard();
 }
@@ -1115,7 +1139,6 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
 });
 
 // --- REFERENCE / NAV ---
-// Se mueve antes de initUI para asegurar que si initUI falla, el menú siga funcionando
 const viewReference = document.getElementById('view-reference');
 const btnOpenRef = document.getElementById('btn-open-reference');
 const refIframe = document.getElementById('ref-iframe');
@@ -1152,12 +1175,7 @@ navItems.forEach(item => {
     });
 });
 
-// Llamamos a initUI con try-catch para evitar que un error aquí tumbe todo el script
-try {
-    initUI();
-} catch (e) {
-    console.error("Error en initUI:", e);
-}
+try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
 
 // --- GEAR ---
 function renderKnob(label, val) {
@@ -1165,7 +1183,6 @@ function renderKnob(label, val) {
     return `<div class="knob"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#1a1a1a" stroke="#333" stroke-width="2"/><path d="M10,30 A14,14 0 1,1 30,30" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/><path d="M10,30 A14,14 0 ${val>5?1:0},1 ${Math.cos((degrees-90)*Math.PI/180)*14+20},${Math.sin((degrees-90)*Math.PI/180)*14+20}" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><line x1="20" y1="20" x2="${Math.cos((degrees-90)*Math.PI/180)*12+20}" y2="${Math.sin((degrees-90)*Math.PI/180)*12+20}" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="knob-label">${label}</span></div>`;
 }
 
-// Base de datos ampliada
 const artistGearDatabase = {
     "ivan ferreiro - turnedo": { amp: "Ampli de bajo (según entrevista)", drive: "Limpio con octavador", eq: {b:7, m:5, t:5}, p: "Boss OC-3 (Octavador), MXR Overdrive" },
     "ivan ferreiro - el equipaje abierto": { amp: "Vox AC30 / Fender Twin", drive: "Crunch suave", eq: {b:5, m:6, t:7}, p: "Overdrive, Delay (Timeline)" },
