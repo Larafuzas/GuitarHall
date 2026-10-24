@@ -77,12 +77,14 @@
         }
         .scale-info-panel strong { color: var(--secondary); font-family: monospace; font-size: 0.95rem; }
 
-        .top-tools-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .top-tools-row .tool-btn { flex: 1; min-width: 140px; }
-        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
+        /* CORRECCIÓN CSS: Ajuste para que no se desborde en pantallas pequeñas */
+        .top-tools-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; }
+        .top-tools-row .tool-btn { flex: 1 1 140px; min-width: 0; padding: 14px 10px; }
+        .tuner-select { flex: 1 1 140px; min-width: 0; padding: 14px 10px; border-radius: 8px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-size: 0.95rem; font-weight: bold; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
+        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
         .tool-btn:active, .tool-btn.active-tool { background-color: var(--primary); color: var(--bg-color); }
-        .tool-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .tuner-select { flex: 1; min-width: 140px; padding: 14px; border-radius: 8px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-size: 0.95rem; font-weight: bold; cursor: pointer; }
+        .tool-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 
         .results-list { display: flex; flex-direction: column; gap: 12px; }
         .song-item { background: var(--surface); padding: 16px; border-radius: 10px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; gap: 10px; }
@@ -220,7 +222,7 @@
                             <span>Nomenclatura: <span id="not-label">Española</span></span>
                         </button>
                         <select id="tuner-select" class="tuner-select">
-                            <option value="">🎸 Afinador (elige cuerda)</option>
+                            <option value="">🎸 Afinador</option>
                             <option value="0-0">6ª - Mi grave (E2)</option>
                             <option value="1-0">5ª - La (A2)</option>
                             <option value="2-0">4ª - Re (D3)</option>
@@ -395,7 +397,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.0</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.1</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -461,7 +463,7 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.5.0";
+const APP_VERSION = "v2.5.1";
 
 function toggleCard(cardId) { document.getElementById(cardId).classList.toggle('open'); }
 
@@ -721,7 +723,10 @@ function buildMiniChordCard(rootIdx, type) {
 
 let chordPayloads = [];
 function generateChords() {
-    const rootIdx = parseInt(document.getElementById('chord-root').value);
+    // PROTECCIÓN: Si rootIdx es NaN, usar 0
+    let rootIdx = parseInt(document.getElementById('chord-root').value);
+    if (isNaN(rootIdx)) rootIdx = 0;
+    
     const type = document.getElementById('chord-type').value;
     const container = document.getElementById('chords-container');
     const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
@@ -956,7 +961,10 @@ let currentScaleAudioNotes = [];
 let showDegrees = false;
 
 function renderScaleFretboard() {
-    const rootIdx = parseInt(document.getElementById('scale-root').value);
+    // PROTECCIÓN: Si rootIdx es NaN, usar 0
+    let rootIdx = parseInt(document.getElementById('scale-root').value);
+    if (isNaN(rootIdx)) rootIdx = 0;
+    
     const scaleType = document.getElementById('scale-type').value;
     const posKey = document.getElementById('scale-pos').value;
     const container = document.getElementById('scale-fretboard-container');
@@ -1070,15 +1078,17 @@ document.getElementById('btn-play-scale').addEventListener('click', function() {
 });
 
 function initUI() {
+    // Forzamos 'selected' en el primer option para que el valor nunca sea vacío.
     const rootSelects = [document.getElementById('chord-root'), document.getElementById('scale-root')];
     rootSelects.forEach(sel => {
-        sel.innerHTML = notesSys.map((n, i) => `<option value="${i}">${notationES ? n.es : n.us}</option>`).join('');
+        sel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i === 0 ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
     });
     document.getElementById('chord-root').addEventListener('change', generateChords);
     document.getElementById('chord-type').addEventListener('change', generateChords);
     document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
+    
     generateChords();
     renderScaleFretboard();
 }
@@ -1105,6 +1115,7 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
 });
 
 // --- REFERENCE / NAV ---
+// Se mueve antes de initUI para asegurar que si initUI falla, el menú siga funcionando
 const viewReference = document.getElementById('view-reference');
 const btnOpenRef = document.getElementById('btn-open-reference');
 const refIframe = document.getElementById('ref-iframe');
@@ -1141,7 +1152,12 @@ navItems.forEach(item => {
     });
 });
 
-initUI();
+// Llamamos a initUI con try-catch para evitar que un error aquí tumbe todo el script
+try {
+    initUI();
+} catch (e) {
+    console.error("Error en initUI:", e);
+}
 
 // --- GEAR ---
 function renderKnob(label, val) {
@@ -1149,32 +1165,24 @@ function renderKnob(label, val) {
     return `<div class="knob"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#1a1a1a" stroke="#333" stroke-width="2"/><path d="M10,30 A14,14 0 1,1 30,30" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/><path d="M10,30 A14,14 0 ${val>5?1:0},1 ${Math.cos((degrees-90)*Math.PI/180)*14+20},${Math.sin((degrees-90)*Math.PI/180)*14+20}" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><line x1="20" y1="20" x2="${Math.cos((degrees-90)*Math.PI/180)*12+20}" y2="${Math.sin((degrees-90)*Math.PI/180)*12+20}" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span class="knob-label">${label}</span></div>`;
 }
 
-// Base de datos ampliada (ejemplos específicos de artistas españoles y anglosajones)
+// Base de datos ampliada
 const artistGearDatabase = {
-    // --- ESPAÑA ---
     "ivan ferreiro - turnedo": { amp: "Ampli de bajo (según entrevista)", drive: "Limpio con octavador", eq: {b:7, m:5, t:5}, p: "Boss OC-3 (Octavador), MXR Overdrive" },
     "ivan ferreiro - el equipaje abierto": { amp: "Vox AC30 / Fender Twin", drive: "Crunch suave", eq: {b:5, m:6, t:7}, p: "Overdrive, Delay (Timeline)" },
     "ivan ferreiro": { amp: "Fender / Vox AC30", drive: "Limpio a Crunch", eq: {b:5, m:6, t:6}, p: "OCD, Timeline Delay" },
-    
     "extremoduro - de profundis": { amp: "Marshall JCM800", drive: "Distorsión Cruda", eq: {b:6, m:7, t:6}, p: "Overdrive, Wah" },
     "extremoduro - agila": { amp: "Mesa/Boogie", drive: "High Gain", eq: {b:7, m:5, t:8}, p: "Distorsión, Chorus" },
     "extremoduro": { amp: "Marshall / Mesa", drive: "Distorsión Rock", eq: {b:6, m:6, t:7}, p: "Overdrive, Distorsión" },
-
     "fito fitipaldis - soldadito marinero": { amp: "Vox AC30", drive: "Limpio brillante", eq: {b:5, m:6, t:8}, p: "Compresor, Overdrive suave, Reverb" },
     "fito fitipaldis - antes de que cuente diez": { amp: "Fender Hot Rod", drive: "Crunch medio", eq: {b:6, m:6, t:6}, p: "Overdrive, Delay" },
     "fito fitipaldis": { amp: "Vox AC30 / Fender", drive: "Crunch Clásico", eq: {b:5, m:7, t:6}, p: "Overdrive, Compresor" },
-
-    // --- INTERNACIONAL ---
     "metallica - master of puppets": { amp: "Mesa/Boogie Mark IIC+", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG 81, Tube Screamer (como boost)" },
     "metallica - nothing else matters": { amp: "Mesa/Boogie Mark IIC+", drive: "Limpio Cristalino", eq: {b:6, m:5, t:6}, p: "Compresor, Reverb" },
     "metallica": { amp: "Mesa/Boogie Mark IIC+ / Dual Rectifier", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG Pickups, TS9, Wah" },
-    
     "pink floyd - comfortably numb": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Delay, Compresor" },
     "pink floyd": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Binson Echorec" },
-    
     "ac/dc - back in black": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales), SG con Humbuckers" },
     "ac/dc": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales)" },
-    
     "muse - hysteria": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy, Animato" },
     "muse": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy" }
 };
@@ -1190,31 +1198,25 @@ const genreGearDatabase = {
     "default": { amp: "Amplificador Versátil", drive: "Ganancia Media", eq: {b:6, m:6, t:6}, p: "Overdrive, Reverb, Delay" }
 };
 
-// Buscador mejorado: Prioriza "Artista - Canción", luego "Artista", luego "Género"
 function getToneProfile(artistName, trackName, genreName) {
     const normalize = (str) => str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "") : "";
     const qArtist = normalize(artistName);
     const qTrack = normalize(trackName);
     
-    // 1. Coincidencia exacta Artista - Canción
     if (qTrack) {
         const songKey = `${qArtist} - ${qTrack}`;
         if (artistGearDatabase[songKey]) return artistGearDatabase[songKey];
-        
-        // Búsqueda parcial dentro de las claves si el título no es exacto
         for (let key in artistGearDatabase) {
             if (key.includes(qArtist) && key.includes(qTrack)) return artistGearDatabase[key];
         }
     }
 
-    // 2. Coincidencia por Artista
     for (let key in artistGearDatabase) { 
         if (!key.includes(" - ") && (qArtist.includes(key) || key.includes(qArtist))) {
             return artistGearDatabase[key]; 
         }
     }
     
-    // 3. Fallback por Género
     if (genreName) {
         const qGenre = normalize(genreName);
         for (let key in genreGearDatabase) { 
@@ -1253,10 +1255,7 @@ searchInput.addEventListener('input', (e) => {
                     const tabUrl = `https://www.songsterr.com/a/wa/search?pattern=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const appleMusicUrl = song.trackViewUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
-                    
-                    // Nueva búsqueda en Google en lugar de Equipboard
                     const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artistName + ' ' + song.trackName + ' rig guitarra amplificador pedales')}`;
-                    
                     const tone = getToneProfile(song.artistName, song.trackName, song.primaryGenreName);
                     const panelId = `gear-panel-${idx}`;
                     return `<div class="song-item">
@@ -1298,9 +1297,7 @@ function renderFavs() {
     favList.innerHTML = favorites.map((song, idx) => {
         const amUrl = song.appleMusicUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artist + ' ' + song.title)}`;
         const ytUrl = song.ytUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artist + ' ' + song.title)}`;
-        
         const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artist + ' ' + song.title + ' rig guitarra amplificador pedales')}`;
-        
         const tone = getToneProfile(song.artist, song.title, null);
         const panelId = `gear-fav-${idx}`;
         return `<div class="song-item">
