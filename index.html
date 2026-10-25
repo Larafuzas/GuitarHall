@@ -248,6 +248,17 @@
                         </div>
                     </div>
 
+                    <div class="card" id="card-all-notes">
+                        <div class="collapsible-header" onclick="toggleCard('card-all-notes')">
+                            <h3>Plano de Notas del Mástil (0-12)</h3>
+                            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="collapsible-content">
+                            <p style="color:var(--text-muted); font-size:.85rem; margin:10px 0;">Todas las notas naturales (sin sostenidos ni bemoles) hasta el traste 12. Haz clic en cualquier nota para escucharla.</p>
+                            <div class="fretboard-scroll-wrapper" id="all-notes-fretboard-container"></div>
+                        </div>
+                    </div>
+
                     <div class="card" id="card-chords">
                         <div class="collapsible-header" onclick="toggleCard('card-chords')">
                             <h3>Librería de Acordes</h3>
@@ -276,7 +287,7 @@
                         </div>
                     </div>
 
-                    <div class="card open" id="card-scales">
+                    <div class="card" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas y Posiciones</h3>
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -395,7 +406,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.2</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.3</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -461,9 +472,21 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.5.2";
+const APP_VERSION = "v2.5.3";
 
-function toggleCard(cardId) { document.getElementById(cardId).classList.toggle('open'); }
+// Comportamiento de Acordeón: Solo uno abierto a la vez
+function toggleCard(cardId) {
+    const clickedCard = document.getElementById(cardId);
+    const isOpen = clickedCard.classList.contains('open');
+    
+    document.querySelectorAll('.card').forEach(card => {
+        card.classList.remove('open');
+    });
+
+    if (!isOpen) {
+        clickedCard.classList.add('open');
+    }
+}
 
 // --- SINTETIZADOR ---
 const stringBaseFreqs = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
@@ -587,7 +610,7 @@ function renderGuitarGuide() {
 guitarSelect.addEventListener('change', renderGuitarGuide);
 renderGuitarGuide();
 
-// --- NOTAS ---
+// --- NOTAS Y MÁSTIL ---
 const notesSys = [
     { es: 'Do', us: 'C', isNatural: true },{ es: 'Do#', us: 'C#', isNatural: false },
     { es: 'Re', us: 'D', isNatural: true },{ es: 'Re#', us: 'D#', isNatural: false },
@@ -600,16 +623,17 @@ let notationES = true;
 const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
 const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
+// CORREGIDO: Array invertido para que la 1ª cuerda (aguda) esté arriba y la 6ª (grave) abajo.
 const fretboardStrings = [
-    { openNote: 4, synthStringIdx: 0 },  // fila superior = 6ª cuerda (E2)
-    { openNote: 11, synthStringIdx: 1 }, // 5ª
-    { openNote: 7, synthStringIdx: 2 },  // 4ª
-    { openNote: 2, synthStringIdx: 3 },  // 3ª
+    { openNote: 4, synthStringIdx: 5 },  // 1ª cuerda (E4) -> Arriba
     { openNote: 9, synthStringIdx: 4 },  // 2ª
-    { openNote: 4, synthStringIdx: 5 }   // fila inferior = 1ª cuerda (E4)
+    { openNote: 2, synthStringIdx: 3 },  // 3ª
+    { openNote: 7, synthStringIdx: 2 },  // 4ª
+    { openNote: 11, synthStringIdx: 1 }, // 5ª
+    { openNote: 4, synthStringIdx: 0 }   // 6ª cuerda (E2) -> Abajo
 ];
 
-// --- ACORDES (CORREGIDOS CON FORMAS ABIERTAS) ---
+// --- ACORDES ---
 const chordTemplates = {
     maj: [
         { name: "Posición Abierta", get: (rE, rA) => getOpenMajor(rE, rA) },
@@ -933,7 +957,6 @@ function getScalePositionWindow(rE, posKey, boxShift) {
     const offset = posOffsets[posKey] || 0;
     let minFret = ((rE + offset) % 12) + (posKey === 'pos1' ? boxShift : 0);
     if (minFret < 0) minFret = 0;
-    // Aumentado a 5 trastes para asegurar que la caja siempre incluya la octava perfecta
     const maxFret = minFret + 5;
     return { min: minFret, max: maxFret, label: `Caja activa: Trastes ${minFret} al ${maxFret}` };
 }
@@ -1076,6 +1099,54 @@ function renderScaleFretboard() {
     renderScaleHarmony(rootIdx, intervals);
 }
 
+// NUEVO: Renderizador del Mástil Completo de Notas Naturales
+function renderAllNotesFretboard() {
+    const container = document.getElementById('all-notes-fretboard-container');
+    const fretWidth = 76, nutX = 48, topY = 38, stringSpacing = 34;
+    const totalWidth = nutX + (12 * fretWidth) + 20;
+    const totalHeight = topY + (5 * stringSpacing) + 24;
+
+    let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
+    svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
+
+    const markerFrets = [3, 5, 7, 9, 12];
+    for (let f = 1; f <= 12; f++) {
+        const centerX = nutX + (f - 0.5) * fretWidth;
+        const isMarked = markerFrets.includes(f);
+        svg += `<text x="${centerX}" y="20" fill="${isMarked ? '#FFEA00' : '#666'}" font-size="${isMarked ? '15' : '12'}" font-weight="bold" text-anchor="middle">${f}</text>`;
+        if ([3, 5, 7, 9].includes(f)) svg += `<circle cx="${centerX}" cy="${topY + 2.5 * stringSpacing}" r="5" fill="#252525"/>`;
+        else if (f === 12) { svg += `<circle cx="${centerX}" cy="${topY + 1.5 * stringSpacing}" r="5" fill="#252525"/>`; svg += `<circle cx="${centerX}" cy="${topY + 3.5 * stringSpacing}" r="5" fill="#252525"/>`; }
+    }
+    svg += `<line x1="${nutX}" y1="${topY - 12}" x2="${nutX}" y2="${topY + 5 * stringSpacing + 12}" stroke="#fff" stroke-width="5"/>`;
+    for (let f = 1; f <= 12; f++) { const x = nutX + f * fretWidth; svg += `<line x1="${x}" y1="${topY - 12}" x2="${x}" y2="${topY + 5 * stringSpacing + 12}" stroke="#444" stroke-width="2"/>`; }
+    for (let s = 0; s < 6; s++) { const y = topY + s * stringSpacing; const strokeW = 1.2 + (s * 0.35); svg += `<line x1="${nutX}" y1="${y}" x2="${nutX + 12 * fretWidth}" y2="${y}" stroke="#777" stroke-width="${strokeW}"/>`; }
+
+    for (let s = 0; s < 6; s++) {
+        const y = topY + s * stringSpacing;
+        const openNoteIdx = fretboardStrings[s].openNote;
+        const synthStr = fretboardStrings[s].synthStringIdx;
+
+        for (let f = 0; f <= 12; f++) {
+            const noteIdx = (openNoteIdx + f) % 12;
+            const noteObj = notesSys[noteIdx];
+            if (!noteObj.isNatural) continue;
+
+            const label = notationES ? noteObj.es : noteObj.us;
+            const fillCol = f === 0 ? '#FFEA00' : '#FF5E00'; // Cuerdas al aire en amarillo, trastes en naranja
+            const textCol = '#000';
+
+            if (f === 0) {
+                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, 0)"><circle cx="22" cy="${y}" r="13" fill="${fillCol}" stroke="#fff" stroke-width="1.5"/><text x="22" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+            } else {
+                const x = nutX + (f - 0.5) * fretWidth;
+                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, ${f})"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="#121212" stroke-width="1.5"/><text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+            }
+        }
+    }
+    svg += `</svg>`;
+    container.innerHTML = svg;
+}
+
 document.getElementById('btn-toggle-degrees').addEventListener('click', () => {
     showDegrees = !showDegrees;
     document.getElementById('btn-toggle-degrees-label').textContent = showDegrees ? 'Mostrar Notas' : 'Mostrar Grados';
@@ -1113,8 +1184,10 @@ function initUI() {
     document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
+    
     generateChords();
     renderScaleFretboard();
+    renderAllNotesFretboard(); // Renderizamos el nuevo mástil completo
 }
 
 document.getElementById('tuner-select').addEventListener('change', function() {
@@ -1136,6 +1209,7 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
     scaleSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == sVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
     generateChords();
     renderScaleFretboard();
+    renderAllNotesFretboard(); // Actualizamos el nuevo mástil completo
 });
 
 // --- REFERENCE / NAV ---
