@@ -493,7 +493,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.8.0</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.8.1</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -559,7 +559,7 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.8.0";
+const APP_VERSION = "v2.8.1";
 
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
@@ -1642,8 +1642,6 @@ navItems.forEach(item => {
     });
 });
 
-try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
-
 // --- GEAR ---
 function renderKnob(label, val) {
     const degrees = (val / 10) * 270 - 135;
@@ -1839,6 +1837,9 @@ document.getElementById('btn-ota').addEventListener('click', async () => {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); });
 }
+
+// ¡CRÍTICO! Inicializar la app AL FINAL, cuando todas las constantes (BBDD de amplis) ya existen.
+try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
 </script>
 </body>
 </html>
