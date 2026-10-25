@@ -56,7 +56,7 @@
         .card.open .collapsible-header svg { transform: rotate(180deg); }
 
         .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        select, input[type="search"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; appearance: none; }
+        select, input[type="search"], input[type="text"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; appearance: none; }
         select:focus, input:focus { outline: none; border-color: var(--primary); }
         
         .filter-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
@@ -202,6 +202,13 @@
             <h1>GuitarHall</h1>
         </div>
         <div class="header-actions">
+            <button class="icon-header-btn" id="btn-open-compose" title="Composición">
+                <svg viewBox="0 0 24 24">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+            </button>
             <button class="icon-header-btn" id="btn-open-reference" title="Abrir/Cerrar Manual de Teoría">
                 <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="14" y2="10"></line></svg>
             </button>
@@ -389,6 +396,16 @@
                     </div>
                 </section>
 
+                <!-- NUEVA SECCIÓN: COMPOSICIÓN -->
+                <section id="sec-compose" class="view">
+                    <h2>Composición</h2>
+                    <div class="card">
+                        <p style="color:var(--text-muted); font-size:.9rem; margin-bottom:10px;">Introduce una progresión de acordes separados por espacios (ej: C G Am F). Acepta notación inglesa y española, así como sufijos como m, maj7, m7, sus4.</p>
+                        <input type="text" id="compose-input" value="C G Am F" placeholder="Ej: C G Am F..." autocomplete="off">
+                        <div class="svg-grid" id="compose-results"></div>
+                    </div>
+                </section>
+
                 <section id="sec-songs" class="view">
                     <h2>Buscador de Canciones y Tabs</h2>
                     <div class="control-group">
@@ -406,7 +423,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.5.3</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.6.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -472,20 +489,13 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.5.3";
+const APP_VERSION = "v2.6.0";
 
-// Comportamiento de Acordeón: Solo uno abierto a la vez
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
     const isOpen = clickedCard.classList.contains('open');
-    
-    document.querySelectorAll('.card').forEach(card => {
-        card.classList.remove('open');
-    });
-
-    if (!isOpen) {
-        clickedCard.classList.add('open');
-    }
+    document.querySelectorAll('.card').forEach(card => { card.classList.remove('open'); });
+    if (!isOpen) clickedCard.classList.add('open');
 }
 
 // --- SINTETIZADOR ---
@@ -494,9 +504,7 @@ let htmlAudioPlayer = new Audio();
 let currentAudioUrl = null;
 let isScalePlaying = false;
 
-function writeWavString(view, offset, string) {
-    for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
-}
+function writeWavString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); }
 
 function stopAudio() {
     if (htmlAudioPlayer) { htmlAudioPlayer.pause(); htmlAudioPlayer.currentTime = 0; }
@@ -623,7 +631,6 @@ let notationES = true;
 const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
 const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
-// CORREGIDO: Array invertido para que la 1ª cuerda (aguda) esté arriba y la 6ª (grave) abajo.
 const fretboardStrings = [
     { openNote: 4, synthStringIdx: 5 },  // 1ª cuerda (E4) -> Arriba
     { openNote: 9, synthStringIdx: 4 },  // 2ª
@@ -1099,7 +1106,6 @@ function renderScaleFretboard() {
     renderScaleHarmony(rootIdx, intervals);
 }
 
-// NUEVO: Renderizador del Mástil Completo de Notas Naturales
 function renderAllNotesFretboard() {
     const container = document.getElementById('all-notes-fretboard-container');
     const fretWidth = 76, nutX = 48, topY = 38, stringSpacing = 34;
@@ -1132,7 +1138,7 @@ function renderAllNotesFretboard() {
             if (!noteObj.isNatural) continue;
 
             const label = notationES ? noteObj.es : noteObj.us;
-            const fillCol = f === 0 ? '#FFEA00' : '#FF5E00'; // Cuerdas al aire en amarillo, trastes en naranja
+            const fillCol = f === 0 ? '#FFEA00' : '#FF5E00';
             const textCol = '#000';
 
             if (f === 0) {
@@ -1145,6 +1151,108 @@ function renderAllNotesFretboard() {
     }
     svg += `</svg>`;
     container.innerHTML = svg;
+}
+
+// NUEVO: Lógica de Composición
+function parseChord(token) {
+    if (!token) return null;
+    let rawToken = token.trim();
+    let upperToken = rawToken.toUpperCase();
+    
+    const rootMap = {
+        'C':0, 'C#':1, 'DB':1, 'D':2, 'D#':3, 'EB':3,
+        'E':4, 'F':5, 'F#':6, 'GB':6, 'G':7, 'G#':8,
+        'AB':8, 'A':9, 'A#':10, 'BB':10, 'B':11,
+        'DO':0, 'DO#':1, 'RE':2, 'RE#':3, 'MI':4,
+        'FA':5, 'FA#':6, 'SOL':7, 'SOL#':8, 'LA':9, 'LA#':10, 'SI':11
+    };
+    
+    let rootMatch = null;
+    let rootStr = '';
+    for (let k of Object.keys(rootMap).sort((a,b)=>b.length-a.length)) {
+        if (upperToken.startsWith(k)) { rootMatch = k; rootStr = rawToken.substring(0, k.length); break; }
+    }
+    if (!rootMatch) return null;
+    
+    let rootIdx = rootMap[rootMatch];
+    let typeStr = rawToken.slice(rootStr.length).trim();
+    
+    let type = 'maj';
+    if (typeStr === '' || typeStr === 'M' || typeStr === 'maj' || typeStr === 'MAJ') type = 'maj';
+    else if (typeStr === 'm' || typeStr === 'min' || typeStr === 'MIN' || typeStr === '-') type = 'min';
+    else if (typeStr === '7') type = '7';
+    else if (typeStr === 'maj7' || typeStr === 'M7' || typeStr === 'MAJ7' || typeStr === 'Δ7') type = 'maj7';
+    else if (typeStr === 'm7' || typeStr === 'min7' || typeStr === 'MIN7' || typeStr === '-7') type = 'm7';
+    else if (typeStr === 'm7b5' || typeStr === 'min7b5' || typeStr === 'Ø') type = 'm7b5';
+    else if (typeStr === 'dim7' || typeStr === '°7') type = 'dim7';
+    else if (typeStr === 'mMaj7' || typeStr === 'm(maj7)') type = 'mMaj7';
+    else if (typeStr === 'm6' || typeStr === 'min6') type = 'm6';
+    else if (typeStr === 'maj7#5' || typeStr === '+maj7') type = 'maj7s5';
+    else if (typeStr === '7sus4' || typeStr === 'sus4') type = '7sus4';
+    else if (typeStr === '5') type = 'power';
+    else return null;
+    
+    return { rootIdx, type };
+}
+
+function renderCompose() {
+    const input = document.getElementById('compose-input').value;
+    const container = document.getElementById('compose-results');
+    const tokens = input.split(/\s+/).filter(t => t.trim() !== '');
+    if (tokens.length === 0) { container.innerHTML = '<p style="color:var(--text-muted); grid-column: 1/-1;">Escribe una secuencia de acordes.</p>'; return; }
+    
+    let html = '';
+    let validCount = 0;
+    tokens.forEach((token, idx) => {
+        const chordInfo = parseChord(token);
+        if (!chordInfo) {
+            html += `<div style="color:#ff4444; padding:10px; font-size:0.9rem; grid-column:1/-1;">Acorde no reconocido: <strong>${token}</strong></div>`;
+            return;
+        }
+        const { rootIdx, type } = chordInfo;
+        const templates = chordTemplates[type];
+        let selectedChordData = null;
+        for (const tpl of templates) {
+            const d = tpl.get(rootOnE[rootIdx], rootOnA[rootIdx]);
+            if (d) { selectedChordData = d; break; }
+        }
+        
+        if (!selectedChordData) {
+             html += `<div style="color:#ff4444; padding:10px; font-size:0.9rem; grid-column:1/-1;">Sin digitación para: <strong>${token}</strong></div>`;
+             return;
+        }
+        
+        validCount++;
+        const baseLabel = selectedChordData.baseFret > 1 && !selectedChordData.overrideBase ? selectedChordData.baseFret : 1;
+        const svgRaw = createChordSVGGrid(baseLabel);
+        const { svg, notesToPlay } = drawChordNotes(svgRaw, selectedChordData.strings);
+        
+        const finalNotes = notesToPlay.map(n => ({
+            string: n.string,
+            fret: n.fret !== undefined ? n.fret : (n.localFret - 1 + baseLabel)
+        }));
+        
+        const payloadId = `compose-payload-${idx}`;
+        window[payloadId] = finalNotes;
+        
+        const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
+        const typeNames = { maj:'Mayor', min:'Menor', '7':'7ª Dom', maj7:'Mayor 7', m7:'Menor 7', m7b5:'Semidism.', dim7:'Dism. 7', mMaj7:'m(maj7)', m6:'Menor 6', maj7s5:'Maj7♯5', '7sus4':'7sus4', power:'Power' };
+        
+        html += `<div class="playable-item">
+            <div class="item-title">${token.toUpperCase()}</div>
+            <div class="item-subtitle">${rootName} ${typeNames[type]}</div>
+            <div onclick="playGuitarAudio(window['${payloadId}'], true)" style="cursor:pointer;">${svg}</svg></div>
+            <button class="play-card-btn" onclick="playGuitarAudio(window['${payloadId}'], true)">
+                <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Tocar
+            </button>
+        </div>`;
+    });
+    
+    if (validCount === 0 && tokens.length > 0) {
+         container.innerHTML = html;
+    } else {
+         container.innerHTML = html;
+    }
 }
 
 document.getElementById('btn-toggle-degrees').addEventListener('click', () => {
@@ -1187,8 +1295,11 @@ function initUI() {
     
     generateChords();
     renderScaleFretboard();
-    renderAllNotesFretboard(); // Renderizamos el nuevo mástil completo
+    renderAllNotesFretboard();
+    renderCompose();
 }
+
+document.getElementById('compose-input').addEventListener('input', renderCompose);
 
 document.getElementById('tuner-select').addEventListener('change', function() {
     if (!this.value) return;
@@ -1209,7 +1320,8 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
     scaleSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == sVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
     generateChords();
     renderScaleFretboard();
-    renderAllNotesFretboard(); // Actualizamos el nuevo mástil completo
+    renderAllNotesFretboard();
+    renderCompose();
 });
 
 // --- REFERENCE / NAV ---
@@ -1237,11 +1349,21 @@ window.addEventListener('message', (event) => {
     else if (event.data.type === 'BOOKMARK_SAVED') { alert(`Marcador guardado en el ${event.data.percent}% del libro.`); }
 });
 
+// Botón de Composición
+document.getElementById('btn-open-compose').addEventListener('click', () => {
+    closeReferenceView();
+    navItems.forEach(nav => nav.classList.remove('active'));
+    views.forEach(view => view.classList.remove('active'));
+    document.getElementById('sec-compose').classList.add('active');
+    document.getElementById('btn-open-compose').classList.add('active-book');
+});
+
 const navItems = document.querySelectorAll('.nav-item');
 const views = document.querySelectorAll('.view');
 navItems.forEach(item => {
     item.addEventListener('click', () => {
         closeReferenceView();
+        document.getElementById('btn-open-compose').classList.remove('active-book');
         navItems.forEach(nav => nav.classList.remove('active'));
         views.forEach(view => view.classList.remove('active'));
         item.classList.add('active');
@@ -1382,6 +1504,20 @@ searchInput.addEventListener('input', (e) => {
 });
 
 let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v3')) || [];
+
+function moveFav(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= favorites.length) return;
+    
+    // Swap elements
+    const temp = favorites[index];
+    favorites[index] = favorites[newIndex];
+    favorites[newIndex] = temp;
+    
+    localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+    renderFavs();
+}
+
 function renderFavs() {
     const favList = document.getElementById('fav-list');
     if (favorites.length === 0) { favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted);">No tienes canciones guardadas.</p>'; return; }
@@ -1391,10 +1527,16 @@ function renderFavs() {
         const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artist + ' ' + song.title + ' rig guitarra amplificador pedales')}`;
         const tone = getToneProfile(song.artist, song.title, null);
         const panelId = `gear-fav-${idx}`;
+        
+        const isFirst = idx === 0;
+        const isLast = idx === favorites.length - 1;
+        
         return `<div class="song-item">
             <div class="song-row">
                 <div class="song-info"><strong>${song.title}</strong><br><small style="color:var(--text-muted);">${song.artist}</small></div>
                 <div class="song-actions">
+                    <button class="tool-btn" onclick="moveFav(${idx}, -1)" style="padding:8px 10px; ${isFirst ? 'opacity:0.3; pointer-events:none;' : ''}" title="Subir"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+                    <button class="tool-btn" onclick="moveFav(${idx}, 1)" style="padding:8px 10px; ${isLast ? 'opacity:0.3; pointer-events:none;' : ''}" title="Bajar"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
                     <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                     <a href="${amUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
                     <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
