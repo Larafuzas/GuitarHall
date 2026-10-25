@@ -89,8 +89,28 @@
         .song-item { background: var(--surface); padding: 16px; border-radius: 10px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; gap: 10px; }
         .song-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
         .song-info { flex: 1; min-width: 180px; }
-        .song-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         
+        /* FIX: Overflow de botones en favoritos y playground */
+        .song-actions { 
+            display: flex; 
+            gap: 6px; 
+            align-items: center; 
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+            padding-bottom: 4px; 
+            max-width: 100%;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .song-actions::-webkit-scrollbar { display: none; } /* Chrome, Safari and Opera */
+
+        /* Pestañas para Favoritos/Playground */
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .tab-btn { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; font-weight: bold; padding: 8px 16px; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+        .tab-btn.active { color: var(--primary); background: rgba(255, 94, 0, 0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
         .gear-panel { background: #141414; border: 1px solid #333; border-top: 2px solid var(--primary); padding: 16px; border-radius: 8px; font-size: 0.85rem; color: #ccc; display: none; width: 100%; margin-top: 6px; animation: fadeIn 0.2s ease; }
         .gear-panel.active { display: block; }
         .gear-panel h4 { color: var(--secondary); font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
@@ -396,13 +416,17 @@
                     </div>
                 </section>
 
-                <!-- NUEVA SECCIÓN: COMPOSICIÓN -->
+                <!-- SECCIÓN: COMPOSICIÓN -->
                 <section id="sec-compose" class="view">
                     <h2>Composición</h2>
                     <div class="card">
                         <p style="color:var(--text-muted); font-size:.9rem; margin-bottom:10px;">Introduce una progresión de acordes separados por espacios (ej: C G Am F). Acepta notación inglesa y española, así como sufijos como m, maj7, m7, sus4.</p>
                         <input type="text" id="compose-input" value="C G Am F" placeholder="Ej: C G Am F..." autocomplete="off">
                         <div class="svg-grid" id="compose-results"></div>
+                        <button class="tool-btn" id="btn-save-progression" style="margin-top: 20px; width: 100%; padding: 14px; font-size: 1rem;">
+                            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                            Guardar Progresión en Playground
+                        </button>
                     </div>
                 </section>
 
@@ -414,9 +438,22 @@
                     <div id="search-results" class="results-list"></div>
                 </section>
 
+                <!-- SECCIÓN: FAVORITOS Y PLAYGROUND -->
                 <section id="sec-favs" class="view">
-                    <h2>Mis Favoritos</h2>
-                    <div id="fav-list" class="results-list"></div>
+                    <h2>Mi Música</h2>
+                    
+                    <div class="tabs-container">
+                        <button class="tab-btn active" data-tab="tab-favs-list">Favoritos</button>
+                        <button class="tab-btn" data-tab="tab-playground-list">Playground</button>
+                    </div>
+
+                    <div id="tab-favs-list" class="tab-content active">
+                        <div id="fav-list" class="results-list"></div>
+                    </div>
+
+                    <div id="tab-playground-list" class="tab-content">
+                        <div id="playground-list" class="results-list"></div>
+                    </div>
                 </section>
 
                 <section id="sec-settings" class="view">
@@ -489,7 +526,7 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.6.0";
+const APP_VERSION = "v2.7.0";
 
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
@@ -1153,7 +1190,7 @@ function renderAllNotesFretboard() {
     container.innerHTML = svg;
 }
 
-// NUEVO: Lógica de Composición
+// --- COMPOSICIÓN ---
 function parseChord(token) {
     if (!token) return null;
     let rawToken = token.trim();
@@ -1282,6 +1319,162 @@ document.getElementById('btn-play-scale').addEventListener('click', function() {
     }
 });
 
+// --- FAVORITOS Y PLAYGROUND ---
+let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v3')) || [];
+let playgroundData = JSON.parse(localStorage.getItem('guitarhall_playground_v1')) || [];
+
+function moveFav(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= favorites.length) return;
+    const temp = favorites[index];
+    favorites[index] = favorites[newIndex];
+    favorites[newIndex] = temp;
+    localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+    renderFavs();
+}
+
+function renderFavs() {
+    const favList = document.getElementById('fav-list');
+    if (favorites.length === 0) { favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted);">No tienes canciones guardadas.</p>'; return; }
+    favList.innerHTML = favorites.map((song, idx) => {
+        const amUrl = song.appleMusicUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artist + ' ' + song.title)}`;
+        const ytUrl = song.ytUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artist + ' ' + song.title)}`;
+        const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artist + ' ' + song.title + ' rig guitarra amplificador pedales')}`;
+        const tone = getToneProfile(song.artist, song.title, null);
+        const panelId = `gear-fav-${idx}`;
+        
+        const isFirst = idx === 0;
+        const isLast = idx === favorites.length - 1;
+        
+        return `<div class="song-item">
+            <div class="song-row">
+                <div class="song-info"><strong>${song.title}</strong><br><small style="color:var(--text-muted);">${song.artist}</small></div>
+                <div class="song-actions">
+                    <button class="tool-btn" onclick="moveFav(${idx}, -1)" style="padding:8px 10px; ${isFirst ? 'opacity:0.3; pointer-events:none;' : ''}" title="Subir"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+                    <button class="tool-btn" onclick="moveFav(${idx}, 1)" style="padding:8px 10px; ${isLast ? 'opacity:0.3; pointer-events:none;' : ''}" title="Bajar"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+                    <a href="${amUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
+                    <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
+                    <a href="${song.url}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
+                    <button class="icon-btn" onclick="removeFav(${song.id})" style="padding:8px;border:1px solid #ff4444;border-radius:8px;color:#ff4444; background:none; cursor:pointer;" title="Eliminar"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+            </div>
+            <div class="gear-panel" id="${panelId}">
+                <h4><span>🎛️ Ajustes Estimados</span></h4>
+                <div class="gear-grid">
+                    <div class="gear-badge"><span class="g-title">Amplificador</span>${tone.amp}</div>
+                    <div class="gear-badge"><span class="g-title">Saturación / Drive</span>${tone.drive}</div>
+                    <div class="gear-badge"><span class="g-title">Pedales Recomendados</span>${tone.p}</div>
+                    <div class="gear-badge" style="grid-column:1 / -1;"><span class="g-title">Ecualización Estimada</span><div class="knobs-container">${renderKnob('Bass', tone.eq.b)}${renderKnob('Mid', tone.eq.m)}${renderKnob('Treble', tone.eq.t)}</div></div>
+                </div>
+                <a href="${gearUrl}" target="_blank" class="gear-link">🔍 Buscar rig real en Google &rarr;</a>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function saveFav(id, title, artist, url, appleMusicUrl, ytUrl) {
+    if (!favorites.some(s => s.id === id)) {
+        favorites.push({ id, title, artist, url, appleMusicUrl, ytUrl });
+        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+        renderFavs();
+        alert('Añadido a favoritos.');
+    } else {
+        alert('Esta canción ya está en favoritos.');
+    }
+}
+
+function removeFav(id) { 
+    favorites = favorites.filter(s => s.id !== id); 
+    localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); 
+    renderFavs(); 
+}
+
+function renderPlayground() {
+    const list = document.getElementById('playground-list');
+    if (playgroundData.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:20px;">No hay progresiones guardadas.</p>';
+        return;
+    }
+    list.innerHTML = playgroundData.map((item, idx) => {
+        const isFirst = idx === 0;
+        const isLast = idx === playgroundData.length - 1;
+        return `<div class="song-item">
+            <div class="song-row">
+                <div class="song-info" onclick="loadPlaygroundItem('${item.progression.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                    <strong>${item.name}</strong><br>
+                    <small style="color:var(--primary); font-family:monospace; font-size:0.9rem;">${item.progression}</small>
+                </div>
+                <div class="song-actions">
+                    <button class="tool-btn" onclick="movePlayground(${idx}, -1)" style="padding:8px 10px; ${isFirst ? 'opacity:0.3; pointer-events:none;' : ''}" title="Subir"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
+                    <button class="tool-btn" onclick="movePlayground(${idx}, 1)" style="padding:8px 10px; ${isLast ? 'opacity:0.3; pointer-events:none;' : ''}" title="Bajar"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+                    <button class="tool-btn" onclick="editPlayground(${item.id})" style="padding:8px 10px;" title="Editar nombre"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
+                    <button class="icon-btn" onclick="removePlayground(${item.id})" style="padding:8px;border:1px solid #ff4444;border-radius:8px;color:#ff4444; background:none; cursor:pointer;" title="Eliminar"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function loadPlaygroundItem(prog) {
+    document.getElementById('compose-input').value = prog;
+    renderCompose();
+    // Simular click en el botón de composición para cambiar de vista
+    document.getElementById('btn-open-compose').click();
+}
+
+function movePlayground(index, dir) {
+    const newIndex = index + dir;
+    if (newIndex < 0 || newIndex >= playgroundData.length) return;
+    const temp = playgroundData[index];
+    playgroundData[index] = playgroundData[newIndex];
+    playgroundData[newIndex] = temp;
+    localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
+    renderPlayground();
+}
+
+function editPlayground(id) {
+    const item = playgroundData.find(i => i.id === id);
+    if (!item) return;
+    const newName = prompt('Nuevo nombre para la progresión:', item.name);
+    if (newName && newName.trim() !== '') {
+        item.name = newName.trim();
+        localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
+        renderPlayground();
+    }
+}
+
+function removePlayground(id) {
+    if (confirm('¿Eliminar esta progresión?')) {
+        playgroundData = playgroundData.filter(i => i.id !== id);
+        localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
+        renderPlayground();
+    }
+}
+
+document.getElementById('btn-save-progression').addEventListener('click', () => {
+    const inputVal = document.getElementById('compose-input').value.trim();
+    if (!inputVal) return alert('Escribe una progresión primero.');
+    const name = prompt('Nombre para esta progresión:', inputVal);
+    if (!name || name.trim() === '') return;
+    playgroundData.push({ id: Date.now(), name: name.trim(), progression: inputVal });
+    localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
+    renderPlayground();
+    alert('Progresión guardada en Playground.');
+});
+
+// Pestañas de Mis Favoritos
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+});
+
 function initUI() {
     const rootSelects = [document.getElementById('chord-root'), document.getElementById('scale-root')];
     rootSelects.forEach(sel => {
@@ -1297,6 +1490,8 @@ function initUI() {
     renderScaleFretboard();
     renderAllNotesFretboard();
     renderCompose();
+    renderFavs();
+    renderPlayground();
 }
 
 document.getElementById('compose-input').addEventListener('input', renderCompose);
@@ -1503,80 +1698,14 @@ searchInput.addEventListener('input', (e) => {
     }
 });
 
-let favorites = JSON.parse(localStorage.getItem('guitarhall_favs_v3')) || [];
-
-function moveFav(index, direction) {
-    const newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= favorites.length) return;
-    
-    // Swap elements
-    const temp = favorites[index];
-    favorites[index] = favorites[newIndex];
-    favorites[newIndex] = temp;
-    
-    localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-    renderFavs();
-}
-
-function renderFavs() {
-    const favList = document.getElementById('fav-list');
-    if (favorites.length === 0) { favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted);">No tienes canciones guardadas.</p>'; return; }
-    favList.innerHTML = favorites.map((song, idx) => {
-        const amUrl = song.appleMusicUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artist + ' ' + song.title)}`;
-        const ytUrl = song.ytUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artist + ' ' + song.title)}`;
-        const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artist + ' ' + song.title + ' rig guitarra amplificador pedales')}`;
-        const tone = getToneProfile(song.artist, song.title, null);
-        const panelId = `gear-fav-${idx}`;
-        
-        const isFirst = idx === 0;
-        const isLast = idx === favorites.length - 1;
-        
-        return `<div class="song-item">
-            <div class="song-row">
-                <div class="song-info"><strong>${song.title}</strong><br><small style="color:var(--text-muted);">${song.artist}</small></div>
-                <div class="song-actions">
-                    <button class="tool-btn" onclick="moveFav(${idx}, -1)" style="padding:8px 10px; ${isFirst ? 'opacity:0.3; pointer-events:none;' : ''}" title="Subir"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"></polyline></svg></button>
-                    <button class="tool-btn" onclick="moveFav(${idx}, 1)" style="padding:8px 10px; ${isLast ? 'opacity:0.3; pointer-events:none;' : ''}" title="Bajar"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-                    <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
-                    <a href="${amUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
-                    <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
-                    <a href="${song.url}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
-                    <button class="icon-btn" onclick="removeFav(${song.id})" style="padding:8px;border:1px solid #ff4444;border-radius:8px;color:#ff4444; background:none; cursor:pointer;" title="Eliminar"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
-                </div>
-            </div>
-            <div class="gear-panel" id="${panelId}">
-                <h4><span>🎛️ Ajustes Estimados</span></h4>
-                <div class="gear-grid">
-                    <div class="gear-badge"><span class="g-title">Amplificador</span>${tone.amp}</div>
-                    <div class="gear-badge"><span class="g-title">Saturación / Drive</span>${tone.drive}</div>
-                    <div class="gear-badge"><span class="g-title">Pedales Recomendados</span>${tone.p}</div>
-                    <div class="gear-badge" style="grid-column:1 / -1;"><span class="g-title">Ecualización Estimada</span><div class="knobs-container">${renderKnob('Bass', tone.eq.b)}${renderKnob('Mid', tone.eq.m)}${renderKnob('Treble', tone.eq.t)}</div></div>
-                </div>
-                <a href="${gearUrl}" target="_blank" class="gear-link">🔍 Buscar rig real en Google &rarr;</a>
-            </div>
-        </div>`;
-    }).join('');
-}
-function saveFav(id, title, artist, url, appleMusicUrl, ytUrl) {
-    if (!favorites.some(s => s.id === id)) {
-        favorites.push({ id, title, artist, url, appleMusicUrl, ytUrl });
-        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-        renderFavs();
-        alert('Añadido a favoritos.');
-    } else {
-        alert('Esta canción ya está en favoritos.');
-    }
-}
-function removeFav(id) { favorites = favorites.filter(s => s.id !== id); localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); }
-renderFavs();
-
 document.getElementById('btn-export').addEventListener('click', async () => {
-    const jsonString = JSON.stringify(favorites, null, 2);
+    const backupData = { favorites: favorites, playground: playgroundData };
+    const jsonString = JSON.stringify(backupData, null, 2);
     const fileName = "guitarhall_backup.json";
     try {
         const file = new File([jsonString], fileName, { type: "application/json" });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: "Backup GuitarHall", text: "Respaldo de canciones" });
+            await navigator.share({ files: [file], title: "Backup GuitarHall", text: "Respaldo de canciones y progresiones" });
             return;
         }
     } catch (err) { if (err.name === 'AbortError') return; }
@@ -1598,9 +1727,20 @@ document.getElementById('btn-import').addEventListener('change', function(e) {
     reader.onload = function(ev) {
         try {
             const importedData = JSON.parse(ev.target.result);
-            if (Array.isArray(importedData)) {
-                favorites = importedData; localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); alert('Copia restaurada con éxito.');
-            } else throw new Error();
+            if (Array.isArray(importedData)) { // Compatibilidad con versiones anteriores
+                favorites = importedData; 
+                localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+            } else if (importedData.favorites !== undefined) {
+                favorites = importedData.favorites || [];
+                playgroundData = importedData.playground || [];
+                localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+                localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
+            } else {
+                throw new Error();
+            }
+            renderFavs(); 
+            renderPlayground();
+            alert('Copia restaurada con éxito.');
         } catch (error) { alert('Error al leer el archivo JSON.'); }
     };
     reader.readAsText(file); e.target.value = '';
