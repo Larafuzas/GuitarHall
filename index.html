@@ -110,7 +110,8 @@
             touch-action: none; /* Evita scroll al arrastrar */
         }
         .drag-handle:active { cursor: grabbing; }
-        .drag-handle svg { width: 20px; height: 20px; }
+        /* Aseguramos que el SVG no bloquee el evento táctil */
+        .drag-handle svg { width: 20px; height: 20px; pointer-events: none; }
 
         .song-content { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
         .song-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
@@ -125,6 +126,7 @@
             overflow-x: auto; 
             padding-bottom: 4px; 
             max-width: 100%;
+            -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
         }
@@ -493,7 +495,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.8.1</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.8.2</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -559,7 +561,7 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.8.1";
+const APP_VERSION = "v2.8.2";
 
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
@@ -1441,13 +1443,14 @@ function renderPlayground() {
     }
     
     list.innerHTML = playgroundData.map((item, idx) => {
+        const safeProg = item.progression.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         return `<div class="song-item">
             <div class="drag-handle" title="Arrastrar para reordenar">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
             </div>
             <div class="song-content">
                 <div class="song-row">
-                    <div class="song-info" onclick="loadPlaygroundItem('${item.progression.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                    <div class="song-info" onclick="loadPlaygroundItem('${safeProg}')" style="cursor:pointer;">
                         <strong>${item.name}</strong><br>
                         <small style="color:var(--primary); font-family:monospace; font-size:0.9rem;">${item.progression}</small>
                     </div>
@@ -1519,8 +1522,10 @@ function initSortables() {
         new Sortable(favList, {
             animation: 150,
             ghostClass: 'sortable-ghost',
-            handle: '.drag-handle', // Solo arrastra usando el icono de puntos
-            filter: '.no-drag', // Evita que se arrastre si tocas botones o paneles
+            handle: '.drag-handle', // SOLO arrastra desde el icono
+            delay: 100, // Pequeño retardo para evitar clicks fantasma
+            delayOnTouchOnly: true,
+            // filter: '.no-drag',  <-- ELIMINADO: Era el causante de bloquear los clicks
             onEnd: function (evt) {
                 if (evt.oldIndex === evt.newIndex) return;
                 const item = favorites.splice(evt.oldIndex, 1)[0];
@@ -1536,7 +1541,9 @@ function initSortables() {
             animation: 150,
             ghostClass: 'sortable-ghost',
             handle: '.drag-handle',
-            filter: '.no-drag',
+            delay: 100,
+            delayOnTouchOnly: true,
+            // filter: '.no-drag',  <-- ELIMINADO
             onEnd: function (evt) {
                 if (evt.oldIndex === evt.newIndex) return;
                 const item = playgroundData.splice(evt.oldIndex, 1)[0];
@@ -1838,7 +1845,7 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); });
 }
 
-// ¡CRÍTICO! Inicializar la app AL FINAL, cuando todas las constantes (BBDD de amplis) ya existen.
+// ¡CRÍTICO! Inicializar la app AL FINAL
 try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
 </script>
 </body>
