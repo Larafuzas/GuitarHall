@@ -13,13 +13,12 @@
         :root { --bg-color:#121212; --surface:#1e1e1e; --primary:#FF5E00; --secondary:#FFEA00; --text:#fff; --text-muted:#a0a0a0; }
         * { box-sizing:border-box; margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background-color:var(--bg-color); color:var(--text); display:flex; flex-direction:column; height:100vh; overflow:hidden; }
-        
         body.notation-us .n-es { display:none !important; }
         body.notation-us .n-us { display:inline !important; }
         body:not(.notation-us) .n-us { display:none !important; }
         body:not(.notation-us) .n-es { display:inline !important; }
         
-        .app-header { display:flex; justify-content:space-between; align-items:center; padding:15px 20px; background-color:var(--surface); border-bottom:1px solid #333; z-index:100; position:relative; }
+        .app-header { display:flex; justify-content:space-between; align-items:center; padding:15px 20px; background-color:var(--surface); border-bottom:1px solid #333; z-index:10; }
         .logo { display:flex; align-items:center; gap:12px; color:var(--text); }
         .logo h1 { font-size:1.3rem; font-weight:700; letter-spacing:.5px; }
         .header-actions { display:flex; align-items:center; gap:12px; }
@@ -33,9 +32,9 @@
         .view { display:none; animation:fadeIn .25s ease; }
         .view.active { display:block; }
         @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
-        
         h2 { font-size:1.5rem; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
         h3 { font-size:1.1rem; color:var(--primary); display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+        
         .card { background-color:var(--surface); padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #2a2a2a; }
         .collapsible-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; }
         .collapsible-header svg { transition:transform .3s ease; width:20px; height:20px; stroke:var(--primary); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
@@ -48,12 +47,14 @@
         select:focus, input:focus { outline:none; border-color:var(--primary); }
         .filter-row { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
         .filter-row select { flex:1; min-width:135px; padding:10px 12px; font-size:.92rem; }
+        
         .scale-formula-badge { display:inline-flex; align-items:center; gap:8px; background:#161616; border:1px solid #333; border-left:3px solid var(--secondary); padding:8px 12px; border-radius:6px; font-size:.85rem; color:#ddd; margin-bottom:14px; width:100%; justify-content:space-between; flex-wrap:wrap; }
         .scale-formula-badge strong { color:var(--secondary); font-family:monospace; font-size:.95rem; }
         
         .top-tools-row { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; width:100%; }
         .top-tools-row .tool-btn { flex:1 1 140px; min-width:0; padding:14px 10px; }
         .tuner-select { flex:1 1 140px; min-width:0; padding:14px 10px; border-radius:8px; border:1px solid var(--primary); background:var(--surface); color:var(--primary); font-size:.95rem; font-weight:bold; cursor:pointer; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+        
         .tool-btn { background-color:var(--surface); border:1px solid var(--primary); color:var(--primary); border-radius:8px; font-weight:bold; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; user-select:none; }
         .tool-btn:active, .tool-btn.active-tool { background-color:var(--primary); color:var(--bg-color); }
         .tool-btn svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
@@ -89,6 +90,8 @@
         .gear-link { display:inline-flex; align-items:center; gap:6px; color:var(--secondary); text-decoration:none; font-size:.8rem; font-weight:bold; padding:8px 12px; background:#222; border-radius:6px; border:1px solid #444; }
         .gear-link:hover { background:#333; }
         
+        .info-block { background:#1a1a1a; padding:15px; border-radius:8px; border-left:4px solid var(--primary); margin-top:15px; display:none; }
+        .info-block.active { display:block; }
         .guitar-img-container { width:100%; border-radius:8px; overflow:hidden; margin-bottom:15px; background:#000; max-height:280px; display:flex; align-items:center; justify-content:center; border:1px solid #333; }
         .guitar-img-container img { width:100%; height:100%; object-fit:contain; display:block; }
         .guitar-part { margin-bottom:12px; border-bottom:1px dashed #333; padding-bottom:8px; font-size:.95rem; }
@@ -124,24 +127,15 @@
         .harmony-chip .deg { color:var(--secondary); font-weight:bold; font-family:monospace; min-width:22px; }
         .harmony-chip .chord { color:var(--text); font-weight:600; }
         
-        /* Contenedor del Iframe simplificado */
-        #view-reference { 
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-            background: var(--bg-color); 
-            z-index: 50; 
-            display: flex; 
-            flex-direction: column; 
-            visibility: hidden; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.25s ease, visibility 0.25s; 
-        }
-        #view-reference.active { 
-            visibility: visible; 
-            opacity: 1; 
-            pointer-events: auto; 
-        }
-        .ref-frame { flex: 1; width: 100%; height: 100%; border: none; background: #121212; }
+        #view-reference { position:absolute; top:0; left:0; right:0; bottom:0; background:var(--bg-color); z-index:50; display:none; flex-direction:column; }
+        #view-reference.active { display:flex; }
+        .ref-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface); border-bottom:1px solid #333; gap:8px; flex-wrap:wrap; }
+        .ref-nav-btns { display:flex; gap:8px; align-items:center; }
+        .ref-btn { background:#2a2a2a; color:var(--text); border:1px solid #444; padding:7px 11px; border-radius:6px; font-size:.8rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:5px; user-select:none; }
+        .ref-btn:active { background:var(--primary); color:#000; border-color:var(--primary); }
+        .ref-progress-bar-container { width:100%; height:4px; background:#222; }
+        .ref-progress-bar { width:0%; height:100%; background:var(--primary); transition:width .15s; }
+        .ref-frame { flex:1; width:100%; height:100%; border:none; background:#121212; }
         
         .app-nav { background-color:var(--surface); display:flex; justify-content:space-around; padding:10px 0 25px 0; border-top:1px solid #333; }
         .nav-item { background:none; border:none; color:var(--text-muted); font-size:.85rem; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; padding:10px; flex:1; transition:.2s; }
@@ -192,6 +186,26 @@
     </header>
 
     <div class="app-body">
+        <!-- NAVEGACIÓN MOVIL / ESCRITORIO DENTRO DEL APP-BODY -->
+        <nav class="app-nav">
+            <button class="nav-item active" data-target="sec-guide">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C8 2 6 5 6 9c0 2 2 3 2 5 0 2-2 3-2 5 0 2 2 3 6 3s6-1 6-3c0-2-2-3-2-5 0-2 2-3 2-5 0-4-2-7-6-7z"></path><line x1="12" y1="2" x2="12" y2="10"></line></svg>
+                <span>Referencia</span>
+            </button>
+            <button class="nav-item" data-target="sec-songs">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span>Buscar</span>
+            </button>
+            <button class="nav-item" data-target="sec-favs">
+                <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Favoritos</span>
+            </button>
+            <button class="nav-item" data-target="sec-settings">
+                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Ajustes</span>
+            </button>
+        </nav>
+
         <main>
             <div class="main-content">
                 <section id="sec-guide" class="view active">
@@ -238,7 +252,19 @@
                         </div>
                         <div class="collapsible-content">
                             <p style="color:var(--text-muted); font-size:.85rem; margin:10px 0;">Todas las notas naturales (sin sostenidos ni bemoles) hasta el traste 12. Haz clic en cualquier nota para escucharla.</p>
-                            <div class="fretboard-scroll-wrapper" id="all-notes-fretboard-container"></div>
+                            <div class="filter-row">
+                                <select id="fretboard-filter">
+                                    <option value="all">Mostrar todas las notas naturales</option>
+                                    <option value="0">Destacar Do / C</option>
+                                    <option value="2">Destacar Re / D</option>
+                                    <option value="4">Destacar Mi / E</option>
+                                    <option value="5">Destacar Fa / F</option>
+                                    <option value="7">Destacar Sol / G</option>
+                                    <option value="9">Destacar La / A</option>
+                                    <option value="11">Destacar Si / B</option>
+                                </select>
+                            </div>
+                            <div class="fretboard-scroll-wrapper" id="fretboard-container"></div>
                         </div>
                     </div>
 
@@ -282,53 +308,41 @@
                             <div class="filter-row">
                                 <select id="scale-root" title="Tónica de la escala"></select>
                                 <select id="scale-type" title="Tipo de escala">
-                                    <optgroup label="Esenciales">
+                                    <optgroup label="Fase 1: Esenciales">
                                         <option value="pentamin">Pentatónica Menor</option>
                                         <option value="pentamaj">Pentatónica Mayor</option>
                                         <option value="major">Mayor (Jónico)</option>
                                         <option value="minor">Menor Natural (Eólico)</option>
                                     </optgroup>
-                                    <optgroup label="Blues">
-                                        <option value="blues">Blues Menor</option>
+                                    <optgroup label="Fase 2: Blues y Modos">
+                                        <option value="blues">Blues Menor (con ♭5)</option>
                                         <option value="blues2">Blues 2 (con 9ª)</option>
                                         <option value="blues3">Blues 3 (con 3ª M)</option>
                                         <option value="blues_maj">Blues Mayor</option>
-                                    </optgroup>
-                                    <optgroup label="Modos Griegos">
                                         <option value="dorian">Dórico</option>
                                         <option value="phrygian">Frigio</option>
                                         <option value="lydian">Lidio</option>
                                         <option value="mixolydian">Mixolidio</option>
                                         <option value="locrian">Locrio</option>
                                     </optgroup>
-                                    <optgroup label="Menor Armónica + Modos">
+                                    <optgroup label="Fase 3: Armonía Avanzada">
                                         <option value="harm_minor">Menor Armónica</option>
-                                        <option value="harm_minor_2">Locrio ♯6 (II)</option>
-                                        <option value="harm_minor_3">Jónico ♯5 (III)</option>
-                                        <option value="harm_minor_4">Dórico ♯4 (IV)</option>
-                                        <option value="phrygian_dom">Frigio Dominante (V)</option>
-                                        <option value="harm_minor_6">Lidio ♯2 (VI)</option>
-                                        <option value="harm_minor_7">Ultralocrio (VII)</option>
-                                    </optgroup>
-                                    <optgroup label="Menor Melódica + Modos">
+                                        <option value="harm_minor_3">Jónico ♯5</option>
+                                        <option value="phrygian_dom">Frigia Dominante (Española)</option>
                                         <option value="mel_minor">Menor Melódica</option>
-                                        <option value="mel_minor_2">Dórico ♭2 (II)</option>
-                                        <option value="lydian_aug">Lidio Aumentado (III)</option>
-                                        <option value="lydian_b7">Lidia ♭7 (IV)</option>
-                                        <option value="mixolydian_b6">Mixolidio ♭6 (V)</option>
-                                        <option value="locrian_nat2">Locrio ♮2 (VI)</option>
-                                        <option value="altered">Alterada (VII)</option>
-                                    </optgroup>
-                                    <optgroup label="Bebop y Simétricas">
+                                        <option value="lydian_b7">Lidia ♭7 (Overtone)</option>
+                                        <option value="altered">Alterada (Superlocria)</option>
                                         <option value="bebop_dom">Bebop Dominante</option>
                                         <option value="bebop_maj">Bebop Mayor</option>
                                         <option value="bebop_min">Bebop Menor</option>
+                                    </optgroup>
+                                    <optgroup label="Fase 4: Simétricas">
                                         <option value="dim_wh">Disminuida (T-S)</option>
                                         <option value="dim_hw">Disminuida (S-T)</option>
-                                        <option value="wholetone">Por Tonos</option>
+                                        <option value="wholetone">Por Tonos (Whole Tone)</option>
                                         <option value="chromatic">Cromática</option>
                                     </optgroup>
-                                    <optgroup label="Exóticas y del Mundo">
+                                    <optgroup label="Fase 5: Exóticas">
                                         <option value="hirajoshi">Hirajoshi</option>
                                         <option value="kumoi">Kumoi</option>
                                         <option value="insen">In-Sen</option>
@@ -351,34 +365,36 @@
                                     </optgroup>
                                 </select>
                                 <select id="scale-pos" title="Posición en el mástil">
-                                    <option value="all">Mapa Completo (Trastes 0-12)</option>
-                                    <option value="pos1">Posición 1 (Tónica en 6ª - Base)</option>
-                                    <option value="pos2">Posición 2 (Caja central)</option>
-                                    <option value="pos3">Posición 3 (Tónica en 5ª)</option>
-                                    <option value="pos4">Posición 4 (Caja aguda)</option>
-                                    <option value="pos5">Posición 5 (Pre-octava)</option>
+                                    <option value="all">Mapa Completo (Trastes 0-15)</option>
+                                    <option value="pos1">Posición 1 (Forma Mi - Tónica en 6ª)</option>
+                                    <option value="pos2">Posición 2 (Forma Re)</option>
+                                    <option value="pos3">Posición 3 (Forma Do - Tónica en 5ª)</option>
+                                    <option value="pos4">Posición 4 (Forma La)</option>
+                                    <option value="pos5">Posición 5 (Forma Sol)</option>
                                 </select>
                             </div>
 
                             <div class="scale-formula-badge">
                                 <span>Fórmula: <strong id="scale-formula-text">1 - ♭3 - 4 - 5 - ♭7</strong></span>
-                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Vista: Trastes 0 al 12</span>
+                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Vista: Trastes 0 al 15</span>
                             </div>
 
                             <div class="fretboard-scroll-wrapper" id="scale-fretboard-container"></div>
 
                             <div style="display:flex; justify-content:center; gap:12px; margin-top:15px; flex-wrap:wrap;">
                                 <button class="play-card-btn" id="btn-play-scale" style="padding:10px 24px; font-size:.95rem;">
-                                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> <span id="btn-play-scale-label">Reproducir Escala</span>
+                                    <svg id="icon-play-scale" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> 
+                                    <span id="btn-play-scale-label">Reproducir Escala</span>
                                 </button>
                                 <button class="play-card-btn" id="btn-toggle-degrees" style="padding:10px 24px; font-size:.95rem; background:#2a2a2a; color:var(--secondary); border:1px solid var(--secondary);">
-                                    <span id="btn-toggle-degrees-label">Mostrar Grados</span>
+                                    <span id="btn-toggle-degrees-label">Ver Grados</span>
                                 </button>
                             </div>
 
                             <div class="harmony-wrap" id="harmony-wrap" style="display:none;">
-                                <h4>Armonía compatible</h4>
+                                <h4>Armonía diatónica (Acordes derivados de la escala)</h4>
                                 <div class="harmony-panel" id="harmony-panel"></div>
+                                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">*Toca cualquier acorde para escucharlo al instante.</p>
                             </div>
                         </div>
                     </div>
@@ -423,7 +439,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.4.0</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v3.0.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -446,33 +462,14 @@
                 </section>
             </div>
         </main>
-
+        
         <div id="view-reference">
             <iframe src="reference.html" class="ref-frame" id="ref-iframe" title="Curso Interactivo"></iframe>
         </div>
     </div>
 
-    <nav class="app-nav">
-        <button class="nav-item active" data-target="sec-guide">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C8 2 6 5 6 9c0 2 2 3 2 5 0 2-2 3-2 5 0 2 2 3 6 3s6-1 6-3c0-2-2-3-2-5 0-2 2-3 2-5 0-4-2-7-6-7z"></path><line x1="12" y1="2" x2="12" y2="10"></line></svg>
-            <span>Referencia</span>
-        </button>
-        <button class="nav-item" data-target="sec-songs">
-            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <span>Buscar</span>
-        </button>
-        <button class="nav-item" data-target="sec-favs">
-            <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span>Favoritos</span>
-        </button>
-        <button class="nav-item" data-target="sec-settings">
-            <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-            <span>Ajustes</span>
-        </button>
-    </nav>
-
 <script>
-const APP_VERSION = "v2.4.0";
+const APP_VERSION = "v3.0.0";
 
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
@@ -619,13 +616,16 @@ const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
 const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
 const fretboardStrings = [
-    { openNote: 4, synthStringIdx: 5 }, { openNote: 11, synthStringIdx: 4 },
-    { openNote: 7, synthStringIdx: 3 }, { openNote: 2, synthStringIdx: 2 },
-    { openNote: 9, synthStringIdx: 1 }, { openNote: 4, synthStringIdx: 0 }
+    { openNote: 4, synthStringIdx: 5 },  
+    { openNote: 11, synthStringIdx: 4 }, 
+    { openNote: 7, synthStringIdx: 3 },  
+    { openNote: 2, synthStringIdx: 2 },  
+    { openNote: 9, synthStringIdx: 1 }, 
+    { openNote: 4, synthStringIdx: 0 }   
 ];
 
 function renderFretboardMap() {
-    const container = document.getElementById('all-notes-fretboard-container');
+    const container = document.getElementById('fretboard-container');
     const filterVal = document.getElementById('fretboard-filter').value;
     const fretWidth = 76, nutX = 48, topY = 38, stringSpacing = 34;
     const totalWidth = nutX + (12 * fretWidth) + 20;
@@ -952,7 +952,7 @@ const scaleCatalog = {
     altered:{intervals:[0,1,3,4,6,8,10],formula:"1 - ♭2 - ♯2 - 3 - ♭5 - ♭6 - ♭7",degrees:["1","♭2","♯2","3","♭5","♭6","♭7"],boxShift:0},
     bebop_dom:{intervals:[0,2,4,5,7,9,10,11],formula:"1 - 2 - 3 - 4 - 5 - 6 - ♭7 - 7",degrees:["1","2","3","4","5","6","♭7","7"],boxShift:-1},
     bebop_maj:{intervals:[0,2,4,5,7,8,9,11],formula:"1 - 2 - 3 - 4 - 5 - ♭6 - 6 - 7",degrees:["1","2","3","4","5","♭6","6","7"],boxShift:-1},
-    bebop_min:{intervals:[0,2,3,4,5,7,8,10],formula:"1 - 2 - ♭3 - 3 - 4 - 5 - ♭6 - ♭7",degrees:["1","2","♭3","3","4","5","♭6","♭7"],boxShift:-1},
+    bebop_min:{intervals:[0,2,3,4,5,7,9,10],formula:"1 - 2 - ♭3 - 3 - 4 - 5 - 6 - ♭7",degrees:["1","2","♭3","3","4","5","6","♭7"],boxShift:-1},
     dim_wh:{intervals:[0,2,3,5,6,8,9,11],formula:"1 - 2 - ♭3 - 4 - ♭5 - ♭6 - 6 - 7",degrees:["1","2","♭3","4","♭5","♭6","6","7"],boxShift:0},
     dim_hw:{intervals:[0,1,3,4,6,7,9,10],formula:"1 - ♭2 - ♯2 - 3 - ♯4 - 5 - 6 - ♭7",degrees:["1","♭2","♯2","3","♯4","5","6","♭7"],boxShift:0},
     wholetone:{intervals:[0,2,4,6,8,10],formula:"1 - 2 - 3 - ♯4 - ♯5 - ♭7",degrees:["1","2","3","♯4","♯5","♭7"],boxShift:0},
@@ -1128,6 +1128,12 @@ function renderScaleFretboard() {
     }
     renderScaleHarmony(rootIdx, intervals);
 }
+
+document.getElementById('btn-toggle-degrees').addEventListener('click', () => {
+    showDegrees = !showDegrees;
+    document.getElementById('btn-toggle-degrees-label').textContent = showDegrees ? 'Mostrar Notas' : 'Mostrar Grados';
+    renderScaleFretboard();
+});
 
 document.getElementById('btn-play-scale').addEventListener('click', function() {
     if (isScalePlaying) { stopAudio(); return; }
@@ -1330,7 +1336,6 @@ document.getElementById('btn-save-progression').addEventListener('click', () => 
     alert('Progresión guardada.');
 });
 
-// Pestañas
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 tabBtns.forEach(btn => {
@@ -1342,7 +1347,6 @@ tabBtns.forEach(btn => {
     });
 });
 
-// Sortable (Drag & Drop)
 function initSortables() {
     if (typeof Sortable !== 'undefined') {
         const favList = document.getElementById('fav-list');
@@ -1361,7 +1365,7 @@ function initUI() {
     document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
-    generateChords(); renderScaleFretboard(); renderAllNotesFretboard(); renderCompose();
+    generateChords(); renderScaleFretboard(); renderFretboardMap(); renderCompose();
     renderFavs(); renderPlayground(); initSortables();
 }
 
@@ -1384,7 +1388,7 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
     const sVal = scaleSel.value;
     chordSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == cVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
     scaleSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == sVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
-    generateChords(); renderScaleFretboard(); renderAllNotesFretboard(); renderCompose();
+    generateChords(); renderScaleFretboard(); renderFretboardMap(); renderCompose();
 });
 
 // --- NAVEGACIÓN ---
@@ -1428,13 +1432,25 @@ function renderKnob(label, val) {
 }
 
 const artistGearDatabase = {
+    "arde bogota - los perros": { amp: "Fender Deluxe / Vox AC30", drive: "Indie Rock", eq: {b:5, m:7, t:6}, p: "Overdrive, Chorus, Reverb" },
     "arde bogota": { amp: "Fender Twin / Marshall JCM800", drive: "Crunch Indie", eq: {b:6, m:6, t:7}, p: "Overdrive, Delay, Reverb" },
+    "ivan ferreiro - turnedo": { amp: "Ampli de bajo (según entrevista)", drive: "Limpio con octavador", eq: {b:7, m:5, t:5}, p: "Boss OC-3 (Octavador), MXR Overdrive" },
+    "ivan ferreiro - el equipaje abierto": { amp: "Vox AC30 / Fender Twin", drive: "Crunch suave", eq: {b:5, m:6, t:7}, p: "Overdrive, Delay (Timeline)" },
     "ivan ferreiro": { amp: "Fender / Vox AC30", drive: "Limpio a Crunch", eq: {b:5, m:6, t:6}, p: "OCD, Timeline Delay" },
+    "extremoduro - de profundis": { amp: "Marshall JCM800", drive: "Distorsión Cruda", eq: {b:6, m:7, t:6}, p: "Overdrive, Wah" },
+    "extremoduro - agila": { amp: "Mesa/Boogie", drive: "High Gain", eq: {b:7, m:5, t:8}, p: "Distorsión, Chorus" },
     "extremoduro": { amp: "Marshall / Mesa", drive: "Distorsión Rock", eq: {b:6, m:6, t:7}, p: "Overdrive, Distorsión" },
+    "fito fitipaldis - soldadito marinero": { amp: "Vox AC30", drive: "Limpio brillante", eq: {b:5, m:6, t:8}, p: "Compresor, Overdrive suave, Reverb" },
+    "fito fitipaldis - antes de que cuente diez": { amp: "Fender Hot Rod", drive: "Crunch medio", eq: {b:6, m:6, t:6}, p: "Overdrive, Delay" },
     "fito fitipaldis": { amp: "Vox AC30 / Fender", drive: "Crunch Clásico", eq: {b:5, m:7, t:6}, p: "Overdrive, Compresor" },
-    "metallica": { amp: "Mesa/Boogie Mark IIC+", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG Pickups, TS9, Wah" },
+    "metallica - master of puppets": { amp: "Mesa/Boogie Mark IIC+", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG 81, Tube Screamer (como boost)" },
+    "metallica - nothing else matters": { amp: "Mesa/Boogie Mark IIC+", drive: "Limpio Cristalino", eq: {b:6, m:5, t:6}, p: "Compresor, Reverb" },
+    "metallica": { amp: "Mesa/Boogie Mark IIC+ / Dual Rectifier", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG Pickups, TS9, Wah" },
+    "pink floyd - comfortably numb": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Delay, Compresor" },
     "pink floyd": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Binson Echorec" },
+    "ac/dc - back in black": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales), SG con Humbuckers" },
     "ac/dc": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales)" },
+    "muse - hysteria": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy, Animato" },
     "muse": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy" }
 };
 
@@ -1445,17 +1461,34 @@ const genreGearDatabase = {
     "indie": { amp: "Fender Hot Rod / Vox AC30", drive: "Overdrive Texturizado", eq: {b:6, m:6, t:7}, p: "Fuzz, Analog Delay, Reverb" },
     "pop": { amp: "Vox AC30 / Matchless", drive: "Limpio Brillante (Edge)", eq: {b:5, m:6, t:7}, p: "Compressor, Chorus, Delay" },
     "blues": { amp: "Fender Blues Deluxe", drive: "Overdrive Bluesero", eq: {b:6, m:7, t:6}, p: "Blues Driver / Klon Centaur" },
+    "jazz": { amp: "Roland JC-120", drive: "Limpio Cristalino", eq: {b:7, m:5, t:4}, p: "Compressor, Reverb suave" },
+    "grunge": { amp: "Fender Twin / Mesa", drive: "Distorsión Pesada", eq: {b:7, m:5, t:7}, p: "Boss DS-2, Small Clone Chorus" },
     "default": { amp: "Amplificador Versátil", drive: "Ganancia Media", eq: {b:6, m:6, t:6}, p: "Overdrive, Reverb, Delay" }
 };
 
 function getToneProfile(artistName, trackName, genreName) {
     const normalize = (str) => str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "") : "";
     const qArtist = normalize(artistName);
-    for (let key in artistGearDatabase) { if (!key.includes(" - ") && (qArtist.includes(key) || key.includes(qArtist))) return artistGearDatabase[key]; }
+    const qTrack = normalize(trackName);
+    
+    if (qTrack) {
+        const songKey = `${qArtist} - ${qTrack}`;
+        if (artistGearDatabase[songKey]) return artistGearDatabase[songKey];
+    }
+
+    for (let key in artistGearDatabase) { 
+        if (!key.includes(" - ") && (qArtist.includes(key) || key.includes(qArtist))) {
+            return artistGearDatabase[key]; 
+        }
+    }
+    
     if (genreName) {
         const qGenre = normalize(genreName);
-        for (let key in genreGearDatabase) { if (qGenre.includes(key)) return genreGearDatabase[key]; }
+        for (let key in genreGearDatabase) { 
+            if (qGenre.includes(key)) return genreGearDatabase[key]; 
+        }
     }
+    
     return genreGearDatabase["rock"];
 }
 
@@ -1482,6 +1515,7 @@ searchInput.addEventListener('input', (e) => {
                 if (!response.ok) throw new Error('Error de red');
                 const data = await response.json();
                 if (data.resultCount === 0) { searchResults.innerHTML = '<p style="color:var(--text-muted);">No se encontraron canciones.</p>'; return; }
+                
                 searchResults.innerHTML = data.results.map((song, idx) => {
                     const cleanArtist = song.artistName.replace(/"/g, '&quot;').replace(/'/g, "\\'");
                     const cleanTitle = song.trackName.replace(/"/g, '&quot;').replace(/'/g, "\\'");
@@ -1489,15 +1523,18 @@ searchInput.addEventListener('input', (e) => {
                     const tabUrl = `https://www.songsterr.com/a/wa/search?pattern=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const appleMusicUrl = song.trackViewUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
+                    
                     const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artistName + ' ' + song.trackName + ' guitar rig amp settings equipboard')}`;
+                    
                     const tone = getToneProfile(song.artistName, song.trackName, song.primaryGenreName);
                     const panelId = `gear-panel-${idx}`;
+
                     return `<div class="song-item">
                         <div class="song-content">
                             <div class="song-row">
                                 <div class="song-info"><strong>${song.trackName}</strong><br><small style="color:var(--text-muted);">${song.artistName} • ${song.primaryGenreName || 'Música'}</small></div>
                                 <div class="song-actions no-drag">
-                                    <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
+                                    <button class="tool-btn" onclick="toggleGearPanel(this, '${panelId}')" style="padding:8px 10px;" title="Ver tono y pedales"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                                     <a href="${appleMusicUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Apple Music"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></a>
                                     <a href="${ytUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="YouTube"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"></rect><polygon points="10 9 15 12 10 15 10 9"></polygon></svg></a>
                                     <a href="${tabUrl}" target="_blank" class="tool-btn" style="padding:8px 10px;" title="Tablatura Songsterr"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="10" x2="20" y2="10"></line><line x1="4" y1="14" x2="20" y2="14"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg></a>
@@ -1506,6 +1543,7 @@ searchInput.addEventListener('input', (e) => {
                             </div>
                             <div class="gear-panel no-drag" id="${panelId}">
                                 <h4><span>🎛️ Ajustes Estimados (${song.primaryGenreName || 'Rock'})</span></h4>
+                                <p style="font-size:0.75rem; color:#888; margin-bottom:12px; font-style:italic;">*Ajustes sugeridos basados en el estilo de la canción. Para el equipo exacto, usa el buscador inferior.</p>
                                 <div class="gear-grid">
                                     <div class="gear-badge"><span class="g-title">Amplificador</span>${tone.amp}</div>
                                     <div class="gear-badge"><span class="g-title">Saturación / Drive</span>${tone.drive}</div>
@@ -1517,19 +1555,14 @@ searchInput.addEventListener('input', (e) => {
                         </div>
                     </div>`;
                 }).join('');
-            } catch (e) { searchResults.innerHTML = `<p style="color:#ff4444;">Error al conectar con el servicio de búsqueda.</p>`; }
+            } catch (e) {
+                searchResults.innerHTML = `<p style="color:#ff4444;">Error al conectar con el servicio de búsqueda.</p>`;
+            }
         }, 600);
-    } else searchResults.innerHTML = '';
+    } else {
+        searchResults.innerHTML = '';
+    }
 });
-
-function saveFav(id, title, artist, url, appleMusicUrl, ytUrl, genre) {
-    if (!favorites.some(s => s.id === id)) {
-        favorites.push({ id, title, artist, url, appleMusicUrl, ytUrl, genre });
-        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-        renderFavs();
-        alert('Añadido a favoritos.');
-    } else alert('Esta canción ya está en favoritos.');
-}
 
 document.getElementById('btn-export').addEventListener('click', async () => {
     const backupData = { favorites: favorites, playground: playgroundData };
@@ -1537,7 +1570,10 @@ document.getElementById('btn-export').addEventListener('click', async () => {
     const fileName = "guitarhall_backup.json";
     try {
         const file = new File([jsonString], fileName, { type: "application/json" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Backup GuitarHall" }); return; }
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: "Backup GuitarHall", text: "Respaldo de canciones y progresiones" });
+            return;
+        }
     } catch (err) { if (err.name === 'AbortError') return; }
     try {
         const blob = new Blob([jsonString], { type: "application/json" });
@@ -1545,7 +1581,9 @@ document.getElementById('btn-export').addEventListener('click', async () => {
         const anchor = document.createElement('a'); anchor.href = url; anchor.download = fileName;
         document.body.appendChild(anchor); anchor.click();
         setTimeout(() => { document.body.removeChild(anchor); URL.revokeObjectURL(url); }, 500);
-    } catch (e) { if (navigator.clipboard) { await navigator.clipboard.writeText(jsonString); alert("JSON copiado al portapapeles."); } }
+    } catch (e) {
+        if (navigator.clipboard) { await navigator.clipboard.writeText(jsonString); alert("JSON copiado al portapapeles."); }
+    }
 });
 
 document.getElementById('btn-import').addEventListener('change', function(e) {
@@ -1555,30 +1593,44 @@ document.getElementById('btn-import').addEventListener('change', function(e) {
     reader.onload = function(ev) {
         try {
             const importedData = JSON.parse(ev.target.result);
-            if (Array.isArray(importedData)) { favorites = importedData; localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); } 
-            else if (importedData.favorites !== undefined) {
-                favorites = importedData.favorites || []; playgroundData = importedData.playground || [];
+            if (Array.isArray(importedData)) { 
+                favorites = importedData; 
+                localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+            } else if (importedData.favorites !== undefined) {
+                favorites = importedData.favorites || [];
+                playgroundData = importedData.playground || [];
                 localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
                 localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
-            } else throw new Error();
-            renderFavs(); renderPlayground(); alert('Copia restaurada con éxito.');
+            } else {
+                throw new Error();
+            }
+            renderFavs(); 
+            renderPlayground();
+            alert('Copia restaurada con éxito.');
         } catch (error) { alert('Error al leer el archivo JSON.'); }
     };
-    reader.readAsText(file); e.target.value = '';
+    reader.readAsText(file);
+    e.target.value = '';
 });
 
 document.getElementById('btn-ota').addEventListener('click', async () => {
     const status = document.getElementById('ota-status');
-    status.style.display = 'block'; status.textContent = 'Actualizando y limpiando caché...';
+    status.style.display = 'block';
+    status.textContent = 'Actualizando y limpiando caché...';
     try {
         if ('caches' in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); }
-        if ('serviceWorker' in navigator) { const regs = await navigator.serviceWorker.getRegistrations(); for (let r of regs) await r.update(); }
+        if ('serviceWorker' in navigator) { 
+            const regs = await navigator.serviceWorker.getRegistrations(); 
+            for (let r of regs) await r.unregister(); 
+        }
         status.textContent = `¡Actualizado a ${APP_VERSION}! Reiniciando...`;
         setTimeout(() => window.location.reload(), 1000);
     } catch (e) { status.textContent = 'Recargando aplicación...'; setTimeout(() => window.location.reload(), 1000); }
 });
 
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); }); }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); });
+}
 
 try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
 </script>
