@@ -1,4 +1,4 @@
-const CACHE_NAME = 'guitarhall-v28'; // <--- CAMBIA ESTO (v22 -> v23)
+const CACHE_NAME = 'guitarhall-v30';
 const ASSETS = [
   './',
   './index.html',
@@ -11,8 +11,18 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
-  self.skipWaiting(); 
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return Promise.all(
+        ASSETS.map(url => {
+          return cache.add(url).catch(err => {
+            console.warn('[SW] No se pudo cachear:', url, err);
+          });
+        })
+      );
+    })
+  );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
@@ -26,8 +36,10 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
-
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+  
   event.respondWith(
     fetch(event.request)
       .then(networkResponse => {
@@ -37,6 +49,8 @@ self.addEventListener('fetch', event => {
         }
         return networkResponse;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
