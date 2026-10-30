@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teoría de Guitarra Simplificada - Curso Interactivo</title>
+    <title>Teoría de Guitarra Simplificada</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom scrollbar */
+        body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #0f766e; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #0f766e; }
         
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Ocultar input radio original y estilizar etiqueta */
         .quiz-option input[type="radio"] { display: none; }
         .quiz-option span {
             display: block;
-            padding: 10px 15px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 0.5rem;
             cursor: pointer;
@@ -38,192 +34,604 @@
             color: #0f766e;
             font-weight: 600;
         }
-        
-        /* Sidebar transition para móvil */
+
         #sidebar { transition: transform 0.3s ease-in-out; }
         .sidebar-open { transform: translateX(0); }
         .sidebar-closed { transform: translateX(-100%); }
         @media (min-width: 768px) {
-            .sidebar-closed { transform: translateX(0); } /* Siempre abierto en desktop */
+            .sidebar-closed { transform: translateX(0); } 
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen">
 
-    <!-- Sidebar / Índice Lateral -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-teal-900 text-white shadow-xl flex flex-col sidebar-closed md:relative">
-        <div class="p-6 border-b border-teal-800 flex justify-between items-center">
-            <h1 class="font-bold text-xl leading-tight">Teoría de Guitarra<br><span class="text-teal-300 text-sm font-normal">Curso Interactivo</span></h1>
+    <!-- Menú Lateral -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-teal-950 text-slate-300 flex flex-col sidebar-closed md:relative shadow-2xl">
+        <div class="p-6 border-b border-teal-800/50 flex justify-between items-center bg-teal-900">
+            <h1 class="font-bold text-xl leading-tight text-white">Teoría de Guitarra<br><span class="text-teal-400 text-sm font-normal">Simplificada</span></h1>
             <button onclick="toggleSidebar()" class="md:hidden text-teal-200 hover:text-white">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-        <nav class="flex-1 overflow-y-auto py-4" id="sidebar-nav">
-            <!-- Nav items injected via JS -->
+        <nav class="flex-1 overflow-y-auto py-2" id="sidebar-nav">
+            <!-- Capítulos generados por JS -->
         </nav>
-        <div class="p-4 border-t border-teal-800 text-xs text-teal-400 text-center">
-            Progreso Global
-            <div class="w-full bg-teal-950 h-2 rounded-full mt-2 overflow-hidden">
-                <div id="sidebar-progress" class="bg-teal-400 h-2 transition-all duration-500" style="width: 0%;"></div>
+        <div class="p-5 bg-teal-900 border-t border-teal-800/50">
+            <div class="flex justify-between text-xs font-semibold text-teal-300 mb-2">
+                <span>PROGRESO DEL CURSO</span>
+                <span id="sidebar-progress-text">0%</span>
+            </div>
+            <div class="w-full bg-teal-950 h-2.5 rounded-full overflow-hidden">
+                <div id="sidebar-progress" class="bg-teal-400 h-full transition-all duration-700 ease-out" style="width: 0%;"></div>
             </div>
         </div>
     </aside>
 
-    <!-- Overlay para móvil -->
-    <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/50 z-30 hidden md:hidden"></div>
+    <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/60 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
     <!-- Contenido Principal -->
-    <div class="flex-1 flex flex-col h-full relative overflow-hidden">
-        
-        <!-- Header Móvil & Progreso superior -->
-        <header class="bg-white shadow-sm z-20 flex flex-col shrink-0">
-            <div class="flex items-center p-4 border-b border-slate-200 md:hidden">
-                <button onclick="toggleSidebar()" class="text-slate-500 hover:text-teal-700 mr-4 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-                <h2 class="font-bold text-slate-800 truncate">Teoría de Guitarra</h2>
-            </div>
-            <!-- Progress Bar Superior -->
-            <div class="w-full bg-slate-200 h-1.5 md:h-2">
-                <div id="top-progress" class="bg-teal-500 h-full transition-all duration-500" style="width: 0%;"></div>
-            </div>
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50">
+        <header class="bg-white shadow-sm z-20 flex items-center p-4 border-b border-slate-200 md:hidden">
+            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-teal-700 mr-4 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <h2 class="font-bold text-slate-800 truncate">Teoría de Guitarra Simplificada</h2>
         </header>
 
-        <!-- Área desplazable de contenido -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 relative scroll-smooth" id="main-scroll-area">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 scroll-smooth" id="main-scroll-area">
             <div class="max-w-4xl mx-auto">
-                
-                <!-- Migas de Pan (Breadcrumbs) -->
-                <nav class="mb-6 flex items-center text-sm font-medium text-slate-500" id="breadcrumbs">
-                    <!-- Injected via JS -->
+                <nav class="mb-6 flex items-center text-sm font-medium text-slate-400" id="breadcrumbs">
+                    <!-- Migas de pan dinámicas -->
                 </nav>
-
-                <!-- Contenedor Dinámico -->
                 <div id="content-container" class="fade-in">
-                    <!-- El contenido se inyecta aquí -->
+                    <!-- Contenido dinámico -->
                 </div>
-
             </div>
         </main>
     </div>
 
-    <!-- Modal Personalizado (Reemplazo de alert) -->
-    <div id="custom-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content-box">
+    <!-- Modal Motivacional -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content-box">
             <div class="p-6 text-center">
-                <div id="modal-icon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4"></div>
-                <h3 id="modal-title" class="text-lg leading-6 font-bold text-slate-900 mb-2">Título</h3>
-                <div class="mt-2">
-                    <p id="modal-message" class="text-sm text-slate-600">Mensaje del modal</p>
-                </div>
+                <div id="modal-icon" class="mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4"></div>
+                <h3 id="modal-title" class="text-xl font-bold text-slate-900 mb-2"></h3>
+                <p id="modal-message" class="text-slate-600 leading-relaxed"></p>
             </div>
-            <div class="bg-slate-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-xl">
-                <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                    Continuar
+            <div class="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
+                <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-3 bg-teal-600 text-white font-semibold hover:bg-teal-700 transition-colors">
+                    Continuar al siguiente módulo
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Lógica de la App -->
     <script>
-        // --- Base de Datos del Curso ---
-        const courseStages = [
-            {
-                title: "Fundamentos del Piano y la Guitarra",
-                content: `
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">El Patrón de 12 Notas</h3>
-                    <p class="mb-4">Toda la música occidental se construye utilizando únicamente <strong>12 notas únicas</strong>. En el piano, esto es evidente a través del patrón repetitivo de teclas blancas y negras. El alfabeto musical es: A, B, C, D, E, F, G (La, Si, Do, Re, Mi, Fa, Sol).</p>
-                    
-                    <img src="assets/piano_vs_guitarra.jpg" onerror="this.src='https://placehold.co/800x300/0d9488/ffffff?text=Patrón+de+12+Notas+y+Piano'" class="w-full rounded-lg my-6 shadow-md" alt="Espacio para gráfico del PDF">
+        // --- Generadores de SVG (Teoría Visual) ---
+        function generatePianoSVG(highlightKeys = [], width = "100%") {
+            const keyWidth = 40;
+            const keyHeight = 120;
+            const blackKeyWidth = 24;
+            const blackKeyHeight = 75;
+            
+            const whiteKeys = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C2'];
+            const blackKeys = [
+                { id: 'C#', pos: 1 }, { id: 'D#', pos: 2 }, 
+                { id: 'F#', pos: 4 }, { id: 'G#', pos: 5 }, { id: 'A#', pos: 6 }
+            ];
 
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">Tonos y Semitonos</h3>
-                    <ul class="list-disc pl-5 space-y-2 mb-4">
-                        <li><strong>Semitono:</strong> Menor distancia posible. En guitarra, equivale a moverte <strong>un traste</strong>.</li>
-                        <li><strong>Tono:</strong> Equivale a dos semitonos (avanzar <strong>dos trastes</strong>).</li>
+            let svgContent = `<svg viewBox="0 0 ${whiteKeys.length * keyWidth} ${keyHeight + 20}" width="${width}" class="mx-auto drop-shadow-md rounded-md overflow-hidden font-sans">`;
+            
+            whiteKeys.forEach((key, index) => {
+                const isHighlight = highlightKeys.includes(key.replace('2',''));
+                const fill = isHighlight ? '#ccfbf1' : '#ffffff';
+                const textFill = isHighlight ? '#0f766e' : '#94a3b8';
+                
+                svgContent += `<rect x="${index * keyWidth}" y="0" width="${keyWidth}" height="${keyHeight}" fill="${fill}" stroke="#cbd5e1" stroke-width="1.5" />`;
+                svgContent += `<text x="${index * keyWidth + (keyWidth/2)}" y="${keyHeight - 15}" text-anchor="middle" font-size="12" font-weight="600" fill="${textFill}">${key.replace('2','')}</text>`;
+                
+                if (isHighlight) {
+                    svgContent += `<circle cx="${index * keyWidth + (keyWidth/2)}" cy="${keyHeight - 35}" r="6" fill="#14b8a6" />`;
+                }
+            });
+
+            blackKeys.forEach(bk => {
+                const isHighlight = highlightKeys.includes(bk.id);
+                const fill = isHighlight ? '#0f766e' : '#1e293b';
+                svgContent += `<rect x="${(bk.pos * keyWidth) - (blackKeyWidth/2)}" y="0" width="${blackKeyWidth}" height="${blackKeyHeight}" fill="${fill}" rx="2" />`;
+                
+                if (isHighlight) {
+                    svgContent += `<circle cx="${(bk.pos * keyWidth)}" cy="${blackKeyHeight - 15}" r="4" fill="#ccfbf1" />`;
+                }
+            });
+
+            svgContent += `</svg>`;
+            return svgContent;
+        }
+
+        function generateFretboardSVG(highlightNotes = [], width = "100%") {
+            const strings = 6;
+            const frets = 12;
+            const stringSpacing = 20;
+            const fretSpacing = 50;
+            
+            const boardWidth = frets * fretSpacing;
+            const boardHeight = (strings - 1) * stringSpacing;
+
+            let svgContent = `<svg viewBox="-20 -20 ${boardWidth + 40} ${boardHeight + 40}" width="${width}" class="mx-auto my-4 font-sans">`;
+            
+            svgContent += `<rect x="0" y="0" width="${boardWidth}" height="${boardHeight}" fill="#1e293b" />`;
+            svgContent += `<line x1="0" y1="0" x2="0" y2="${boardHeight}" stroke="#cbd5e1" stroke-width="8" />`;
+
+            for (let i = 1; i <= frets; i++) {
+                svgContent += `<line x1="${i * fretSpacing}" y1="0" x2="${i * fretSpacing}" y2="${boardHeight}" stroke="#475569" stroke-width="2" />`;
+            }
+
+            const markers = [3, 5, 7, 9];
+            markers.forEach(fret => {
+                svgContent += `<circle cx="${(fret * fretSpacing) - (fretSpacing/2)}" cy="${boardHeight/2}" r="6" fill="#334155" />`;
+            });
+            svgContent += `<circle cx="${(12 * fretSpacing) - (fretSpacing/2)}" cy="${(boardHeight/2) - 15}" r="6" fill="#334155" />`;
+            svgContent += `<circle cx="${(12 * fretSpacing) - (fretSpacing/2)}" cy="${(boardHeight/2) + 15}" r="6" fill="#334155" />`;
+
+            for (let i = 0; i < strings; i++) {
+                const thickness = 1 + (i * 0.4);
+                svgContent += `<line x1="0" y1="${i * stringSpacing}" x2="${boardWidth}" y2="${i * stringSpacing}" stroke="#94a3b8" stroke-width="${thickness}" />`;
+            }
+
+            highlightNotes.forEach(note => {
+                const cx = note.fret === 0 ? -10 : (note.fret * fretSpacing) - (fretSpacing/2);
+                const cy = (note.string - 1) * stringSpacing;
+                
+                svgContent += `<circle cx="${cx}" cy="${cy}" r="12" fill="#14b8a6" stroke="#ffffff" stroke-width="2" />`;
+                if(note.label) {
+                    svgContent += `<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">${note.label}</text>`;
+                }
+            });
+
+            svgContent += `</svg>`;
+            return svgContent;
+        }
+
+        // --- Base de Datos del Curso (Normalizada) ---
+        const courseData = [
+            {
+                id: 'capitulo-1',
+                title: "1. Introducción al piano",
+                content: `
+                    <div class="prose prose-slate max-w-none text-slate-700 text-lg">
+                        <p class="lead text-xl text-teal-800 font-semibold mb-6">Si eres un principiante absoluto, sin experiencia tocando el teclado o la guitarra, este libro está diseñado para ti. Comenzaremos desde lo más básico, empezando con el piano, ya que ofrece la forma más clara de comprender los fundamentos de la teoría musical.</p>
+                        
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">El patrón de 12 notas</h3>
+                        <p>Un teclado de piano de tamaño normal tiene 88 teclas. Sin embargo, <strong>sólo hay 12 notas únicas</strong>. Estas 12 notas son la base de toda composición musical, en todos los instrumentos (hip-hop, jazz, clásica, etc). Piensa en ello como si fuera la paleta de un pintor.</p>
+                        
+                        <div class="my-8 text-center bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-slate-500 mb-4 uppercase text-sm tracking-wider">El patrón de 12 teclas (Escala Cromática)</h4>
+                            ${generatePianoSVG(['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'])}
+                        </div>
+
+                        <p>El patrón comienza en <strong>C</strong> y continúa por el teclado, incluidas las teclas negras, hasta que se repite en el siguiente C. A medida que bajas, las notas bajan de altura, y si subes, suben.</p>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">El nombre de las notas</h3>
+                        <p>Nombrar las notas del piano es (casi) tan sencillo como recitar el alfabeto. Utilizamos las letras de la A a la G. La secuencia de los nombres de las teclas "naturales" (blancas) es: <strong>A-B-C-D-E-F-G</strong>.</p>
+                        <p>Fíjate que la primera nota del piano suele enseñarse desde <strong>C</strong> (Do). Cada nota que sigue a C tiene una altura progresivamente mayor.</p>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Las notas negras (Sostenidos y Bemoles)</h3>
+                        <p>Las notas negras pueden verse como modificaciones de las notas blancas adyacentes. Al pasar a la derecha de una tecla blanca a una negra, la nota se <strong>agudiza (sostenido #)</strong>. Si te mueves a la izquierda de una tecla blanca a una negra, la nota se <strong>aplana (bemol b)</strong>.</p>
+                        
+                        <div class="bg-teal-50 border-l-4 border-teal-500 p-4 my-6 rounded-r-lg">
+                            <h4 class="font-bold text-teal-900">Equivalente enarmónico</h4>
+                            <p class="text-teal-800 text-base">La nota negra entre C y D puede llamarse C# o Db. Ambas notaciones representan el mismo sonido. Esto se llama equivalencia enarmónica.</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Tonos y Semitonos</h3>
+                        <p>Un <strong>semitono (medio paso)</strong> es la menor distancia posible entre dos teclas adyacentes en el teclado, ya sean blancas o negras. Hay dos pares de teclas blancas que son excepciones: <strong>E/F</strong> y <strong>B/C</strong> no tienen teclas negras entre ellas, ya están separadas por un semitono.</p>
+                        <p>Un <strong>tono (paso entero)</strong> requiere saltarse una tecla para llegar a la siguiente (ejemplo, de C a D).</p>
+                    </div>
+                `,
+                quiz: [
+                    { question: "¿Cuántas notas únicas existen en la teoría musical occidental antes de que el patrón se repita?", options: ["7 notas", "12 notas", "88 notas"], answer: 1 },
+                    { question: "¿Qué nombre recibe la relación entre dos notas que suenan igual pero tienen distinto nombre (ej. C# y Db)?", options: ["Intervalo perfecto", "Tono entero", "Equivalente enarmónico"], answer: 2 },
+                    { question: "¿Entre qué notas naturales (blancas) hay solo distancia de un semitono?", options: ["C/D y F/G", "E/F y B/C", "A/B y C/D"], answer: 1 }
+                ]
+            },
+            {
+                id: 'capitulo-2',
+                title: "2. Fundamentos de la guitarra",
+                content: `
+                    <div class="prose prose-slate max-w-none text-slate-700 text-lg">
+                        <p class="lead text-xl text-teal-800 font-semibold mb-6">Ahora que ya te has familiarizado con el teclado del piano, los intervalos y los sostenidos/bemoles, es hora de aplicar estos conocimientos a la guitarra. Todo lo que acabamos de ver es aplicable; la única diferencia es cómo se tocan las notas y su disposición.</p>
+                        
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Las cuerdas de una guitarra</h3>
+                        <p>Las cuerdas de la guitarra están numeradas desde la más gruesa y grave (6) hasta la más fina y aguda (1). En afinación estándar son:</p>
+                        <ul class="font-bold text-slate-800 mb-6">
+                            <li>6ª: E (Mi grave)</li>
+                            <li>5ª: A (La)</li>
+                            <li>4ª: D (Re)</li>
+                            <li>3ª: G (Sol)</li>
+                            <li>2ª: B (Si)</li>
+                            <li>1ª: E (Mi agudo)</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Piano vs. Guitarra</h3>
+                        <p>En el piano, la transición fluida de una nota A a la siguiente es lineal. En el diapasón de la guitarra, una octava abarca 12 trastes en una sola cuerda, pero su disposición es menos evidente visualmente porque la guitarra no tiene "teclas negras" físicas.</p>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Saltando trastes (Tonos y Semitonos)</h3>
+                        <p>La distancia de un traste se denomina medio paso o <strong>semitono</strong>. Saltarse un traste equivale a un <strong>tono entero</strong>.</p>
+                        <p>Para tocar el alfabeto musical (A-B-C-D-E-F-G) en una cuerda, debes saltarte un traste entre cada nota, EXCEPTO entre <strong>B y C</strong>, y entre <strong>E y F</strong> (ya que solo están separados por un semitono).</p>
+
+                        <div class="my-8 text-center bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                            <h4 class="font-bold text-slate-500 mb-4 uppercase text-sm tracking-wider">Alfabeto musical en la 5ª cuerda (A)</h4>
+                            ${generateFretboardSVG([
+                                {string: 5, fret: 0, label: 'A'},
+                                {string: 5, fret: 2, label: 'B'},
+                                {string: 5, fret: 3, label: 'C'},
+                                {string: 5, fret: 5, label: 'D'},
+                                {string: 5, fret: 7, label: 'E'},
+                                {string: 5, fret: 8, label: 'F'},
+                                {string: 5, fret: 10, label: 'G'},
+                                {string: 5, fret: 12, label: 'A'}
+                            ])}
+                            <p class="text-sm text-slate-500 mt-4">Fíjate cómo los trastes contiguos (3 y 8) corresponden a las distancias de semitono B-C y E-F.</p>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Entendiendo el diapasón</h3>
+                        <p>Una forma eficaz de aprender las notas del diapasón es utilizar la escala cromática. Después del duodécimo traste, las notas se repiten exactamente en el mismo orden, pero una octava más agudas.</p>
+                    </div>
+                `,
+                quiz: [
+                    { question: "¿En afinación estándar, cuál es la nota de la 6ª cuerda (la más gruesa)?", options: ["A (La)", "E (Mi)", "G (Sol)"], answer: 1 },
+                    { question: "Si tocas el 3er traste de la 5ª cuerda (A) estás tocando un C. ¿En qué traste está la nota D en esa misma cuerda?", options: ["4to traste", "5to traste", "6to traste"], answer: 1 },
+                    { question: "¿En qué traste se repiten las notas de las cuerdas al aire, completando una octava?", options: ["5to traste", "7mo traste", "12vo traste"], answer: 2 }
+                ]
+            },
+            {
+                id: 'capitulo-3',
+                title: '3. Tonalidades y escalas',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">Una vez asentados los fundamentos de nuestro instrumento, adentrémonos en el concepto que forma la esencia de cualquier canción: su tonalidad.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">¿Qué es una tonalidad?</h2>
+                    <p>En música, una tonalidad se refiere al conjunto primario de alturas o notas que establecen la estructura armónica fundamental de una composición musical. Si una canción utiliza exclusivamente notas de la escala de C mayor, es probable que esté "en la tonalidad de C mayor".</p>
+                    <p>Conocer la tonalidad permite a los músicos tomar decisiones informadas, transponer piezas musicales y facilitar la comunicación efectiva en colaboraciones.</p>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Introducción a las escalas</h2>
+                    <p>Las escalas son secuencias de notas organizadas de manera específica, siguiendo un orden ascendente o descendente. Para construir escalas en el piano y la guitarra, utilizamos fórmulas de escalas, que son patrones de semitonos (H) y tonos enteros (W) que parten de una nota determinada.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 shadow-sm">
+                            <h3 class="font-bold text-teal-700 mb-2">La Escala Mayor</h3>
+                            <p class="text-sm mb-2">Es la piedra angular de todas las escalas. Suele sonar alegre.</p>
+                            <p class="font-mono text-teal-900 font-bold bg-white p-2 rounded text-center">Fórmula: W - W - H - W - W - W - H</p>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 shadow-sm">
+                            <h3 class="font-bold text-teal-700 mb-2">La Escala Menor Natural</h3>
+                            <p class="text-sm mb-2">Proporciona un sonido más oscuro y sombrío en comparación con la escala mayor.</p>
+                            <p class="font-mono text-teal-900 font-bold bg-white p-2 rounded text-center">Fórmula: W - H - W - W - H - W - W</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-teal-700 mt-6 mb-3">Escalas Pentatónicas</h3>
+                    <p>La escala pentatónica contiene solo cinco notas (penta significa cinco). Elimina los intervalos más disonantes, lo que permite utilizar las notas restantes con mayor libertad para improvisar y hacer solos.</p>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Pentatónica Mayor:</strong> Se forma eliminando las notas cuarta y séptima de la escala mayor. Fórmula: W - W - WH - W - WH.</li>
+                        <li><strong>Pentatónica Menor:</strong> Sonido más oscuro y blusero. Se forma eliminando las notas segunda y sexta de la menor natural. Fórmula: WH - W - W - WH - W.</li>
                     </ul>
-                    <p class="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500 text-teal-800 text-sm">
-                        <strong>Tip:</strong> Entre B y C, y entre E y F, solo hay un semitono de distancia natural (sin sostenidos intermedios).
-                    </p>
-                `,
-                quiz: [
-                    { q: "¿Cuántas notas únicas componen la escala cromática base de la música?", options: ["7 notas", "12 notas", "24 notas"], correct: 1 },
-                    { q: "Avanzar un TONO (Tono entero) en la guitarra equivale a moverse:", options: ["Un traste", "Dos trastes", "A la siguiente cuerda"], correct: 1 }
-                ]
-            },
-            {
-                title: "Tonalidades y Escalas",
-                content: `
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">¿Qué es una escala?</h3>
-                    <p class="mb-4">Una escala es una secuencia de notas que sirve como marco fundamental para componer. Sigue un patrón de <strong>Tonos (W)</strong> y <strong>Semitonos (H)</strong>.</p>
-                    
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">La Escala Mayor y Menor</h3>
-                    <p class="mb-2">La <strong>Escala Mayor</strong> suena alegre. Su fórmula es:</p>
-                    <p class="font-mono bg-slate-100 p-2 rounded text-center font-bold tracking-widest mb-4">W - W - H - W - W - W - H</p>
-                    <p class="mb-4">La <strong>Escala Menor Natural</strong> tiene un sonido sombrío y su fórmula es: W - H - W - W - H - W - W.</p>
 
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">Escalas Pentatónicas</h3>
-                    <p class="mb-4">Son escalas de cinco notas. Se crean eliminando dos notas disonantes de las escalas mayores o menores diatónicas, haciéndolas perfectas para improvisar solos de guitarra sin miedo a equivocarse.</p>
-                    <img src="assets/escalas_pdf.jpg" onerror="this.src='https://placehold.co/800x300/0d9488/ffffff?text=Diagramas+de+Escalas'" class="w-full rounded-lg my-6 shadow-md" alt="Gráfico de Escalas">
-                `,
-                quiz: [
-                    { q: "¿Cuál es la fórmula de la Escala Mayor?", options: ["W-H-W-W-H-W-W", "W-W-H-W-W-W-H", "W-W-W-H-W-W-H"], correct: 1 },
-                    { q: "¿Cuántas notas tiene una escala pentatónica?", options: ["7 notas", "5 notas", "8 notas"], correct: 1 }
-                ]
-            },
-            {
-                title: "Armonía y Acordes",
-                content: `
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">Construcción de Acordes (Tríadas)</h3>
-                    <p class="mb-4">Un acorde se construye sobre una nota fundamental (raíz). Un acorde Mayor se construye con los grados: <strong>1 (Raíz), 3 (Tercera Mayor) y 5 (Quinta)</strong>.</p>
-                    
-                    <img src="assets/acordes_pdf.jpg" onerror="this.src='https://placehold.co/800x300/0d9488/ffffff?text=Construcción+e+Inversiones'" class="w-full rounded-lg my-6 shadow-md" alt="Gráfico de Acordes">
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Tonalidades relativas</h2>
+                    <p>Toda escala mayor tiene una escala menor relativa, y viceversa. Comparten las mismas notas, acordes y armadura. La escala menor relativa siempre se encuentra en el 6º grado de la escala mayor.</p>
+                    <p>Otra forma de determinar la tonalidad menor relativa es bajar tres semitonos desde la nota tónica de la escala mayor. Por ejemplo, el relativo menor de C mayor es A menor.</p>
 
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">Inversiones de Acordes</h3>
-                    <p class="mb-4">En guitarra, a menudo cambiamos el orden de las notas. Una <strong>Primera inversión</strong> pone la Tercera en el bajo. Una <strong>Segunda inversión</strong> pone la Quinta en el bajo. Esto facilita transiciones fluidas (voice leading).</p>
-
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">Otros tipos</h3>
-                    <p class="mb-4">Además de mayores y menores, existen acordes suspendidos (sus2, sus4) que omiten la tercera, y acordes extendidos (séptimas, novenas) que añaden riqueza a la armonía.</p>
-                `,
-                quiz: [
-                    { q: "Una tríada mayor se forma con los intervalos:", options: ["Raíz, Segunda, Quinta", "Raíz, Tercera Mayor, Quinta", "Raíz, Cuarta, Sexta"], correct: 1 },
-                    { q: "Si la TERCERA de un acorde se convierte en la nota más grave (el bajo), se trata de:", options: ["Primera inversión", "Segunda inversión", "Acorde suspendido"], correct: 0 }
-                ]
-            },
-            {
-                title: "Sistema CAGED y Círculo de Quintas",
-                content: `
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">El Sistema CAGED</h3>
-                    <p class="mb-4">Divide el diapasón utilizando las 5 formas fundamentales de acordes abiertos: <strong>C, A, G, E y D</strong>. Usando cejillas, estas formas son móviles y se interconectan para mapear todo el mástil, conectando acordes y escalas en una sola estructura lógica.</p>
-
-                    <img src="assets/caged_circulo_pdf.jpg" onerror="this.src='https://placehold.co/800x300/0d9488/ffffff?text=Sistema+CAGED+y+Círculo'" class="w-full rounded-lg my-6 shadow-md" alt="Sistema CAGED">
-
-                    <h3 class="text-xl font-bold text-slate-800 mb-2">El Círculo de Quintas</h3>
-                    <p class="mb-4">Es el "mapa definitivo" de la teoría musical. Organiza las tonalidades por intervalos de quintas perfectas. Es útil para:</p>
-                    <ul class="list-disc pl-5 space-y-2 mb-4">
-                        <li>Identificar armaduras (cuántos sostenidos o bemoles tiene una escala).</li>
-                        <li>Encontrar tonalidades vecinas para progresiones de acordes suaves.</li>
-                        <li>Identificar inmediatamente la tonalidad relativa menor de cualquier clave mayor (ubicada justo debajo en el círculo).</li>
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Los Modos Musicales</h2>
+                    <p>Los modos ofrecen flexibilidad al empezar en diferentes grados de escala en lugar de en la nota raíz. Son patrones únicos creados a partir de la escala mayor.</p>
+                    <ul class="list-disc pl-5 space-y-1 text-sm">
+                        <li><strong>Jónico:</strong> La escala mayor moderna.</li>
+                        <li><strong>Dórico:</strong> Similar a la menor, pero con sexta mayor.</li>
+                        <li><strong>Frigio:</strong> Se distingue por su única segunda menor.</li>
+                        <li><strong>Lidio:</strong> Mayor con la cuarta afilada, creando un sonido mágico.</li>
+                        <li><strong>Mixolidio:</strong> Mayor con séptima aplanada.</li>
+                        <li><strong>Eólico:</strong> La escala menor natural.</li>
+                        <li><strong>Locrio:</strong> El más oscuro, con quinta disminuida.</li>
                     </ul>
+                  </div>
                 `,
                 quiz: [
-                    { q: "¿Qué formas de acordes abiertos conforman el nombre del sistema CAGED?", options: ["C, A, G, E, D", "F, A, C, E, G", "C, D, E, F, G"], correct: 0 },
-                    { q: "¿Para qué sirve principalmente el Círculo de Quintas?", options: ["Para afinar la guitarra", "Para identificar armaduras, relativos menores y tonalidades afines", "Para leer tablaturas"], correct: 1 }
+                  { question: '¿Qué fórmula de tonos (W) y semitonos (H) corresponde a la escala Mayor?', options: ['W-H-W-W-H-W-W', 'W-W-H-W-W-W-H', 'W-W-WH-W-WH'], answer: 1 },
+                  { question: '¿Cuál es la escala menor relativa de Do Mayor (C Mayor)?', options: ['Mi Menor (E menor)', 'Sol Menor (G menor)', 'La Menor (A menor)'], answer: 2 },
+                  { question: '¿Cuántas notas componen una escala pentatónica?', options: ['Cinco notas', 'Siete notas', 'Ocho notas'], answer: 0 }
+                ]
+            },
+            {
+                id: 'capitulo-4',
+                title: '4. Armonía y Acordes',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">Los intervalos son como los bloques de construcción esenciales de la música. Nos ayudan a entender cómo se relacionan las notas entre sí en escalas, acordes y melodías.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Intervalos Musicales</h2>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>Intervalos armónicos:</strong> Cómo suenan dos notas cuando se tocan simultáneamente (como los acordes).</li>
+                        <li><strong>Intervalos melódicos:</strong> Cómo se suceden las notas en una secuencia, como pasos musicales (como las melodías).</li>
+                    </ul>
+                    <p class="mt-2">Los intervalos tienen cualidades: los intervalos perfectos (unísonos, cuartas, quintas y octavas) proporcionan estabilidad, mientras que los mayores y menores contribuyen a los aspectos expresivos y emocionales.</p>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Introducción a los Acordes</h2>
+                    <p>Un acorde se construye seleccionando primero la nota fundamental (raíz o tónica) y añadiendo intervalos adicionales de la escala, típicamente la 3ª y la 5ª. Por ejemplo, un acorde de C mayor consta de las notas C (1), E (3) y G (5).</p>
+                    
+                    <h3 class="text-xl font-bold text-teal-700 mt-6 mb-3">Tipos de Acordes</h3>
+                    <ul class="list-disc pl-5 space-y-3">
+                        <li><strong>Acordes abiertos:</strong> Incluyen una o más cuerdas que se tocan sin trastes, conocidos por su sonido rico y lleno.</li>
+                        <li><strong>Acordes con cejilla (Barre chords):</strong> Utilizan el dedo índice para presionar varias cuerdas a lo largo de un solo traste, creando una barra móvil.</li>
+                        <li><strong>Power chords:</strong> Utilizan dos o tres notas (raíz y quinta). Producen un sonido potente, ideal para rock o metal, y no son ni mayores ni menores.</li>
+                        <li><strong>Tríadas:</strong> Acordes de tres notas (mayor, menor, disminuida, aumentada o suspendida).</li>
+                        <li><strong>Acordes extendidos y de séptima:</strong> Añaden notas extra como la 7ª, 9ª, 11ª o 13ª para aumentar la complejidad y riqueza armónica.</li>
+                    </ul>
+
+                    <div class="bg-gray-100 p-4 rounded-lg mt-6 border-l-4 border-teal-500">
+                        <h4 class="font-bold text-gray-800 mb-2">Acordes Suspendidos, Aumentados y Disminuidos</h4>
+                        <p class="text-sm mb-2"><strong>Suspendidos (sus2, sus4):</strong> La tercera del acorde se omite y se reemplaza por la segunda o cuarta nota, creando tensión.</p>
+                        <p class="text-sm mb-2"><strong>Aumentados (aug o +):</strong> Consiste en una raíz, una tercera mayor y una quinta aumentada (se eleva la 5ª un semitono).</p>
+                        <p class="text-sm"><strong>Disminuidos (dim o °):</strong> Tónica, tercera menor y quinta disminuida (se baja la 5ª medio tono).</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Inversiones de Acordes</h2>
+                    <p>Los guitarristas a menudo utilizan inversiones de acordes, que consisten en reorganizar el orden de las notas para que la tercera, quinta o séptima sean la nota más grave en lugar de la fundamental.</p>
+                    <ul class="list-decimal pl-5 space-y-2 mt-4">
+                        <li><strong>Primera inversión:</strong> La tercera es la nota más grave en el bajo. (Ej: C/E).</li>
+                        <li><strong>Segunda inversión:</strong> La nota más grave es la quinta. (Ej: C/G).</li>
+                        <li><strong>Tercera inversión:</strong> La nota más grave es la séptima (solo aplica para acordes de 4 o más notas). (Ej: Cmaj7/B).</li>
+                    </ul>
+                  </div>
+                `,
+                quiz: [
+                  { question: '¿Qué fórmula numérica se utiliza para construir un acorde de tríada mayor básico?', options: ['1 - 2 - 5', '1 - 3 - 5', '1 - 4 - 5'], answer: 1 },
+                  { question: '¿Qué intervalo se omite y reemplaza en un acorde suspendido (como un sus4)?', options: ['La raíz', 'La quinta', 'La tercera'], answer: 2 },
+                  { question: 'Si tocas un acorde de C mayor pero la nota Mi (E) es la más grave, ¿qué inversión estás haciendo?', options: ['Primera inversión (C/E)', 'Segunda inversión (C/G)', 'Tercera inversión'], answer: 0 }
+                ]
+            },
+            {
+                id: 'capitulo-5',
+                title: '5. Sistema CAGED',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">El sistema CAGED es un marco esencial que conecta las escalas y acordes, permitiéndote navegar por todo el diapasón con facilidad y confianza. Utiliza formas de acordes abiertos comunes para dividir el mástil en cinco secciones distintas.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">¿Qué es el Sistema CAGED?</h2>
+                    <p>Se basa en cinco formas fundamentales de acordes abiertos: C, A, G, E y D, de ahí el nombre CAGED. Cada una de estas formas es móvil, lo que permite tocarlas en varias posiciones a lo largo del diapasón. Esto se consigue barriendo las notas (haciendo cejilla), permitiendo que los acordes mantengan su forma mientras se transponen a distintas tonalidades.</p>
+                    
+                    <h3 class="text-xl font-bold text-teal-700 mt-6 mb-3">Formas de acordes movibles</h3>
+                    <ul class="list-disc pl-5 space-y-3">
+                        <li><strong>Forma de C:</strong> Si mueves el acorde de C abierto dos trastes hacia arriba y haces cejilla en las cuerdas 1, 2 y 3, se convierte en un acorde de D.</li>
+                        <li><strong>Forma de A:</strong> Si mueves el acorde de A abierto hasta el 2º traste y haces cejilla, se convierte en un acorde de B.</li>
+                        <li><strong>Forma de G:</strong> Si mueves la forma de G un traste arriba y haces cejilla en el primero, se convierte en Ab (G#).</li>
+                        <li><strong>Forma de E:</strong> Si mueves la forma de E un traste arriba y haces cejilla en todas las cuerdas, se transforma en F mayor.</li>
+                        <li><strong>Forma de D:</strong> Moviéndolo tres trastes hacia arriba creamos un acorde de F.</li>
+                    </ul>
+
+                    <div class="bg-teal-50 p-4 rounded-lg mt-6 border border-teal-100 shadow-sm">
+                        <h4 class="font-bold text-teal-800 mb-2">Conectando las formas</h4>
+                        <p class="text-sm">El verdadero poder del sistema CAGED se hace realidad cuando aplicas el concepto a un solo acorde en todo el mástil. Si tocas cada forma con la raíz en Do (C), verás cómo cada forma se conecta con la siguiente, creando un patrón continuo. Esta interconexión abarca todo el mástil, lo que te permite tocar acordes en cualquier posición.</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Aplicación en Escalas</h2>
+                    <p>El sistema CAGED no solo sirve para acordes; es crucial para aprender y aplicar escalas. Al aprender los patrones de escala asociados a cada forma de acorde, puedes visualizar los intervalos y pasar de un patrón a otro, moviéndote tanto horizontal como verticalmente por el mástil.</p>
+                  </div>
+                `,
+                quiz: [
+                  { question: '¿En qué cinco formas de acordes abiertos se basa el sistema CAGED?', options: ['C, A, G, E, D', 'C, F, G, Am, Em', 'D, E, F, G, A'], answer: 0 },
+                  { question: 'Si tocas la forma abierta de Mi (E) y la mueves un traste hacia arriba haciendo cejilla, ¿qué acorde estás tocando?', options: ['Sol Mayor (G)', 'Fa Mayor (F)', 'Re Mayor (D)'], answer: 1 },
+                  { question: '¿Para qué sirve el sistema CAGED además de tocar acordes en todo el mástil?', options: ['Para afinar la guitarra', 'Para visualizar patrones de escalas e intervalos', 'Para cambiar el tempo de una canción'], answer: 1 }
+                ]
+            },
+            {
+                id: 'capitulo-6',
+                title: '6. Progresiones y números romanos',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">Las progresiones de acordes son una serie de acordes que se tocan en una secuencia específica dentro de una escala, estableciendo una tonalidad. Conocerlas es fundamental para elaborar armonías y canciones.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Acordes Diatónicos y Números Romanos</h2>
+                    <p>Los acordes diatónicos son aquellos derivados exclusivamente de las notas de una escala concreta. En una escala, hay siete acordes diatónicos, a los que se les asigna un número romano.</p>
+                    <p>En música, <strong>las mayúsculas representan acordes mayores</strong> (I, IV, V), <strong>las minúsculas acordes menores</strong> (ii, iii, vi), y se añade un pequeño círculo para los disminuidos (vii°).</p>
+                    
+                    <div class="overflow-x-auto mt-4">
+                        <table class="min-w-full bg-white border border-gray-200">
+                            <thead class="bg-teal-50">
+                                <tr>
+                                    <th class="py-2 px-4 border-b">Grado</th>
+                                    <th class="py-2 px-4 border-b">Función</th>
+                                    <th class="py-2 px-4 border-b">Número Romano</th>
+                                    <th class="py-2 px-4 border-b">Ejemplo en Do Mayor</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr><td class="py-2 px-4 border-b text-center">1</td><td class="py-2 px-4 border-b">Tónica</td><td class="py-2 px-4 border-b font-bold text-center">I</td><td class="py-2 px-4 border-b">C Mayor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">2</td><td class="py-2 px-4 border-b">Supertónica</td><td class="py-2 px-4 border-b font-bold text-center">ii</td><td class="py-2 px-4 border-b">D Menor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">3</td><td class="py-2 px-4 border-b">Mediante</td><td class="py-2 px-4 border-b font-bold text-center">iii</td><td class="py-2 px-4 border-b">E Menor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">4</td><td class="py-2 px-4 border-b">Subdominante</td><td class="py-2 px-4 border-b font-bold text-center">IV</td><td class="py-2 px-4 border-b">F Mayor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">5</td><td class="py-2 px-4 border-b">Dominante</td><td class="py-2 px-4 border-b font-bold text-center">V</td><td class="py-2 px-4 border-b">G Mayor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">6</td><td class="py-2 px-4 border-b">Submediante</td><td class="py-2 px-4 border-b font-bold text-center">vi</td><td class="py-2 px-4 border-b">A Menor</td></tr>
+                                <tr><td class="py-2 px-4 border-b text-center">7</td><td class="py-2 px-4 border-b">Sensible</td><td class="py-2 px-4 border-b font-bold text-center">vii°</td><td class="py-2 px-4 border-b">B Disminuido</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Progresiones Comunes</h2>
+                    <ul class="list-disc pl-5 space-y-4">
+                        <li>
+                            <strong>La progresión I-IV-V:</strong> Una de las secuencias más frecuentes. Empieza con la tónica (I), pasa al subdominante (IV) y se resuelve en la dominante (V). Un ejemplo es "Stir It Up" de Bob Marley.
+                        </li>
+                        <li>
+                            <strong>La progresión I-V-vi-IV:</strong> Muy presente en el pop y rock (ej. "With Or Without You" de U2, "Hello" de Adele). Ofrece gran profundidad emocional.
+                        </li>
+                        <li>
+                            <strong>La progresión IV-I-V-vi:</strong> Conocida como "progresión pop-punk". Inicia en el cuarto acorde en lugar de la tónica, generando una sutil tensión. Se encuentra en éxitos como "Umbrella" de Rihanna.
+                        </li>
+                    </ul>
+                    
+                    <div class="bg-gray-100 p-4 rounded-lg mt-6 border-l-4 border-teal-500">
+                        <h4 class="font-bold text-gray-800 mb-2">Consejos para componer</h4>
+                        <p class="text-sm">Primero determina la tonalidad, usa tus oídos (la regla principal es: si suena bien, es bueno), empieza con tríadas simples y luego añade adornos, extensiones (7ª, 9ª) o inversiones para aportar profundidad.</p>
+                    </div>
+                  </div>
+                `,
+                quiz: [
+                  { question: 'En la notación por números romanos, ¿qué indica un número en minúscula (ej. ii, vi)?', options: ['Un acorde mayor', 'Un acorde menor', 'Un acorde disminuido'], answer: 1 },
+                  { question: '¿Qué grado de la escala (y su acorde correspondiente) se conoce como "Tónica"?', options: ['El grado IV', 'El grado V', 'El grado I'], answer: 2 },
+                  { question: '¿Qué famosa progresión de acordes utiliza la canción "Stir It Up" de Bob Marley?', options: ['I-IV-V', 'I-V-vi-IV', 'IV-I-V-vi'], answer: 0 }
+                ]
+            },
+            {
+                id: 'capitulo-7',
+                title: '7. Notación musical',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">La notación musical nos ayuda a entender los símbolos de la teoría musical y sienta las bases para comprender el ritmo y el tiempo. Consiste en símbolos que guían a los músicos sobre cómo interpretar una composición.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Tablatura de guitarra</h2>
+                    <p>La tablatura o "tab" es una forma simplificada de notación musical que muestra específicamente dónde tocar las notas en la guitarra, eliminando las conjeturas.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Las líneas:</strong> Se escribe con seis líneas, cada una de las cuales representa una cuerda de la guitarra (de arriba abajo: E, B, G, D, A, E).</li>
+                        <li><strong>Los números:</strong> Se colocan en las líneas para indicar qué traste debe pulsarse en cada cuerda. Si están apilados verticalmente, significa que deben tocarse simultáneamente (un acorde).</li>
+                    </ul>
+                    
+                    <div class="bg-gray-100 p-4 rounded-lg mt-6 border-l-4 border-teal-500">
+                        <h4 class="font-bold text-gray-800 mb-2">Técnicas indicadas en la tablatura</h4>
+                        <p class="text-sm mb-1"><strong>Hammer-on (h):</strong> Golpear la cuerda en un traste concreto sólo con la mano izquierda.</p>
+                        <p class="text-sm mb-1"><strong>Pull-off (p):</strong> Soltar el dedo de la mano izquierda de una cuerda pulsada, permitiendo que la nota suene.</p>
+                        <p class="text-sm mb-1"><strong>Bends (Full, 1/2):</strong> Estirar una cuerda hacia arriba o hacia abajo para cambiar la altura sin mover el dedo del traste.</p>
+                        <p class="text-sm mb-1"><strong>Slide (-):</strong> Deslizar el dedo horizontalmente por el diapasón de un traste a otro.</p>
+                        <p class="text-sm"><strong>Vibrato (~):</strong> Crear una altura oscilante "sacudiendo" el dedo arriba y abajo tras tocar la nota.</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Notación estándar y Claves</h2>
+                    <p>Las claves son símbolos utilizados para leer y escribir música mostrando diferentes rangos de altura en un pentagrama.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Clave de Sol (Clave G):</strong> Representa las notas por encima de la nota C media. Se usa para voces e instrumentos agudos como la mano derecha del piano.</li>
+                        <li><strong>Clave de Fa (Clave F):</strong> Representa notas más graves que la nota C media (por ejemplo, la mano izquierda del piano, violonchelo o bajo).</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Figuras musicales y Duración</h2>
+                    <p>En música, las figuras y sus correspondientes silencios se representan mediante símbolos únicos. La duración de una nota determina cuánto tiempo se mantiene.</p>
+                    <div class="overflow-x-auto mt-4">
+                        <table class="min-w-full bg-white border border-gray-200 text-sm">
+                            <thead class="bg-teal-50">
+                                <tr><th class="py-2 px-4 border-b">Nombre</th><th class="py-2 px-4 border-b">Duración (en compás 4/4)</th></tr>
+                            </thead>
+                            <tbody class="text-center">
+                                <tr><td class="py-2 px-4 border-b font-semibold">Redonda</td><td class="py-2 px-4 border-b">4 pulsos (dura todo el compás)</td></tr>
+                                <tr><td class="py-2 px-4 border-b font-semibold">Blanca</td><td class="py-2 px-4 border-b">2 pulsos (la mitad de una redonda)</td></tr>
+                                <tr><td class="py-2 px-4 border-b font-semibold">Negra</td><td class="py-2 px-4 border-b">1 pulso (un cuarto de la redonda)</td></tr>
+                                <tr><td class="py-2 px-4 border-b font-semibold">Corchea</td><td class="py-2 px-4 border-b">1/2 pulso (se toca el doble de rápido que la negra)</td></tr>
+                                <tr><td class="py-2 px-4 border-b font-semibold">Semicorchea</td><td class="py-2 px-4 border-b">1/4 pulso (cuatro veces más rápida que la negra)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-4"><strong>Puntillos:</strong> Un puntillo a la derecha de una nota alarga su duración a la mitad. Por ejemplo, una negra con puntillo equivale a una negra más media negra (tres corcheas).</p>
+                  </div>
+                `,
+                quiz: [
+                  { question: 'En la tablatura de guitarra, ¿qué indican los números colocados sobre las líneas horizontales?', options: ['El número del dedo de la mano', 'El traste que debe pulsarse', 'El compás de la canción'], answer: 1 },
+                  { question: '¿Cuántos pulsos (tiempos) dura una nota "Redonda" en un compás de 4/4?', options: ['1 pulso', '2 pulsos', '4 pulsos'], answer: 2 },
+                  { question: '¿Qué hace un puntillo colocado a la derecha de una figura musical?', options: ['Reduce su duración a la mitad', 'Indica que debe tocarse con vibrato', 'Alarga su duración a la mitad de su valor original'], answer: 2 }
+                ]
+            },
+            {
+                id: 'capitulo-8',
+                title: '8. Ritmo y tiempo',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">El ritmo es el latido organizado de la música, que agrupa los tiempos en un patrón a un tempo. Toda la música tiene un pulso constante, medido en trozos de tiempo llamados "compases".</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Conceptos Clave del Ritmo</h2>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>BPM:</strong> Pulsaciones por minuto. Determina la velocidad o tempo de tu música.</li>
+                        <li><strong>Barras / Compases:</strong> Una frase musical que comprende una agrupación de tiempos. Un compás se divide visualmente con líneas verticales.</li>
+                        <li><strong>La cuadrícula musical:</strong> En software o partituras, el tiempo funciona como una cuadrícula estructurada donde se colocan las notas en cualquier tiempo, cuenta o espacio intermedio.</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Ritmos Fuertes y Débiles</h2>
+                    <p>Un compás es como un miniciclo rítmico que tiene tiempos fuertes que empujan el ritmo hacia delante y tiempos débiles que lo equilibran.</p>
+                    <p>En un compás común de 4/4, el primer y el tercer tiempo son fuertes (suelen llevar el bombo), mientras que el segundo y el cuarto tiempo son más suaves (donde suele entrar el redoblante o caja). Esta mezcla hace que el ritmo sea fácil de seguir.</p>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">La Métrica y los Compases</h2>
+                    <p>La métrica es el patrón regular de tiempos fuertes y débiles. Se indica al principio con dos números como una fracción (compás). El número superior muestra cuántos tiempos hay en cada sección, y el inferior el tipo de nota que representa un tiempo.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 shadow-sm text-center">
+                            <h3 class="font-bold text-teal-900 text-xl">4/4</h3>
+                            <p class="text-sm font-semibold mt-1">Tiempo Común</p>
+                            <p class="text-sm mt-2">Cuatro tiempos. Ritmo directo y constante, es el más versátil en pop y rock.</p>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 shadow-sm text-center">
+                            <h3 class="font-bold text-teal-900 text-xl">3/4</h3>
+                            <p class="text-sm font-semibold mt-1">Compás de Vals</p>
+                            <p class="text-sm mt-2">Tres tiempos (uno, dos, tres). Tiene un ritmo animado y elegante.</p>
+                        </div>
+                        <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 shadow-sm text-center">
+                            <h3 class="font-bold text-teal-900 text-xl">2/4</h3>
+                            <p class="text-sm font-semibold mt-1">Música Rápida</p>
+                            <p class="text-sm mt-2">Dos tiempos. Sencillo y claro, ideal para marchas y música muy enérgica.</p>
+                        </div>
+                    </div>
+                  </div>
+                `,
+                quiz: [
+                  { question: '¿Qué significan las siglas BPM en teoría musical?', options: ['Barras Por Medida', 'Pulsaciones Por Minuto', 'Bases de Pulso Musical'], answer: 1 },
+                  { question: 'En un compás común de 4/4, ¿qué tiempos suelen ser los fuertes?', options: ['El primero y el tercero', 'El segundo y el cuarto', 'Solo el cuarto'], answer: 0 },
+                  { question: '¿Qué compás se asocia a menudo con el elegante ritmo del vals?', options: ['Compás de 2/4', 'Compás de 4/4', 'Compás de 3/4'], answer: 2 }
+                ]
+            },
+            {
+                id: 'capitulo-9',
+                title: '9. El Círculo de Quintas',
+                content: `
+                  <div class="space-y-6 text-gray-700">
+                    <p class="text-lg leading-relaxed">El círculo de quintas es un mapa musical que ayuda a los músicos a construir secuencias de acordes y crear música armoniosa, mostrando diferentes armaduras y sus notas principales organizadas en un orden específico.</p>
+                    
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Construyendo el Círculo</h2>
+                    <p>Imagina el círculo como un reloj. Las doce marcas corresponden a las 12 tonalidades principales.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Las doce en punto:</strong> Empezamos con C mayor, que es nuestra tonalidad fundamental por su ausencia de sostenidos y bemoles.</li>
+                        <li><strong>La una en punto:</strong> Si asciendes siete semitonos (una quinta perfecta) desde C, llegas a G. Por lo tanto, G mayor está a la una en punto.</li>
+                        <li><strong>Las dos en punto:</strong> Saltando otra quinta perfecta desde G llegamos a D mayor.</li>
+                    </ul>
+                    <p class="mt-2">El nombre "Círculo de Quintas" se debe a que es una representación visual de esta relación recurrente de quintas perfectas.</p>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">La Compatibilidad Armónica</h2>
+                    <p>En el círculo, las tonalidades que están muy próximas entre sí (a una quinta de distancia) tienden a producir progresiones de acordes más armoniosas.</p>
+                    <div class="bg-gray-100 p-4 rounded-lg mt-4 border-l-4 border-teal-500">
+                        <p><strong>Ejemplo práctico:</strong> Si centras tu tonalidad en C (doce), moverte a la izquierda te da F, y a la derecha G. La transición de C a F y a G forma la progresión de acordes clásica I-IV-V, que es una de las más frecuentes por su fuerte conexión armónica. Por el contrario, tonalidades más separadas en el círculo sonarán menos conectadas.</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-teal-800 mt-8 mb-4 border-b-2 border-teal-100 pb-2">Sostenidos y Bemoles (El Círculo de Cuartas)</h2>
+                    <p>El círculo indica exactamente cuándo incorporar sostenidos o bemoles.</p>
+                    <ul class="list-disc pl-5 space-y-3 mt-2">
+                        <li><strong>Tonalidades con sostenidos (Sentido horario):</strong> Avanzando en el sentido de las agujas del reloj, cada tonalidad introduce un sostenido adicional. (Ej: G mayor tiene un sostenido, D mayor tiene dos).</li>
+                        <li><strong>Tonalidades con bemoles (Sentido antihorario):</strong> Para localizar los bemoles, nos movemos en sentido contrario a las agujas del reloj descendiendo una quinta perfecta, lo que es lo mismo que ascender una <em>cuarta perfecta</em>. Por eso al moverse hacia la izquierda también se le llama "Círculo de Cuartas". La primera a la izquierda de C es F, luego Bb, etc.</li>
+                    </ul>
+                  </div>
+                `,
+                quiz: [
+                  { question: '¿Por qué la nota Do (C) está situada en la posición de las "doce en punto" en el Círculo de Quintas?', options: ['Porque es la tonalidad con más sostenidos', 'Porque es la tonalidad fundamental que no tiene ni sostenidos ni bemoles', 'Porque es la única tonalidad menor del círculo'], answer: 1 },
+                  { question: 'Al moverse en el sentido de las agujas del reloj en el círculo (hacia la derecha), ¿qué intervalo exacto hay entre una tonalidad y la siguiente?', options: ['Una tercera menor', 'Una octava', 'Una quinta perfecta'], answer: 2 },
+                  { question: 'Si te mueves en sentido contrario a las agujas del reloj (hacia la izquierda), asciendes por otro intervalo e introduces bemoles. ¿Cómo se llama también este movimiento?', options: ['El Círculo de Cuartas', 'El Círculo de Segundas', 'La Progresión I-IV-V'], answer: 0 }
                 ]
             }
         ];
 
-        const quotes = [
-            "¡Las obras de arte crean reglas; las reglas no crean obras de arte!",
-            "¡El conocimiento es poder en tus dedos!",
-            "¡Excelente! Estás descifrando la matriz de la música.",
+        const motivationalQuotes = [
+            "«Las obras de arte crean reglas; las reglas no crean obras de arte» - Claude Debussy",
+            "¡Excelente! Entender lo que tocas ya no es un misterio.",
             "¡Muy bien! Un paso más cerca del dominio total del diapasón.",
-            "¡Bravo! Sigues desbloqueando la teoría musical."
+            "¡Bravo! Estás descifrando la matriz de la música.",
+            "¡Sigue así! La teoría es la herramienta, tu creatividad es la música."
         ];
 
-        // --- Estado de la App ---
-        let currentView = 'intro'; // 'intro', 0, 1, 2, 3, 'completed'
-        let maxUnlockedStage = 0; // 0 significa que solo la Etapa 1 (índice 0) está desbloqueada.
+        // --- Estado Global ---
+        let currentChapter = 'intro';
+        let maxUnlockedChapter = 0;
 
         // --- Inicialización ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -231,78 +639,61 @@
             renderContent();
         });
 
-        // --- Funciones de Renderizado ---
-        
+        // --- Renderizado UI ---
         function renderSidebar() {
             const nav = document.getElementById('sidebar-nav');
             let html = `
-                <a href="#" onclick="goTo('intro')" class="flex items-center px-6 py-3 transition-colors ${currentView === 'intro' ? 'bg-teal-800 border-l-4 border-teal-400' : 'hover:bg-teal-800/50 border-l-4 border-transparent'}">
+                <a href="#" onclick="goTo('intro')" class="flex items-center px-6 py-3.5 transition-colors ${currentChapter === 'intro' ? 'bg-teal-800 border-l-4 border-teal-400 text-white' : 'hover:bg-teal-800/40 border-l-4 border-transparent text-teal-100'}">
                     <svg class="w-5 h-5 mr-3 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Inicio
+                    Inicio del Curso
                 </a>
             `;
 
-            courseStages.forEach((stage, index) => {
-                const isLocked = index > maxUnlockedStage;
-                const isActive = currentView === index;
+            courseData.forEach((chapter, index) => {
+                const isLocked = index > maxUnlockedChapter;
+                const isActive = currentChapter === index;
                 
                 let icon = '';
                 if (isLocked) {
-                    icon = `<svg class="w-4 h-4 ml-auto text-teal-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>`;
-                } else if (index < maxUnlockedStage || currentView === 'completed') {
+                    icon = `<svg class="w-4 h-4 ml-auto text-teal-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>`;
+                } else if (index < maxUnlockedChapter || currentChapter === 'completed') {
                     icon = `<svg class="w-4 h-4 ml-auto text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>`;
                 }
 
-                const clickAction = isLocked ? `onclick="showLockedModal()"` : `onclick="goTo(${index})"`;
-                const activeClasses = isActive ? 'bg-teal-800 border-l-4 border-teal-400 text-white' : 'hover:bg-teal-800/50 border-l-4 border-transparent text-teal-100';
+                const clickAction = isLocked ? `onclick="showModal('Capítulo bloqueado', 'Debes completar las evaluaciones previas para acceder a este contenido.', false)"` : `onclick="goTo(${index})"`;
+                const activeClasses = isActive ? 'bg-teal-800 border-l-4 border-teal-400 text-white font-medium' : 'hover:bg-teal-800/40 border-l-4 border-transparent text-slate-300';
                 const opacityClass = isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
 
                 html += `
-                    <a ${clickAction} class="flex items-center px-6 py-3 transition-colors ${activeClasses} ${opacityClass}">
-                        <span class="w-6 text-sm font-bold text-teal-500">${index + 1}.</span>
-                        <span class="text-sm truncate pr-2">${stage.title}</span>
+                    <a ${clickAction} class="flex items-center px-6 py-3.5 transition-colors ${activeClasses} ${opacityClass}">
+                        <span class="text-sm truncate pr-2">${chapter.title}</span>
                         ${icon}
                     </a>
                 `;
             });
 
-            const completedActive = currentView === 'completed' ? 'bg-teal-800 border-l-4 border-teal-400' : 'hover:bg-teal-800/50 border-l-4 border-transparent text-teal-100';
-            const completedOpacity = maxUnlockedStage >= courseStages.length ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed hidden';
-            
-            if (maxUnlockedStage >= courseStages.length || currentView === 'completed') {
-                html += `
-                    <a href="#" onclick="goTo('completed')" class="flex items-center px-6 py-3 mt-4 transition-colors ${completedActive} ${completedOpacity}">
-                        <svg class="w-5 h-5 mr-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        Certificado Final
-                    </a>
-                `;
-            }
-
             nav.innerHTML = html;
+            updateProgress();
+        }
 
-            // Actualizar barras de progreso
+        function updateProgress() {
             let progress = 0;
-            if (currentView === 'intro') { progress = 5; }
-            else if (currentView === 'completed') { progress = 100; }
-            else { progress = Math.max(5, (currentView / courseStages.length) * 100); }
+            if (currentChapter === 'intro') { progress = 0; }
+            else if (currentChapter === 'completed' || maxUnlockedChapter >= courseData.length) { progress = 100; }
+            else { progress = (maxUnlockedChapter / courseData.length) * 100; }
             
             document.getElementById('sidebar-progress').style.width = `${progress}%`;
-            document.getElementById('top-progress').style.width = `${progress}%`;
+            document.getElementById('sidebar-progress-text').innerText = `${Math.round(progress)}%`;
         }
 
         function renderBreadcrumbs() {
             const bc = document.getElementById('breadcrumbs');
-            let html = `<a href="#" onclick="goTo('intro')" class="hover:text-teal-600 hover:underline">Inicio</a>`;
+            let html = `<a href="#" onclick="goTo('intro')" class="hover:text-teal-600 transition-colors">Inicio</a>`;
             
-            if (typeof currentView === 'number') {
+            if (typeof currentChapter === 'number') {
                 html += `
-                    <svg class="w-4 h-4 mx-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    <span class="text-slate-800 font-semibold truncate">Etapa ${currentView + 1}: ${courseStages[currentView].title}</span>
-                `;
-            } else if (currentView === 'completed') {
-                html += `
-                    <svg class="w-4 h-4 mx-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    <span class="text-slate-800 font-semibold">Curso Completado</span>
+                    <svg class="w-4 h-4 mx-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="text-teal-700 font-bold truncate">${courseData[currentChapter].title}</span>
                 `;
             }
             bc.innerHTML = html;
@@ -312,98 +703,90 @@
             const container = document.getElementById('content-container');
             let html = '';
 
-            if (currentView === 'intro') {
+            if (currentChapter === 'intro') {
                 html = `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 md:p-12 text-center">
-                        <div class="w-20 h-20 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 md:p-14 text-center mt-4">
+                        <div class="w-24 h-24 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-8">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-teal-900 mb-4">Bienvenido al Curso</h2>
-                        <p class="text-slate-600 mb-8 max-w-2xl mx-auto text-lg leading-relaxed">Basado en el libro <strong>"Teoría de Guitarra Simplificada"</strong>, este curso desmitificará la teoría musical conectando la lógica del piano directamente con el diapasón de tu guitarra. Aprende a tu propio ritmo a través de 4 etapas progresivas.</p>
-                        <button onclick="goTo(0)" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-10 rounded-lg shadow-lg hover:shadow-xl transition-all inline-flex items-center text-lg">
-                            Comenzar Etapa 1
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">Teoría de Guitarra Simplificada</h2>
+                        <p class="text-slate-600 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">Bienvenido al curso interactivo basado en el método de Melvin Tellier. Diseñado para desmitificar la música y darte el control total sobre tu diapasón.</p>
+                        <button onclick="goTo(0)" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-12 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all inline-flex items-center text-lg">
+                            Comenzar el Curso
+                            <svg class="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
                     </div>
                 `;
-            } else if (currentView === 'completed') {
+            } else if (currentChapter === 'completed') {
                 html = `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 md:p-12 text-center">
-                        <h2 class="text-3xl font-bold text-teal-800 mb-4">¡Felicidades, Eres un Experto!</h2>
-                        <p class="text-slate-600 mb-6 max-w-2xl mx-auto text-lg">Has dominado los conceptos fundamentales de la Teoría de Guitarra Simplificada. Ahora posees las herramientas para comprender lo que tocas, armar progresiones con sentido y surcar el diapasón con total libertad armónica.</p>
-                        <div class="bg-teal-50 text-teal-800 p-5 rounded-lg font-medium max-w-md mx-auto mb-8 border border-teal-100 italic">
-                            "${quotes[0]}"
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 md:p-14 text-center mt-4">
+                        <div class="w-24 h-24 bg-yellow-50 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                         </div>
-                        <img src="assets/imagen_pdf_final.jpg" onerror="this.src='https://placehold.co/600x300/0d9488/ffffff?text=Diploma+Virtual'" class="w-full max-w-lg mx-auto rounded-lg shadow-md mb-8" alt="Final">
-                        
-                        <div class="flex justify-center space-x-4">
-                            <button onclick="goTo(3)" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-2 px-6 rounded-lg transition-colors">Volver a repasar</button>
-                            <button onclick="location.reload()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-6 rounded-lg transition-all">Reiniciar Curso</button>
-                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">¡Curso Completado!</h2>
+                        <p class="text-slate-600 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">Has desbloqueado todo el conocimiento. Ahora la teoría es tu herramienta y el diapasón es tu lienzo. ¡A crear música!</p>
+                        <button onclick="goTo(0)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-8 rounded-xl transition-all">Volver a repasar</button>
                     </div>
                 `;
             } else {
-                // Etapas 0 a 3
-                const stage = courseStages[currentView];
-                const isStagePassed = maxUnlockedStage > currentView;
+                const chapter = courseData[currentChapter];
+                const isPassed = maxUnlockedChapter > currentChapter;
                 
-                // Build Quiz HTML
                 let quizHtml = '';
-                stage.quiz.forEach((q, qIndex) => {
+                chapter.quiz.forEach((q, qIndex) => {
                     let optionsHtml = '';
                     q.options.forEach((opt, oIndex) => {
-                        const isChecked = isStagePassed && q.correct === oIndex ? 'checked' : '';
+                        const isChecked = isPassed && q.answer === oIndex ? 'checked' : '';
                         optionsHtml += `
                             <label class="quiz-option">
-                                <input type="radio" name="q${qIndex}" value="${oIndex}" ${isStagePassed ? 'disabled' : ''} ${isChecked}>
-                                <span class="text-sm md:text-base">${opt}</span>
+                                <input type="radio" name="q${qIndex}" value="${oIndex}" ${isPassed ? 'disabled' : ''} ${isChecked}>
+                                <span>${opt}</span>
                             </label>
                         `;
                     });
                     quizHtml += `
-                        <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 mb-4">
-                            <p class="font-semibold text-slate-800 mb-3">${qIndex + 1}. ${q.q}</p>
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-5">
+                            <p class="font-bold text-slate-800 mb-4 text-lg">${qIndex + 1}. ${q.question}</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${optionsHtml}</div>
                         </div>
                     `;
                 });
 
                 html = `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="bg-slate-50 border-b border-slate-200 p-6 md:p-8">
-                            <span class="text-teal-600 font-bold tracking-wider text-sm uppercase mb-1 block">Etapa ${currentView + 1} de 4</span>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">${stage.title}</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+                        <div class="p-8 md:p-12">
+                            <h2 class="text-3xl font-extrabold text-slate-900 mb-8 pb-6 border-b border-slate-100">${chapter.title}</h2>
+                            ${chapter.content}
                         </div>
                         
-                        <div class="p-6 md:p-8 prose prose-slate max-w-none text-slate-700">
-                            ${stage.content}
-                        </div>
-
-                        <div class="bg-slate-50 p-6 md:p-8 border-t border-slate-200">
-                            <h3 class="text-xl font-bold text-slate-800 mb-2 flex items-center">
-                                <svg class="w-6 h-6 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Evaluación de la Etapa
-                            </h3>
-                            <p class="text-sm text-slate-500 mb-6">${isStagePassed ? 'Ya has superado esta evaluación. Puedes revisar tus respuestas correctas.' : 'Responde correctamente para desbloquear la siguiente etapa.'}</p>
-                            
-                            <div id="quiz-container">
-                                ${quizHtml}
+                        <div class="bg-slate-50 p-8 md:p-12 border-t border-slate-100">
+                            <div class="flex items-center mb-6">
+                                <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-900">Evaluación del Capítulo</h3>
+                                    <p class="text-sm text-slate-500">${isPassed ? 'Completado con éxito.' : 'Responde correctamente para avanzar.'}</p>
+                                </div>
                             </div>
+                            
+                            <div id="quiz-container">${quizHtml}</div>
                         </div>
                     </div>
                     
-                    <!-- Navegación Prev/Next -->
-                    <div class="mt-8 flex items-center justify-between">
-                        <button onclick="goTo(${currentView - 1})" class="text-slate-600 hover:text-teal-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center bg-white border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between pb-12">
+                        <button onclick="goTo(${currentChapter - 1})" class="text-slate-500 hover:text-teal-700 font-semibold py-3 px-5 rounded-xl transition-colors flex items-center bg-white border border-slate-200 shadow-sm hover:shadow">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                             Anterior
                         </button>
                         
-                        ${!isStagePassed ? 
-                            `<button id="btn-eval" onclick="evaluateStage()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-8 rounded-lg shadow-md transition-all">Evaluar para Avanzar</button>` 
+                        ${!isPassed ? 
+                            `<button onclick="evaluateChapter()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                                Evaluar y Avanzar
+                            </button>` 
                             : 
-                            `<button onclick="goTo(${currentView + 1})" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 px-8 rounded-lg shadow-md transition-all flex items-center">
-                                Siguiente Etapa
+                            `<button onclick="goTo(${currentChapter + 1})" class="bg-slate-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center">
+                                Siguiente Capítulo
                                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </button>`
                         }
@@ -414,34 +797,30 @@
             container.innerHTML = html;
             renderBreadcrumbs();
             
-            // Forzar reflow para animación fade-in
             container.classList.remove('fade-in');
-            void container.offsetWidth;
+            void container.offsetWidth; 
             container.classList.add('fade-in');
             
             document.getElementById('main-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // --- Navegación y Lógica ---
-
+        // --- Navegación ---
         function goTo(target) {
             if (target === -1) target = 'intro';
-            if (target === courseStages.length) target = 'completed';
+            if (target === courseData.length) target = 'completed';
             
-            currentView = target;
+            currentChapter = target;
             renderSidebar();
             renderContent();
             
-            // Cerrar sidebar en móvil si está abierta
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.classList.contains('sidebar-open')) {
+            if (document.getElementById('sidebar').classList.contains('sidebar-open')) {
                 toggleSidebar();
             }
         }
 
-        function evaluateStage() {
-            const stage = courseStages[currentView];
-            const totalQs = stage.quiz.length;
+        function evaluateChapter() {
+            const chapter = courseData[currentChapter];
+            const totalQs = chapter.quiz.length;
             let correctCount = 0;
             let allAnswered = true;
 
@@ -451,32 +830,28 @@
                     allAnswered = false;
                     break;
                 }
-                if (parseInt(selected.value) === stage.quiz[i].correct) {
+                if (parseInt(selected.value) === chapter.quiz[i].answer) {
                     correctCount++;
                 }
             }
 
             if (!allAnswered) {
-                showModal("Faltan respuestas", "Por favor, selecciona una opción en todas las preguntas antes de enviar.", false);
+                showModal("Faltan respuestas", "Debes seleccionar una opción en cada pregunta antes de evaluar.", false);
                 return;
             }
 
             if (correctCount === totalQs) {
-                // Éxito
-                maxUnlockedStage = Math.max(maxUnlockedStage, currentView + 1);
-                const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-                showModal("¡Etapa Superada!", randomQuote, true, () => {
-                    // Acción al cerrar el modal de éxito: Re-renderizar para mostrar botón Siguiente
+                maxUnlockedChapter = Math.max(maxUnlockedChapter, currentChapter + 1);
+                const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                showModal("¡Evaluación Superada!", randomQuote, true, () => {
                     renderSidebar();
                     renderContent();
                 });
             } else {
-                // Fallo
-                showModal("Hay errores", `Has acertado ${correctCount} de ${totalQs}. Revisa los conceptos de esta etapa e inténtalo de nuevo.`, false);
+                showModal("Revisa tus respuestas", `Has acertado ${correctCount} de ${totalQs}. Vuelve a leer el material y corrige tus errores.`, false);
             }
         }
 
-        // --- Utilidades Móviles ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobile-overlay');
@@ -492,15 +867,11 @@
             }
         }
 
-        function showLockedModal() {
-            showModal("Etapa Bloqueada", "Debes superar el cuestionario de la etapa anterior para poder acceder a esta lección.", false);
-        }
-
-        // --- Modales Custom ---
-        let onModalCloseCallback = null;
+        // --- Modal System ---
+        let onModalClose = null;
 
         function showModal(title, message, isSuccess, callback = null) {
-            onModalCloseCallback = callback;
+            onModalClose = callback;
             const modal = document.getElementById('custom-modal');
             const box = document.getElementById('modal-content-box');
             
@@ -509,15 +880,15 @@
             
             const iconContainer = document.getElementById('modal-icon');
             if (isSuccess) {
-                iconContainer.className = "mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-teal-100 text-teal-600";
-                iconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+                iconContainer.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-teal-100 text-teal-600";
+                iconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`;
             } else {
-                iconContainer.className = "mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-amber-100 text-amber-600";
+                iconContainer.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-red-100 text-red-600";
                 iconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
             }
 
             modal.classList.remove('hidden');
-            void modal.offsetWidth; // Force reflow
+            void modal.offsetWidth;
             modal.classList.remove('opacity-0');
             box.classList.remove('scale-95');
             box.classList.add('scale-100');
@@ -533,9 +904,9 @@
             
             setTimeout(() => {
                 modal.classList.add('hidden');
-                if (onModalCloseCallback) {
-                    onModalCloseCallback();
-                    onModalCloseCallback = null;
+                if (onModalClose) {
+                    onModalClose();
+                    onModalClose = null;
                 }
             }, 300);
         }
