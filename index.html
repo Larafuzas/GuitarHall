@@ -7,195 +7,124 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
     <link rel="apple-touch-icon" href="icono.png">
-    <!-- SortableJS para Drag & Drop -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     
     <style>
-        :root {
-            --bg-color: #121212;
-            --surface: #1e1e1e;
-            --primary: #FF5E00;
-            --secondary: #FFEA00;
-            --text: #ffffff;
-            --text-muted: #a0a0a0;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --bg-color:#121212; --surface:#1e1e1e; --primary:#FF5E00; --secondary:#FFEA00; --text:#fff; --text-muted:#a0a0a0; }
+        * { box-sizing:border-box; margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background-color:var(--bg-color); color:var(--text); display:flex; flex-direction:column; height:100vh; overflow:hidden; }
         
-        body { background-color: var(--bg-color); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-        body.notation-us .n-es { display: none !important; }
-        body.notation-us .n-us { display: inline !important; }
-        body:not(.notation-us) .n-us { display: none !important; }
-        body:not(.notation-us) .n-es { display: inline !important; }
-
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background-color: var(--surface); border-bottom: 1px solid #333; z-index: 10; }
-        .logo { display: flex; align-items: center; gap: 12px; color: var(--text); }
-        .logo h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
-
-        .header-actions { display: flex; align-items: center; gap: 12px; }
-        .icon-header-btn { background: none; border: none; color: var(--text); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; }
-        .icon-header-btn:hover, .icon-header-btn.active-book { color: var(--primary); }
-        .icon-header-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        .app-body { display: flex; flex: 1; overflow: hidden; flex-direction: column; position: relative; }
-        main { flex: 1; overflow-y: auto; padding: 20px; }
-        .main-content { max-width: 1200px; margin: 0 auto; width: 100%; padding-bottom: 40px; }
-
-        .view { display: none; animation: fadeIn 0.25s ease; }
-        .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-        h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        h3 { font-size: 1.1rem; color: var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-
-        .card { background-color: var(--surface); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #2a2a2a; }
+        body.notation-us .n-es { display:none !important; }
+        body.notation-us .n-us { display:inline !important; }
+        body:not(.notation-us) .n-us { display:none !important; }
+        body:not(.notation-us) .n-es { display:inline !important; }
         
-        .collapsible-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-        .collapsible-header svg { transition: transform 0.3s ease; width: 20px; height: 20px; stroke: var(--primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-        .card.open .collapsible-content { max-height: 4000px; transition: max-height 0.5s ease-in; margin-top: 15px; }
-        .card.open .collapsible-header svg { transform: rotate(180deg); }
-
-        .control-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
-        select, input[type="search"], input[type="text"] { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 1rem; transition: border-color 0.2s; appearance: none; }
-        select:focus, input:focus { outline: none; border-color: var(--primary); }
+        .app-header { display:flex; justify-content:space-between; align-items:center; padding:15px 20px; background-color:var(--surface); border-bottom:1px solid #333; z-index:100; position:relative; }
+        .logo { display:flex; align-items:center; gap:12px; color:var(--text); }
+        .logo h1 { font-size:1.3rem; font-weight:700; letter-spacing:.5px; }
+        .header-actions { display:flex; align-items:center; gap:12px; }
+        .icon-header-btn { background:none; border:none; color:var(--text); cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center; transition:color .2s; }
+        .icon-header-btn:hover, .icon-header-btn.active-book { color:var(--primary); }
+        .icon-header-btn svg { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
         
-        .filter-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-        .filter-row select { flex: 1; min-width: 135px; padding: 10px 12px; font-size: 0.92rem; }
-
-        .scale-info-panel {
-            background: #161616;
-            border: 1px solid #333;
-            border-left: 3px solid var(--secondary);
-            padding: 12px 15px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: #ddd;
-            margin-bottom: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .scale-info-panel strong { color: var(--secondary); font-family: monospace; font-size: 0.95rem; }
-
-        .top-tools-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; width: 100%; }
-        .top-tools-row .tool-btn { flex: 1 1 140px; min-width: 0; padding: 14px 10px; }
-        .tuner-select { flex: 1 1 140px; min-width: 0; padding: 14px 10px; border-radius: 8px; border: 1px solid var(--primary); background: var(--surface); color: var(--primary); font-size: 0.95rem; font-weight: bold; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
-
-        .tool-btn { background-color: var(--surface); border: 1px solid var(--primary); color: var(--primary); border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; user-select: none; }
-        .tool-btn:active, .tool-btn.active-tool { background-color: var(--primary); color: var(--bg-color); }
-        .tool-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-
-        .results-list { display: flex; flex-direction: column; gap: 12px; min-height: 100px; }
+        .app-body { display:flex; flex:1; overflow:hidden; flex-direction:column; position:relative; }
+        main { flex:1; overflow-y:auto; padding:20px; }
+        .main-content { max-width:1200px; margin:0 auto; width:100%; padding-bottom:40px; }
+        .view { display:none; animation:fadeIn .25s ease; }
+        .view.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
         
-        .song-item { 
-            background: var(--surface); 
-            padding: 16px; 
-            border-radius: 10px; 
-            border: 1px solid #2a2a2a; 
-            display: flex; 
-            flex-direction: row; 
-            gap: 12px; 
-            align-items: stretch;
-        }
+        h2 { font-size:1.5rem; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
+        h3 { font-size:1.1rem; color:var(--primary); display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+        .card { background-color:var(--surface); padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #2a2a2a; }
+        .collapsible-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; }
+        .collapsible-header svg { transition:transform .3s ease; width:20px; height:20px; stroke:var(--primary); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+        .collapsible-content { max-height:0; overflow:hidden; transition:max-height .3s ease-out; }
+        .card.open .collapsible-content { max-height:3800px; transition:max-height .5s ease-in; margin-top:15px; }
+        .card.open .collapsible-header svg { transform:rotate(180deg); }
         
-        .drag-handle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            cursor: grab;
-            padding: 0 5px;
-            touch-action: none; /* Evita scroll al arrastrar */
-        }
-        .drag-handle:active { cursor: grabbing; }
-        /* Aseguramos que el SVG no bloquee el evento táctil */
-        .drag-handle svg { width: 20px; height: 20px; pointer-events: none; }
-
-        .song-content { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
-        .song-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
-        .song-info { flex: 1; min-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+        .control-group { margin-bottom:15px; display:flex; flex-direction:column; gap:8px; }
+        select, input[type="search"], input[type="text"] { width:100%; padding:14px; border-radius:8px; border:1px solid #333; background:#2a2a2a; color:#fff; font-size:1rem; transition:border-color .2s; appearance:none; }
+        select:focus, input:focus { outline:none; border-color:var(--primary); }
+        .filter-row { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+        .filter-row select { flex:1; min-width:135px; padding:10px 12px; font-size:.92rem; }
+        .scale-formula-badge { display:inline-flex; align-items:center; gap:8px; background:#161616; border:1px solid #333; border-left:3px solid var(--secondary); padding:8px 12px; border-radius:6px; font-size:.85rem; color:#ddd; margin-bottom:14px; width:100%; justify-content:space-between; flex-wrap:wrap; }
+        .scale-formula-badge strong { color:var(--secondary); font-family:monospace; font-size:.95rem; }
         
-        /* FIX: Overflow de botones */
-        .song-actions { 
-            display: flex; 
-            gap: 6px; 
-            align-items: center; 
-            flex-wrap: nowrap; 
-            overflow-x: auto; 
-            padding-bottom: 4px; 
-            max-width: 100%;
-            -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        .song-actions::-webkit-scrollbar { display: none; } /* Chrome, Safari and Opera */
-
-        /* Estilos para el Drag & Drop */
-        .sortable-ghost {
-            opacity: 0.4;
-            border: 2px dashed var(--primary);
-            background: #2a2a2a;
-        }
-
-        /* Pestañas para Favoritos/Playground */
-        .tabs-container { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .tab-btn { background: none; border: none; color: var(--text-muted); font-size: 1.1rem; font-weight: bold; padding: 8px 16px; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
-        .tab-btn.active { color: var(--primary); background: rgba(255, 94, 0, 0.1); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-
-        .gear-panel { background: #141414; border: 1px solid #333; border-top: 2px solid var(--primary); padding: 16px; border-radius: 8px; font-size: 0.85rem; color: #ccc; display: none; width: 100%; margin-top: 6px; animation: fadeIn 0.2s ease; }
-        .gear-panel.active { display: block; }
-        .gear-panel h4 { color: var(--secondary); font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .gear-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 12px; }
-        .gear-badge { background: #1e1e1e; padding: 10px 12px; border-radius: 6px; border: 1px solid #333; font-size: 0.85rem; display: flex; flex-direction: column; gap: 4px; }
-        .gear-badge span.g-title { color: var(--primary); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .top-tools-row { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; width:100%; }
+        .top-tools-row .tool-btn { flex:1 1 140px; min-width:0; padding:14px 10px; }
+        .tuner-select { flex:1 1 140px; min-width:0; padding:14px 10px; border-radius:8px; border:1px solid var(--primary); background:var(--surface); color:var(--primary); font-size:.95rem; font-weight:bold; cursor:pointer; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+        .tool-btn { background-color:var(--surface); border:1px solid var(--primary); color:var(--primary); border-radius:8px; font-weight:bold; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; user-select:none; }
+        .tool-btn:active, .tool-btn.active-tool { background-color:var(--primary); color:var(--bg-color); }
+        .tool-btn svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
         
-        .knobs-container { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; padding-top: 6px; }
-        .knob { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .knob svg { width: 36px; height: 36px; }
-        .knob-label { font-size: 0.65rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase; }
-
-        .gear-link { display: inline-flex; align-items: center; gap: 6px; color: var(--secondary); text-decoration: none; font-size: 0.8rem; font-weight: bold; padding: 8px 12px; background: #222; border-radius: 6px; border: 1px solid #444; }
-        .gear-link:hover { background: #333; }
-
-        .guitar-img-container { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background: #000; max-height: 280px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
-        .guitar-img-container img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .guitar-part { margin-bottom: 12px; border-bottom: 1px dashed #333; padding-bottom: 8px; font-size: 0.95rem; }
-        .guitar-part:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .results-list { display:flex; flex-direction:column; gap:12px; min-height:100px; }
+        .song-item { background:var(--surface); padding:16px; border-radius:10px; border:1px solid #2a2a2a; display:flex; flex-direction:row; gap:12px; align-items:stretch; }
+        .drag-handle { display:flex; align-items:center; justify-content:center; color:#666; cursor:grab; padding:0 5px; touch-action:none; }
+        .drag-handle:active { cursor:grabbing; }
+        .drag-handle svg { width:20px; height:20px; pointer-events:none; }
+        .song-content { display:flex; flex-direction:column; gap:10px; flex:1; min-width:0; }
+        .song-row { display:flex; justify-content:space-between; align-items:center; width:100%; gap:10px; flex-wrap:wrap; }
+        .song-info { flex:1; min-width:180px; overflow:hidden; text-overflow:ellipsis; }
+        .song-actions { display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; max-width:100%; -webkit-overflow-scrolling:touch; -ms-overflow-style:none; scrollbar-width:none; }
+        .song-actions::-webkit-scrollbar { display:none; }
+        .sortable-ghost { opacity:0.4; border:2px dashed var(--primary); background:#2a2a2a; }
         
-        .fretboard-scroll-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #141414; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px 6px; scrollbar-width: thin; scrollbar-color: var(--primary) #1a1a1a; scroll-behavior: smooth; }
-        .fretboard-scroll-wrapper::-webkit-scrollbar { height: 6px; }
-        .fretboard-scroll-wrapper::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
-        .fretboard-scroll-wrapper::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
-        .fret-note-group { cursor: pointer; transition: opacity 0.2s; }
-        .fret-note-group:active circle { stroke: #ffffff; stroke-width: 3px; }
-
-        .svg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 15px; }
-        .playable-item { display: flex; flex-direction: column; align-items: center; background: #222; padding: 12px 8px; border-radius: 12px; border: 1px solid #333; position: relative; }
-        .chord-card { cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-        .chord-card:hover { border-color: var(--primary); }
-        .chord-card.expanded { grid-column: 1 / -1; border-color: var(--primary); background: #262626; }
-        .chord-detail-panel { display: none; width: 100%; margin-top: 12px; padding: 12px; background: #161616; border-radius: 8px; border: 1px solid #333; }
-        .chord-detail-panel.active { display: block; animation: fadeIn 0.2s ease; }
-        .item-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 2px; color: var(--text); text-align: center; }
-        .item-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; text-align: center; }
+        .tabs-container { display:flex; gap:10px; margin-bottom:20px; border-bottom:1px solid #333; padding-bottom:10px; }
+        .tab-btn { background:none; border:none; color:var(--text-muted); font-size:1.1rem; font-weight:bold; padding:8px 16px; cursor:pointer; border-radius:8px; transition:all .2s; }
+        .tab-btn.active { color:var(--primary); background:rgba(255,94,0,0.1); }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; animation:fadeIn .3s ease; }
         
-        .play-card-btn { background: var(--primary); color: #000; border: none; padding: 10px 18px; border-radius: 6px; font-size: 0.9rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.1s, background 0.2s; user-select: none; }
-        .play-card-btn:active { transform: scale(0.95); }
-        .play-card-btn.playing { background: #ff4444; color: #fff; }
-        .play-card-btn svg { width: 16px; height: 16px; fill: currentColor; }
-
-        .harmony-wrap { margin-top: 15px; padding: 15px; background: #161616; border-radius: 8px; border: 1px solid #333; }
-        .harmony-wrap h4 { color: var(--secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
-        .harmony-panel { display: flex; flex-wrap: wrap; gap: 10px; }
-        .harmony-chip { display: inline-flex; align-items: center; gap: 6px; background: #222; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; border-left: 3px solid var(--primary); cursor: pointer; transition: background 0.2s; border-right: 1px solid #444; border-top: 1px solid #444; border-bottom: 1px solid #444; }
-        .harmony-chip:active { background: #333; border-left-color: var(--secondary); }
-        .harmony-chip .deg { color: var(--secondary); font-weight: bold; font-family: monospace; min-width: 22px; }
-        .harmony-chip .chord { color: var(--text); font-weight: 600; }
-
+        .gear-panel { background:#141414; border:1px solid #333; border-top:2px solid var(--primary); padding:16px; border-radius:8px; font-size:.85rem; color:#ccc; display:none; width:100%; margin-top:6px; animation:fadeIn .2s ease; }
+        .gear-panel.active { display:block; }
+        .gear-panel h4 { color:var(--secondary); font-size:.95rem; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+        .gear-grid { display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:12px; }
+        .gear-badge { background:#1e1e1e; padding:10px 12px; border-radius:6px; border:1px solid #333; font-size:.85rem; display:flex; flex-direction:column; gap:4px; }
+        .gear-badge span.g-title { color:var(--primary); font-weight:bold; font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; }
+        .knobs-container { display:flex; gap:12px; flex-wrap:wrap; align-items:center; padding-top:6px; }
+        .knob { display:flex; flex-direction:column; align-items:center; gap:4px; }
+        .knob svg { width:36px; height:36px; }
+        .knob-label { font-size:.65rem; color:var(--text-muted); font-weight:bold; text-transform:uppercase; }
+        .gear-link { display:inline-flex; align-items:center; gap:6px; color:var(--secondary); text-decoration:none; font-size:.8rem; font-weight:bold; padding:8px 12px; background:#222; border-radius:6px; border:1px solid #444; }
+        .gear-link:hover { background:#333; }
+        
+        .guitar-img-container { width:100%; border-radius:8px; overflow:hidden; margin-bottom:15px; background:#000; max-height:280px; display:flex; align-items:center; justify-content:center; border:1px solid #333; }
+        .guitar-img-container img { width:100%; height:100%; object-fit:contain; display:block; }
+        .guitar-part { margin-bottom:12px; border-bottom:1px dashed #333; padding-bottom:8px; font-size:.95rem; }
+        .guitar-part:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+        
+        .fretboard-scroll-wrapper { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; background:#141414; border:1px solid #2a2a2a; border-radius:10px; padding:12px 6px; scrollbar-width:thin; scrollbar-color:var(--primary) #1a1a1a; scroll-behavior:smooth; }
+        .fretboard-scroll-wrapper::-webkit-scrollbar { height:6px; }
+        .fretboard-scroll-wrapper::-webkit-scrollbar-track { background:#1a1a1a; border-radius:4px; }
+        .fretboard-scroll-wrapper::-webkit-scrollbar-thumb { background:var(--primary); border-radius:4px; }
+        .fret-note-group { cursor:pointer; transition:opacity .2s; }
+        .fret-note-group:active circle { stroke:#fff; stroke-width:3px; }
+        
+        .svg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:20px; margin-top:15px; }
+        .playable-item { display:flex; flex-direction:column; align-items:center; background:#222; padding:12px 8px; border-radius:12px; border:1px solid #333; position:relative; }
+        .chord-card { cursor:pointer; transition:border-color .2s,background .2s; }
+        .chord-card:hover { border-color:var(--primary); }
+        .chord-card.expanded { grid-column:1 / -1; border-color:var(--primary); background:#262626; }
+        .chord-detail-panel { display:none; width:100%; margin-top:12px; padding:12px; background:#161616; border-radius:8px; border:1px solid #333; }
+        .chord-detail-panel.active { display:block; animation:fadeIn .2s ease; }
+        .item-title { font-size:1.1rem; font-weight:bold; margin-bottom:2px; color:var(--text); text-align:center; }
+        .item-subtitle { font-size:.75rem; color:var(--text-muted); margin-bottom:8px; text-align:center; }
+        
+        .play-card-btn { background:var(--primary); color:#000; border:none; padding:10px 18px; border-radius:6px; font-size:.9rem; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform .1s,background .2s; user-select:none; }
+        .play-card-btn:active { transform:scale(.95); }
+        .play-card-btn.playing { background:#ff4444; color:#fff; }
+        .play-card-btn svg { width:16px; height:16px; fill:currentColor; }
+        
+        .harmony-wrap { margin-top:15px; padding:15px; background:#161616; border-radius:8px; border:1px solid #333; }
+        .harmony-wrap h4 { color:var(--secondary); font-size:.85rem; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; }
+        .harmony-panel { display:flex; flex-wrap:wrap; gap:10px; }
+        .harmony-chip { display:inline-flex; align-items:center; gap:6px; background:#222; padding:8px 12px; border-radius:6px; font-size:.9rem; border-left:3px solid var(--primary); cursor:pointer; transition:background .2s; border-right:1px solid #444; border-top:1px solid #444; border-bottom:1px solid #444; }
+        .harmony-chip:active { background:#333; border-left-color:var(--secondary); }
+        .harmony-chip .deg { color:var(--secondary); font-weight:bold; font-family:monospace; min-width:22px; }
+        .harmony-chip .chord { color:var(--text); font-weight:600; }
+        
+        /* Contenedor del Iframe simplificado */
         #view-reference { 
             position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
             background: var(--bg-color); 
@@ -212,29 +141,21 @@
             opacity: 1; 
             pointer-events: auto; 
         }
-        
-        .ref-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid #333; gap: 8px; flex-wrap: wrap; }
-        .ref-nav-btns { display: flex; gap: 8px; align-items: center; }
-        .ref-btn { background: #2a2a2a; color: var(--text); border: 1px solid #444; padding: 7px 11px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; user-select: none; }
-        .ref-btn:active { background: var(--primary); color: #000; border-color: var(--primary); }
-        .ref-progress-bar-container { width: 100%; height: 4px; background: #222; }
-        .ref-progress-bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.15s; }
         .ref-frame { flex: 1; width: 100%; height: 100%; border: none; background: #121212; }
-
-        .app-nav { background-color: var(--surface); display: flex; justify-content: space-around; padding: 10px 0 25px 0; border-top: 1px solid #333; }
-        .nav-item { background: none; border: none; color: var(--text-muted); font-size: 0.85rem; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 10px; flex: 1; transition: 0.2s; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        @media (min-width: 768px) {
-            body { flex-direction: row; }
-            .app-body { flex-direction: column; }
-            .app-nav { flex-direction: column; width: 220px; justify-content: flex-start; padding: 20px 0; border-top: none; border-right: 1px solid #333; gap: 10px; }
-            .nav-item { flex-direction: row; padding: 15px 25px; font-size: 1rem; flex: none; justify-content: flex-start; gap: 15px; border-left: 3px solid transparent; }
-            .nav-item.active { background-color: #2a2a2a; border-left-color: var(--primary); }
-            main { padding: 40px; }
-            .gear-grid { grid-template-columns: 1fr 1fr; }
-            h2 { font-size: 2rem; }
+        
+        .app-nav { background-color:var(--surface); display:flex; justify-content:space-around; padding:10px 0 25px 0; border-top:1px solid #333; }
+        .nav-item { background:none; border:none; color:var(--text-muted); font-size:.85rem; display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; padding:10px; flex:1; transition:.2s; }
+        .nav-item.active { color:var(--primary); font-weight:bold; }
+        .nav-icon { width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+        
+        @media (min-width:768px) {
+            .app-body { flex-direction:row; }
+            .app-nav { flex-direction:column; width:220px; justify-content:flex-start; padding:20px 0; border-top:none; border-right:1px solid #333; gap:10px; }
+            .nav-item { flex-direction:row; padding:15px 25px; font-size:1rem; flex:none; justify-content:flex-start; gap:15px; border-left:3px solid transparent; }
+            .nav-item.active { background-color:#2a2a2a; border-left-color:var(--primary); }
+            main { padding:40px; }
+            .gear-grid { grid-template-columns:1fr 1fr; }
+            h2 { font-size:2rem; }
         }
     </style>
 </head>
@@ -264,7 +185,7 @@
                     <circle cx="18" cy="16" r="3"></circle>
                 </svg>
             </button>
-            <button class="icon-header-btn" id="btn-open-reference" title="Abrir/Cerrar Manual de Teoría">
+            <button class="icon-header-btn" id="btn-open-reference" title="Abrir/Cerrar Curso Interactivo">
                 <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="14" y2="10"></line></svg>
             </button>
         </div>
@@ -349,7 +270,7 @@
                         </div>
                     </div>
 
-                    <div class="card" id="card-scales">
+                    <div class="card open" id="card-scales">
                         <div class="collapsible-header" onclick="toggleCard('card-scales')">
                             <h3>Catálogo de Escalas y Posiciones</h3>
                             <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -361,39 +282,53 @@
                             <div class="filter-row">
                                 <select id="scale-root" title="Tónica de la escala"></select>
                                 <select id="scale-type" title="Tipo de escala">
-                                    <optgroup label="Fase 1: Esenciales">
+                                    <optgroup label="Esenciales">
                                         <option value="pentamin">Pentatónica Menor</option>
                                         <option value="pentamaj">Pentatónica Mayor</option>
                                         <option value="major">Mayor (Jónico)</option>
                                         <option value="minor">Menor Natural (Eólico)</option>
                                     </optgroup>
-                                    <optgroup label="Fase 2: Blues y Modos">
-                                        <option value="blues">Blues Menor (con ♭5)</option>
+                                    <optgroup label="Blues">
+                                        <option value="blues">Blues Menor</option>
+                                        <option value="blues2">Blues 2 (con 9ª)</option>
+                                        <option value="blues3">Blues 3 (con 3ª M)</option>
                                         <option value="blues_maj">Blues Mayor</option>
+                                    </optgroup>
+                                    <optgroup label="Modos Griegos">
                                         <option value="dorian">Dórico</option>
                                         <option value="phrygian">Frigio</option>
                                         <option value="lydian">Lidio</option>
                                         <option value="mixolydian">Mixolidio</option>
                                         <option value="locrian">Locrio</option>
                                     </optgroup>
-                                    <optgroup label="Fase 3: Armonía Avanzada">
+                                    <optgroup label="Menor Armónica + Modos">
                                         <option value="harm_minor">Menor Armónica</option>
-                                        <option value="harm_minor_3">Jónico ♯5</option>
-                                        <option value="phrygian_dom">Frigia Dominante (Española)</option>
+                                        <option value="harm_minor_2">Locrio ♯6 (II)</option>
+                                        <option value="harm_minor_3">Jónico ♯5 (III)</option>
+                                        <option value="harm_minor_4">Dórico ♯4 (IV)</option>
+                                        <option value="phrygian_dom">Frigio Dominante (V)</option>
+                                        <option value="harm_minor_6">Lidio ♯2 (VI)</option>
+                                        <option value="harm_minor_7">Ultralocrio (VII)</option>
+                                    </optgroup>
+                                    <optgroup label="Menor Melódica + Modos">
                                         <option value="mel_minor">Menor Melódica</option>
-                                        <option value="lydian_b7">Lidia ♭7 (Overtone)</option>
-                                        <option value="altered">Alterada (Superlocria)</option>
+                                        <option value="mel_minor_2">Dórico ♭2 (II)</option>
+                                        <option value="lydian_aug">Lidio Aumentado (III)</option>
+                                        <option value="lydian_b7">Lidia ♭7 (IV)</option>
+                                        <option value="mixolydian_b6">Mixolidio ♭6 (V)</option>
+                                        <option value="locrian_nat2">Locrio ♮2 (VI)</option>
+                                        <option value="altered">Alterada (VII)</option>
+                                    </optgroup>
+                                    <optgroup label="Bebop y Simétricas">
                                         <option value="bebop_dom">Bebop Dominante</option>
                                         <option value="bebop_maj">Bebop Mayor</option>
                                         <option value="bebop_min">Bebop Menor</option>
-                                    </optgroup>
-                                    <optgroup label="Fase 4: Simétricas">
                                         <option value="dim_wh">Disminuida (T-S)</option>
                                         <option value="dim_hw">Disminuida (S-T)</option>
-                                        <option value="wholetone">Por Tonos (Whole Tone)</option>
+                                        <option value="wholetone">Por Tonos</option>
                                         <option value="chromatic">Cromática</option>
                                     </optgroup>
-                                    <optgroup label="Fase 5: Exóticas">
+                                    <optgroup label="Exóticas y del Mundo">
                                         <option value="hirajoshi">Hirajoshi</option>
                                         <option value="kumoi">Kumoi</option>
                                         <option value="insen">In-Sen</option>
@@ -402,7 +337,7 @@
                                         <option value="ritusen">Ritusen</option>
                                         <option value="hungarian">Húngara Gipsy</option>
                                         <option value="persian">Persa</option>
-                                        <option value="arabic">Árabe (Doble Armónica)</option>
+                                        <option value="arabic">Árabe (Nawa Athar)</option>
                                         <option value="jewish">Judía (Ahava Raba)</option>
                                         <option value="algerian">Argelina</option>
                                         <option value="java">Java</option>
@@ -416,42 +351,39 @@
                                     </optgroup>
                                 </select>
                                 <select id="scale-pos" title="Posición en el mástil">
-                                    <option value="all">Mapa Completo (Trastes 0-15)</option>
-                                    <option value="pos1">Posición 1 (Forma Mi - Tónica en 6ª)</option>
-                                    <option value="pos2">Posición 2 (Forma Re)</option>
-                                    <option value="pos3">Posición 3 (Forma Do - Tónica en 5ª)</option>
-                                    <option value="pos4">Posición 4 (Forma La)</option>
-                                    <option value="pos5">Posición 5 (Forma Sol)</option>
+                                    <option value="all">Mapa Completo (Trastes 0-12)</option>
+                                    <option value="pos1">Posición 1 (Tónica en 6ª - Base)</option>
+                                    <option value="pos2">Posición 2 (Caja central)</option>
+                                    <option value="pos3">Posición 3 (Tónica en 5ª)</option>
+                                    <option value="pos4">Posición 4 (Caja aguda)</option>
+                                    <option value="pos5">Posición 5 (Pre-octava)</option>
                                 </select>
                             </div>
 
-                            <div class="scale-info-panel">
+                            <div class="scale-formula-badge">
                                 <span>Fórmula: <strong id="scale-formula-text">1 - ♭3 - 4 - 5 - ♭7</strong></span>
-                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Trastes: 0 - 15</span>
+                                <span id="scale-pos-range-text" style="color:var(--primary); font-weight:bold;">Vista: Trastes 0 al 12</span>
                             </div>
 
                             <div class="fretboard-scroll-wrapper" id="scale-fretboard-container"></div>
 
                             <div style="display:flex; justify-content:center; gap:12px; margin-top:15px; flex-wrap:wrap;">
                                 <button class="play-card-btn" id="btn-play-scale" style="padding:10px 24px; font-size:.95rem;">
-                                    <svg id="icon-play-scale" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                    <span id="btn-play-scale-label">Reproducir Escala</span>
+                                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> <span id="btn-play-scale-label">Reproducir Escala</span>
                                 </button>
                                 <button class="play-card-btn" id="btn-toggle-degrees" style="padding:10px 24px; font-size:.95rem; background:#2a2a2a; color:var(--secondary); border:1px solid var(--secondary);">
-                                    <span id="btn-toggle-degrees-label">Ver Grados</span>
+                                    <span id="btn-toggle-degrees-label">Mostrar Grados</span>
                                 </button>
                             </div>
 
                             <div class="harmony-wrap" id="harmony-wrap" style="display:none;">
-                                <h4>Armonía diatónica (Acordes derivados de la escala)</h4>
+                                <h4>Armonía compatible</h4>
                                 <div class="harmony-panel" id="harmony-panel"></div>
-                                <p style="font-size:.75rem; color:var(--text-muted); margin-top:8px;">*Toca cualquier acorde para escucharlo al instante.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- SECCIÓN: COMPOSICIÓN -->
                 <section id="sec-compose" class="view">
                     <h2>Composición</h2>
                     <div class="card">
@@ -473,19 +405,15 @@
                     <div id="search-results" class="results-list"></div>
                 </section>
 
-                <!-- SECCIÓN: FAVORITOS Y PLAYGROUND -->
                 <section id="sec-favs" class="view">
                     <h2>Mi Música</h2>
-                    
                     <div class="tabs-container">
                         <button class="tab-btn active" data-tab="tab-favs-list">Favoritos</button>
                         <button class="tab-btn" data-tab="tab-playground-list">Playground</button>
                     </div>
-
                     <div id="tab-favs-list" class="tab-content active">
                         <div id="fav-list" class="results-list"></div>
                     </div>
-
                     <div id="tab-playground-list" class="tab-content">
                         <div id="playground-list" class="results-list"></div>
                     </div>
@@ -495,7 +423,7 @@
                     <h2>Ajustes y Sistema</h2>
                     <div class="card">
                         <h3>Control de Versiones</h3>
-                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.8.3</strong></p>
+                        <p style="color:var(--text-muted); font-size:.9rem; margin:10px 0;">Versión actual instalada: <strong id="app-version" style="color:var(--secondary);">v2.4.0</strong></p>
                     </div>
                     <div class="card">
                         <h3>Copia de Seguridad</h3>
@@ -520,24 +448,7 @@
         </main>
 
         <div id="view-reference">
-            <div class="ref-header">
-                <div class="ref-nav-btns">
-                    <button class="ref-btn" id="btn-ref-back" title="Cerrar libro y volver a la app">
-                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg> Volver
-                    </button>
-                    <button class="ref-btn" id="btn-ref-top" title="Subir al inicio del libro">
-                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg> Inicio Libro
-                    </button>
-                    <button class="ref-btn" id="btn-ref-bookmark" title="Guardar o ir al marcador">
-                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--secondary)" fill="none" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg> Marcador
-                    </button>
-                </div>
-                <div style="font-size:.82rem; color:var(--text-muted); font-weight:bold;">
-                    <span id="ref-progress-text" style="color:var(--secondary)">0%</span>
-                </div>
-            </div>
-            <div class="ref-progress-bar-container"><div class="ref-progress-bar" id="ref-progress-bar"></div></div>
-            <iframe src="reference.html" class="ref-frame" id="ref-iframe" title="Manual de Referencia"></iframe>
+            <iframe src="reference.html" class="ref-frame" id="ref-iframe" title="Curso Interactivo"></iframe>
         </div>
     </div>
 
@@ -561,12 +472,12 @@
     </nav>
 
 <script>
-const APP_VERSION = "v2.8.3";
+const APP_VERSION = "v2.4.0";
 
 function toggleCard(cardId) {
     const clickedCard = document.getElementById(cardId);
     const isOpen = clickedCard.classList.contains('open');
-    document.querySelectorAll('.card').forEach(card => { card.classList.remove('open'); });
+    document.querySelectorAll('.card').forEach(card => card.classList.remove('open'));
     if (!isOpen) clickedCard.classList.add('open');
 }
 
@@ -576,7 +487,9 @@ let htmlAudioPlayer = new Audio();
 let currentAudioUrl = null;
 let isScalePlaying = false;
 
-function writeWavString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); }
+function writeWavString(view, offset, string) {
+    for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
+}
 
 function stopAudio() {
     if (htmlAudioPlayer) { htmlAudioPlayer.pause(); htmlAudioPlayer.currentTime = 0; }
@@ -600,6 +513,7 @@ function playGuitarAudio(notesArray, isChord) {
     const totalDuration = ((notesArray.length - 1) * noteInterval) + ringDuration + 0.15;
     const numSamples = Math.floor(sampleRate * totalDuration);
     const samples = new Float32Array(numSamples);
+    
     notesArray.forEach((note, index) => {
         const freq = isAbsoluteFreq ? note.freq : (stringBaseFreqs[note.string] * Math.pow(2, note.fret / 12));
         const startSample = Math.floor(index * noteInterval * sampleRate);
@@ -617,6 +531,7 @@ function playGuitarAudio(notesArray, isChord) {
             samples[startSample + i] += (h1 + h2 + h3 + h4) * attack * decay;
         }
     });
+    
     let maxPeak = 0;
     for (let i = 0; i < numSamples; i++) { const a = Math.abs(samples[i]); if (a > maxPeak) maxPeak = a; }
     const normFactor = maxPeak > 0 ? (0.88 / maxPeak) : 1;
@@ -704,13 +619,60 @@ const rootOnE = [8, 9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7];
 const rootOnA = [3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1, 2];
 
 const fretboardStrings = [
-    { openNote: 4, synthStringIdx: 5 },  // 1ª cuerda (E4) -> Arriba
-    { openNote: 9, synthStringIdx: 4 },  // 2ª
-    { openNote: 2, synthStringIdx: 3 },  // 3ª
-    { openNote: 7, synthStringIdx: 2 },  // 4ª
-    { openNote: 11, synthStringIdx: 1 }, // 5ª
-    { openNote: 4, synthStringIdx: 0 }   // 6ª cuerda (E2) -> Abajo
+    { openNote: 4, synthStringIdx: 5 }, { openNote: 11, synthStringIdx: 4 },
+    { openNote: 7, synthStringIdx: 3 }, { openNote: 2, synthStringIdx: 2 },
+    { openNote: 9, synthStringIdx: 1 }, { openNote: 4, synthStringIdx: 0 }
 ];
+
+function renderFretboardMap() {
+    const container = document.getElementById('all-notes-fretboard-container');
+    const filterVal = document.getElementById('fretboard-filter').value;
+    const fretWidth = 76, nutX = 48, topY = 38, stringSpacing = 34;
+    const totalWidth = nutX + (12 * fretWidth) + 20;
+    const totalHeight = topY + (5 * stringSpacing) + 24;
+    let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
+    svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
+    const markerFrets = [3, 5, 7, 9, 12];
+    for (let f = 1; f <= 12; f++) {
+        const centerX = nutX + (f - 0.5) * fretWidth;
+        const isMarked = markerFrets.includes(f);
+        svg += `<text x="${centerX}" y="20" fill="${isMarked ? '#FFEA00' : '#666'}" font-size="${isMarked ? '15' : '12'}" font-weight="bold" text-anchor="middle">${f}</text>`;
+        if ([3, 5, 7, 9].includes(f)) svg += `<circle cx="${centerX}" cy="${topY + 2.5 * stringSpacing}" r="5" fill="#252525"/>`;
+        else if (f === 12) { svg += `<circle cx="${centerX}" cy="${topY + 1.5 * stringSpacing}" r="5" fill="#252525"/>`; svg += `<circle cx="${centerX}" cy="${topY + 3.5 * stringSpacing}" r="5" fill="#252525"/>`; }
+    }
+    svg += `<line x1="${nutX}" y1="${topY - 12}" x2="${nutX}" y2="${topY + 5 * stringSpacing + 12}" stroke="#fff" stroke-width="5"/>`;
+    for (let f = 1; f <= 12; f++) { const x = nutX + f * fretWidth; svg += `<line x1="${x}" y1="${topY - 12}" x2="${x}" y2="${topY + 5 * stringSpacing + 12}" stroke="#444" stroke-width="2"/>`; }
+    for (let s = 0; s < 6; s++) { const y = topY + s * stringSpacing; const strokeW = 1.2 + (s * 0.35); svg += `<line x1="${nutX}" y1="${y}" x2="${nutX + 12 * fretWidth}" y2="${y}" stroke="#777" stroke-width="${strokeW}"/>`; }
+    
+    for (let s = 0; s < 6; s++) {
+        const y = topY + s * stringSpacing;
+        const openNoteIdx = fretboardStrings[s].openNote;
+        const synthStr = fretboardStrings[s].synthStringIdx;
+        for (let f = 0; f <= 12; f++) {
+            const noteIdx = (openNoteIdx + f) % 12;
+            const noteObj = notesSys[noteIdx];
+            if (!noteObj.isNatural) continue;
+            const label = notationES ? noteObj.es : noteObj.us;
+            const isFiltered = filterVal !== 'all';
+            const isMatch = filterVal === String(noteIdx);
+            const opacity = (isFiltered && !isMatch) ? '0.2' : '1';
+            if (f === 0) {
+                const x = 22;
+                const fillCol = isMatch ? '#FFEA00' : '#2a2a2a';
+                const textCol = isMatch ? '#000' : '#FFEA00';
+                svg += `<g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, 0)"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="#FFEA00" stroke-width="1.5"/><text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+            } else {
+                const x = nutX + (f - 0.5) * fretWidth;
+                const isOctave = (f === 12);
+                const fillCol = isMatch ? '#FFEA00' : (isOctave ? '#FFEA00' : '#FF5E00');
+                svg += `<g class="fret-note-group" style="opacity:${opacity}" onclick="playSingleNote(${synthStr}, ${f})"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="#121212" stroke-width="1.5"/><text x="${x}" y="${y + 4}" fill="#000" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
+            }
+        }
+    }
+    svg += `</svg>`;
+    container.innerHTML = svg;
+}
+document.getElementById('fretboard-filter').addEventListener('change', renderFretboardMap);
 
 // --- ACORDES ---
 const chordTemplates = {
@@ -829,10 +791,10 @@ function drawChordNotes(svg, strings) {
             svg += `<line x1="${x - 4}" y1="6" x2="${x + 4}" y2="14" stroke="#ff4444" stroke-width="2"/><line x1="${x + 4}" y1="6" x2="${x - 4}" y2="14" stroke="#ff4444" stroke-width="2"/>`;
         } else if (fret === 0) {
             svg += `<circle cx="${x}" cy="9" r="4" stroke="#fff" stroke-width="2" fill="none"/>`;
-            notesToPlay.push({ string: stringIdx, fret: 0 });
+            notesToPlay.push({ string: 5 - stringIdx, fret: 0 }); 
         } else if (fret > 0) {
             svg += `<circle cx="${x}" cy="${20 + (fret - 0.5) * 24}" r="6.5" fill="#FF5E00" stroke="none"/>`;
-            notesToPlay.push({ string: stringIdx, localFret: fret });
+            notesToPlay.push({ string: 5 - stringIdx, localFret: fret });
         }
     });
     return { svg, notesToPlay };
@@ -857,7 +819,6 @@ let chordPayloads = [];
 function generateChords() {
     let rootIdx = parseInt(document.getElementById('chord-root').value);
     if (isNaN(rootIdx)) rootIdx = 0;
-    
     const type = document.getElementById('chord-type').value;
     const container = document.getElementById('chords-container');
     const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
@@ -894,42 +855,21 @@ function getRelatedChords(rootIdx, type) {
     const rel = [];
     const push = (r, t, label) => rel.push({ r: ((r % 12) + 12) % 12, t, label });
     if (type === 'maj' || type === 'maj7' || type === 'power' || type === '7sus4') {
-        push(rootIdx + 2, 'm7', 'ii');
-        push(rootIdx + 4, 'm7', 'iii');
-        push(rootIdx + 5, 'maj7', 'IV');
-        push(rootIdx + 7, '7', 'V');
-        push(rootIdx + 9, 'm7', 'vi');
+        push(rootIdx + 2, 'm7', 'ii'); push(rootIdx + 4, 'm7', 'iii'); push(rootIdx + 5, 'maj7', 'IV'); push(rootIdx + 7, '7', 'V'); push(rootIdx + 9, 'm7', 'vi');
     } else if (type === 'min' || type === 'm7') {
-        push(rootIdx + 3, 'maj', '♭III (Relativo M)');
-        push(rootIdx + 5, 'm7', 'iv7');
-        push(rootIdx + 7, '7', 'v7');
-        push(rootIdx + 8, 'maj', '♭VI');
-        push(rootIdx + 10, '7', '♭VII');
+        push(rootIdx + 3, 'maj', '♭III'); push(rootIdx + 5, 'm7', 'iv7'); push(rootIdx + 7, '7', 'v7'); push(rootIdx + 8, 'maj', '♭VI'); push(rootIdx + 10, '7', '♭VII');
     } else if (type === '7') {
-        const key = (rootIdx + 5) % 12;
-        push(key, 'maj', 'I (Resolución)');
-        push(key + 2, 'm7', 'ii7');
-        push(key + 5, 'maj', 'IV');
-        push(key + 9, 'm7', 'vi7');
+        const key = (rootIdx + 5) % 12; push(key, 'maj', 'I'); push(key + 2, 'm7', 'ii7'); push(key + 5, 'maj', 'IV'); push(key + 9, 'm7', 'vi7');
     } else if (type === 'm7b5') {
-        push(rootIdx + 3, 'min', '♭III');
-        push(rootIdx + 5, 'min', 'iv');
-        push(rootIdx + 8, 'maj', '♭VI');
+        push(rootIdx + 3, 'min', '♭III'); push(rootIdx + 5, 'min', 'iv'); push(rootIdx + 8, 'maj', '♭VI');
     } else if (type === 'dim7') {
-        push(rootIdx + 3, 'maj', '♭III');
-        push(rootIdx + 6, 'maj', '♭V');
-        push(rootIdx + 9, 'maj', '♭VI');
+        push(rootIdx + 3, 'maj', '♭III'); push(rootIdx + 6, 'maj', '♭V'); push(rootIdx + 9, 'maj', '♭VI');
     } else if (type === 'mMaj7') {
-        push(rootIdx + 3, 'maj7', '♭IIImaj7');
-        push(rootIdx + 8, 'maj', '♭VI');
-        push(rootIdx + 11, '7', 'VII7');
+        push(rootIdx + 3, 'maj7', '♭IIImaj7'); push(rootIdx + 8, 'maj', '♭VI'); push(rootIdx + 11, '7', 'VII7');
     } else if (type === 'm6') {
-        push(rootIdx + 3, 'maj', '♭III');
-        push(rootIdx + 5, 'm7', 'iv7');
-        push(rootIdx + 8, 'maj', '♭VI');
+        push(rootIdx + 3, 'maj', '♭III'); push(rootIdx + 5, 'm7', 'iv7'); push(rootIdx + 8, 'maj', '♭VI');
     } else if (type === 'maj7s5') {
-        push(rootIdx + 4, 'min', 'iii');
-        push(rootIdx + 5, 'maj7', 'IVmaj7');
+        push(rootIdx + 4, 'min', 'iii'); push(rootIdx + 5, 'maj7', 'IVmaj7');
     }
     return rel;
 }
@@ -940,7 +880,7 @@ function buildChordDetailHTML(rootIdx, type) {
     const typeNames = { maj:'Mayor', min:'Menor', '7':'7ª Dominante', maj7:'Mayor 7', m7:'Menor 7', m7b5:'Semidisminuido', dim7:'Disminuido 7', mMaj7:'Menor 7ª Mayor', m6:'Menor 6', maj7s5:'Mayor 7♯5', '7sus4':'Dominante sus4', power:'Power Chord' };
     const shortType = { maj:'', min:'m', '7':'7', maj7:'maj7', m7:'m7', m7b5:'m7♭5', dim7:'dim7', mMaj7:'m(maj7)', m6:'m6', maj7s5:'maj7♯5', '7sus4':'7sus4', power:'5' };
     let html = `<h4 style="color:var(--secondary); font-size:.85rem; text-transform:uppercase; margin:0 0 8px 0;">🎸 ${rootName} ${typeNames[type] || type}</h4>
-        <p style="color:var(--text-muted); font-size:.78rem; margin-bottom:12px;">Acordes recomendados para combinar (progresiones típicas). Toca cualquier diagrama para escucharlo:</p>
+        <p style="color:var(--text-muted); font-size:.78rem; margin-bottom:12px;">Acordes recomendados para progresiones:</p>
         <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr)); gap:10px;">`;
     related.forEach(rel => {
         const miniSVG = buildMiniChordCard(rel.r, rel.t);
@@ -997,14 +937,22 @@ const scaleCatalog = {
     mixolydian:{intervals:[0,2,4,5,7,9,10],formula:"1 - 2 - 3 - 4 - 5 - 6 - ♭7",degrees:["1","2","3","4","5","6","♭7"],boxShift:-1},
     locrian:{intervals:[0,1,3,5,6,8,10],formula:"1 - ♭2 - ♭3 - 4 - ♭5 - ♭6 - ♭7",degrees:["1","♭2","♭3","4","♭5","♭6","♭7"],boxShift:0},
     harm_minor:{intervals:[0,2,3,5,7,8,11],formula:"1 - 2 - ♭3 - 4 - 5 - ♭6 - 7",degrees:["1","2","♭3","4","5","♭6","7"],boxShift:-1},
+    harm_minor_2:{intervals:[0,1,3,5,6,9,10],formula:"1 - ♭2 - ♭3 - 4 - ♭5 - 6 - ♭7",degrees:["1","♭2","♭3","4","♭5","6","♭7"],boxShift:0},
     harm_minor_3:{intervals:[0,2,4,5,8,9,11],formula:"1 - 2 - 3 - 4 - ♯5 - 6 - 7",degrees:["1","2","3","4","♯5","6","7"],boxShift:-1},
+    harm_minor_4:{intervals:[0,2,3,6,7,9,10],formula:"1 - 2 - ♭3 - ♯4 - 5 - 6 - ♭7",degrees:["1","2","♭3","♯4","5","6","♭7"],boxShift:-1},
     phrygian_dom:{intervals:[0,1,4,5,7,8,10],formula:"1 - ♭2 - 3 - 4 - 5 - ♭6 - ♭7",degrees:["1","♭2","3","4","5","♭6","♭7"],boxShift:0},
+    harm_minor_6:{intervals:[0,3,4,6,7,9,11],formula:"1 - ♯2 - 3 - ♯4 - 5 - 6 - 7",degrees:["1","♯2","3","♯4","5","6","7"],boxShift:-1},
+    harm_minor_7:{intervals:[0,1,3,4,6,8,10],formula:"1 - ♭2 - ♭3 - ♭4 - ♭5 - ♭6 - ♭7",degrees:["1","♭2","♭3","♭4","♭5","♭6","♭7"],boxShift:0},
     mel_minor:{intervals:[0,2,3,5,7,9,11],formula:"1 - 2 - ♭3 - 4 - 5 - 6 - 7",degrees:["1","2","♭3","4","5","6","7"],boxShift:-1},
+    mel_minor_2:{intervals:[0,1,3,5,7,9,10],formula:"1 - ♭2 - ♭3 - 4 - 5 - 6 - ♭7",degrees:["1","♭2","♭3","4","5","6","♭7"],boxShift:0},
+    lydian_aug:{intervals:[0,2,4,6,8,9,11],formula:"1 - 2 - 3 - ♯4 - ♯5 - 6 - 7",degrees:["1","2","3","♯4","♯5","6","7"],boxShift:-1},
     lydian_b7:{intervals:[0,2,4,6,7,9,10],formula:"1 - 2 - 3 - ♯4 - 5 - 6 - ♭7",degrees:["1","2","3","♯4","5","6","♭7"],boxShift:-1},
+    mixolydian_b6:{intervals:[0,2,4,5,7,8,10],formula:"1 - 2 - 3 - 4 - 5 - ♭6 - ♭7",degrees:["1","2","3","4","5","♭6","♭7"],boxShift:-1},
+    locrian_nat2:{intervals:[0,2,3,5,6,8,10],formula:"1 - 2 - ♭3 - 4 - ♭5 - ♭6 - ♭7",degrees:["1","2","♭3","4","♭5","♭6","♭7"],boxShift:0},
     altered:{intervals:[0,1,3,4,6,8,10],formula:"1 - ♭2 - ♯2 - 3 - ♭5 - ♭6 - ♭7",degrees:["1","♭2","♯2","3","♭5","♭6","♭7"],boxShift:0},
     bebop_dom:{intervals:[0,2,4,5,7,9,10,11],formula:"1 - 2 - 3 - 4 - 5 - 6 - ♭7 - 7",degrees:["1","2","3","4","5","6","♭7","7"],boxShift:-1},
     bebop_maj:{intervals:[0,2,4,5,7,8,9,11],formula:"1 - 2 - 3 - 4 - 5 - ♭6 - 6 - 7",degrees:["1","2","3","4","5","♭6","6","7"],boxShift:-1},
-    bebop_min:{intervals:[0,2,3,4,5,7,9,10],formula:"1 - 2 - ♭3 - 3 - 4 - 5 - 6 - ♭7",degrees:["1","2","♭3","3","4","5","6","♭7"],boxShift:-1},
+    bebop_min:{intervals:[0,2,3,4,5,7,8,10],formula:"1 - 2 - ♭3 - 3 - 4 - 5 - ♭6 - ♭7",degrees:["1","2","♭3","3","4","5","♭6","♭7"],boxShift:-1},
     dim_wh:{intervals:[0,2,3,5,6,8,9,11],formula:"1 - 2 - ♭3 - 4 - ♭5 - ♭6 - 6 - 7",degrees:["1","2","♭3","4","♭5","♭6","6","7"],boxShift:0},
     dim_hw:{intervals:[0,1,3,4,6,7,9,10],formula:"1 - ♭2 - ♯2 - 3 - ♯4 - 5 - 6 - ♭7",degrees:["1","♭2","♯2","3","♯4","5","6","♭7"],boxShift:0},
     wholetone:{intervals:[0,2,4,6,8,10],formula:"1 - 2 - 3 - ♯4 - ♯5 - ♭7",degrees:["1","2","3","♯4","♯5","♭7"],boxShift:0},
@@ -1036,7 +984,7 @@ function getScalePositionWindow(rE, posKey, boxShift) {
     const offset = posOffsets[posKey] || 0;
     let minFret = ((rE + offset) % 12) + (posKey === 'pos1' ? boxShift : 0);
     if (minFret < 0) minFret = 0;
-    const maxFret = minFret + 5;
+    let maxFret = minFret + 5;
     return { min: minFret, max: maxFret, label: `Caja activa: Trastes ${minFret} al ${maxFret}` };
 }
 
@@ -1094,7 +1042,6 @@ let showDegrees = false;
 function renderScaleFretboard() {
     let rootIdx = parseInt(document.getElementById('scale-root').value);
     if (isNaN(rootIdx)) rootIdx = 0;
-    
     const scaleType = document.getElementById('scale-type').value;
     const posKey = document.getElementById('scale-pos').value;
     const container = document.getElementById('scale-fretboard-container');
@@ -1137,7 +1084,8 @@ function renderScaleFretboard() {
         const y = topY + s * stringSpacing;
         const openNoteIdx = fretboardStrings[s].openNote;
         const synthStr = fretboardStrings[s].synthStringIdx;
-
+        let notesOnString = 0;
+        
         for (let f = 0; f <= 15; f++) {
             const noteIdx = (openNoteIdx + f) % 12;
             const semitonesFromRoot = (noteIdx - rootIdx + 12) % 12;
@@ -1146,6 +1094,9 @@ function renderScaleFretboard() {
             const isRoot = (semitonesFromRoot === 0);
             const inPosition = (posKey === 'all' || (f >= posWin.min && f <= posWin.max));
             if (!inPosition) continue;
+            
+            if (posKey !== 'all' && notesOnString >= 3 && f > posWin.min + 2) continue; 
+            notesOnString++;
 
             const degreeIdx = intervals.indexOf(semitonesFromRoot);
             const degreeLabel = scaleObj.degrees ? scaleObj.degrees[degreeIdx] : '';
@@ -1178,77 +1129,44 @@ function renderScaleFretboard() {
     renderScaleHarmony(rootIdx, intervals);
 }
 
-function renderAllNotesFretboard() {
-    const container = document.getElementById('all-notes-fretboard-container');
-    const fretWidth = 76, nutX = 48, topY = 38, stringSpacing = 34;
-    const totalWidth = nutX + (12 * fretWidth) + 20;
-    const totalHeight = topY + (5 * stringSpacing) + 24;
-
-    let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" width="${totalWidth}" height="${totalHeight}" style="display:block; user-select:none;">`;
-    svg += `<rect x="${nutX}" y="${topY - 12}" width="${12 * fretWidth}" height="${5 * stringSpacing + 24}" fill="#181818" rx="4"/>`;
-
-    const markerFrets = [3, 5, 7, 9, 12];
-    for (let f = 1; f <= 12; f++) {
-        const centerX = nutX + (f - 0.5) * fretWidth;
-        const isMarked = markerFrets.includes(f);
-        svg += `<text x="${centerX}" y="20" fill="${isMarked ? '#FFEA00' : '#666'}" font-size="${isMarked ? '15' : '12'}" font-weight="bold" text-anchor="middle">${f}</text>`;
-        if ([3, 5, 7, 9].includes(f)) svg += `<circle cx="${centerX}" cy="${topY + 2.5 * stringSpacing}" r="5" fill="#252525"/>`;
-        else if (f === 12) { svg += `<circle cx="${centerX}" cy="${topY + 1.5 * stringSpacing}" r="5" fill="#252525"/>`; svg += `<circle cx="${centerX}" cy="${topY + 3.5 * stringSpacing}" r="5" fill="#252525"/>`; }
+document.getElementById('btn-play-scale').addEventListener('click', function() {
+    if (isScalePlaying) { stopAudio(); return; }
+    if (currentScaleAudioNotes.length > 0) {
+        currentScaleAudioNotes.sort((a, b) => (a.string !== b.string) ? a.string - b.string : a.fret - b.fret);
+        let startIndex = currentScaleAudioNotes.findIndex(n => n.isRoot);
+        if (startIndex === -1) startIndex = 0;
+        const orderedSlice = currentScaleAudioNotes.slice(startIndex);
+        const uniquePitches = [];
+        const seenFreqs = new Set();
+        orderedSlice.forEach(n => {
+            const freqKey = Math.round(stringBaseFreqs[n.string] * Math.pow(2, n.fret / 12));
+            if (!seenFreqs.has(freqKey)) { seenFreqs.add(freqKey); uniquePitches.push(n); }
+        });
+        isScalePlaying = true;
+        this.classList.add('playing');
+        document.getElementById('icon-play-scale').innerHTML = '<rect x="6" y="6" width="12" height="12"></rect>';
+        document.getElementById('btn-play-scale-label').textContent = "Detener";
+        playGuitarAudio(uniquePitches, false);
     }
-    svg += `<line x1="${nutX}" y1="${topY - 12}" x2="${nutX}" y2="${topY + 5 * stringSpacing + 12}" stroke="#fff" stroke-width="5"/>`;
-    for (let f = 1; f <= 12; f++) { const x = nutX + f * fretWidth; svg += `<line x1="${x}" y1="${topY - 12}" x2="${x}" y2="${topY + 5 * stringSpacing + 12}" stroke="#444" stroke-width="2"/>`; }
-    for (let s = 0; s < 6; s++) { const y = topY + s * stringSpacing; const strokeW = 1.2 + (s * 0.35); svg += `<line x1="${nutX}" y1="${y}" x2="${nutX + 12 * fretWidth}" y2="${y}" stroke="#777" stroke-width="${strokeW}"/>`; }
-
-    for (let s = 0; s < 6; s++) {
-        const y = topY + s * stringSpacing;
-        const openNoteIdx = fretboardStrings[s].openNote;
-        const synthStr = fretboardStrings[s].synthStringIdx;
-
-        for (let f = 0; f <= 12; f++) {
-            const noteIdx = (openNoteIdx + f) % 12;
-            const noteObj = notesSys[noteIdx];
-            if (!noteObj.isNatural) continue;
-
-            const label = notationES ? noteObj.es : noteObj.us;
-            const fillCol = f === 0 ? '#FFEA00' : '#FF5E00';
-            const textCol = '#000';
-
-            if (f === 0) {
-                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, 0)"><circle cx="22" cy="${y}" r="13" fill="${fillCol}" stroke="#fff" stroke-width="1.5"/><text x="22" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
-            } else {
-                const x = nutX + (f - 0.5) * fretWidth;
-                svg += `<g class="fret-note-group" onclick="playSingleNote(${synthStr}, ${f})"><circle cx="${x}" cy="${y}" r="13" fill="${fillCol}" stroke="#121212" stroke-width="1.5"/><text x="${x}" y="${y + 4}" fill="${textCol}" font-size="11" font-weight="bold" text-anchor="middle">${label}</text></g>`;
-            }
-        }
-    }
-    svg += `</svg>`;
-    container.innerHTML = svg;
-}
+});
 
 // --- COMPOSICIÓN ---
 function parseChord(token) {
     if (!token) return null;
     let rawToken = token.trim();
     let upperToken = rawToken.toUpperCase();
-    
     const rootMap = {
-        'C':0, 'C#':1, 'DB':1, 'D':2, 'D#':3, 'EB':3,
-        'E':4, 'F':5, 'F#':6, 'GB':6, 'G':7, 'G#':8,
-        'AB':8, 'A':9, 'A#':10, 'BB':10, 'B':11,
-        'DO':0, 'DO#':1, 'RE':2, 'RE#':3, 'MI':4,
-        'FA':5, 'FA#':6, 'SOL':7, 'SOL#':8, 'LA':9, 'LA#':10, 'SI':11
+        'C':0, 'C#':1, 'DB':1, 'D':2, 'D#':3, 'EB':3, 'E':4, 'F':5, 'F#':6, 'GB':6, 'G':7, 'G#':8, 'AB':8, 'A':9, 'A#':10, 'BB':10, 'B':11,
+        'DO':0, 'DO#':1, 'RE':2, 'RE#':3, 'MI':4, 'FA':5, 'FA#':6, 'SOL':7, 'SOL#':8, 'LA':9, 'LA#':10, 'SI':11
     };
-    
     let rootMatch = null;
     let rootStr = '';
     for (let k of Object.keys(rootMap).sort((a,b)=>b.length-a.length)) {
         if (upperToken.startsWith(k)) { rootMatch = k; rootStr = rawToken.substring(0, k.length); break; }
     }
     if (!rootMatch) return null;
-    
     let rootIdx = rootMap[rootMatch];
     let typeStr = rawToken.slice(rootStr.length).trim();
-    
     let type = 'maj';
     if (typeStr === '' || typeStr === 'M' || typeStr === 'maj' || typeStr === 'MAJ') type = 'maj';
     else if (typeStr === 'm' || typeStr === 'min' || typeStr === 'MIN' || typeStr === '-') type = 'min';
@@ -1263,7 +1181,6 @@ function parseChord(token) {
     else if (typeStr === '7sus4' || typeStr === 'sus4') type = '7sus4';
     else if (typeStr === '5') type = 'power';
     else return null;
-    
     return { rootIdx, type };
 }
 
@@ -1288,25 +1205,20 @@ function renderCompose() {
             const d = tpl.get(rootOnE[rootIdx], rootOnA[rootIdx]);
             if (d) { selectedChordData = d; break; }
         }
-        
         if (!selectedChordData) {
              html += `<div style="color:#ff4444; padding:10px; font-size:0.9rem; grid-column:1/-1;">Sin digitación para: <strong>${token}</strong></div>`;
              return;
         }
-        
         validCount++;
         const baseLabel = selectedChordData.baseFret > 1 && !selectedChordData.overrideBase ? selectedChordData.baseFret : 1;
         const svgRaw = createChordSVGGrid(baseLabel);
         const { svg, notesToPlay } = drawChordNotes(svgRaw, selectedChordData.strings);
-        
         const finalNotes = notesToPlay.map(n => ({
             string: n.string,
             fret: n.fret !== undefined ? n.fret : (n.localFret - 1 + baseLabel)
         }));
-        
         const payloadId = `compose-payload-${idx}`;
         window[payloadId] = finalNotes;
-        
         const rootName = notationES ? notesSys[rootIdx].es : notesSys[rootIdx].us;
         const typeNames = { maj:'Mayor', min:'Menor', '7':'7ª Dom', maj7:'Mayor 7', m7:'Menor 7', m7b5:'Semidism.', dim7:'Dism. 7', mMaj7:'m(maj7)', m6:'Menor 6', maj7s5:'Maj7♯5', '7sus4':'7sus4', power:'Power' };
         
@@ -1319,79 +1231,30 @@ function renderCompose() {
             </button>
         </div>`;
     });
-    
-    if (validCount === 0 && tokens.length > 0) {
-         container.innerHTML = html;
-    } else {
-         container.innerHTML = html;
-    }
+    container.innerHTML = html;
 }
 
-document.getElementById('btn-toggle-degrees').addEventListener('click', () => {
-    showDegrees = !showDegrees;
-    document.getElementById('btn-toggle-degrees-label').textContent = showDegrees ? 'Mostrar Notas' : 'Mostrar Grados';
-    renderScaleFretboard();
-});
-
-document.getElementById('btn-play-scale').addEventListener('click', function() {
-    if (isScalePlaying) { stopAudio(); return; }
-    if (currentScaleAudioNotes.length > 0) {
-        currentScaleAudioNotes.sort((a, b) => (a.string !== b.string) ? a.string - b.string : a.fret - b.fret);
-        let startIndex = currentScaleAudioNotes.findIndex(n => n.isRoot);
-        if (startIndex === -1) startIndex = 0;
-        const orderedSlice = currentScaleAudioNotes.slice(startIndex);
-        const uniquePitches = [];
-        const seenFreqs = new Set();
-        orderedSlice.forEach(n => {
-            const freqKey = Math.round(stringBaseFreqs[n.string] * Math.pow(2, n.fret / 12));
-            if (!seenFreqs.has(freqKey)) { seenFreqs.add(freqKey); uniquePitches.push(n); }
-        });
-        isScalePlaying = true;
-        this.classList.add('playing');
-        document.getElementById('icon-play-scale').innerHTML = '<rect x="6" y="6" width="12" height="12"></rect>';
-        document.getElementById('btn-play-scale-label').textContent = "Detener";
-        playGuitarAudio(uniquePitches, false);
-    }
-});
-
 // --- FAVORITOS Y PLAYGROUND ---
-// Parseo seguro de localStorage
 let favorites = [];
-try {
-    const stored = localStorage.getItem('guitarhall_favs_v3');
-    if (stored) favorites = JSON.parse(stored);
-    if (!Array.isArray(favorites)) favorites = [];
-} catch (e) { favorites = []; }
+try { const stored = localStorage.getItem('guitarhall_favs_v3'); if (stored) favorites = JSON.parse(stored); if (!Array.isArray(favorites)) favorites = []; } catch (e) { favorites = []; }
 
 let playgroundData = [];
-try {
-    const stored = localStorage.getItem('guitarhall_playground_v1');
-    if (stored) playgroundData = JSON.parse(stored);
-    if (!Array.isArray(playgroundData)) playgroundData = [];
-} catch (e) { playgroundData = []; }
+try { const stored = localStorage.getItem('guitarhall_playground_v1'); if (stored) playgroundData = JSON.parse(stored); if (!Array.isArray(playgroundData)) playgroundData = []; } catch (e) { playgroundData = []; }
 
 function renderFavs() {
     const favList = document.getElementById('fav-list');
     if (!favList) return;
-    
-    if (!favorites || favorites.length === 0) { 
-        favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted); text-align:center; margin-top:20px;">No tienes canciones guardadas.</p>'; 
-        return; 
-    }
+    if (!favorites || favorites.length === 0) { favList.innerHTML = '<p class="empty-state" style="color:var(--text-muted); text-align:center; margin-top:20px;">No tienes canciones guardadas.</p>'; return; }
     
     favList.innerHTML = favorites.map((song, idx) => {
         const amUrl = song.appleMusicUrl || `https://music.apple.com/es/search?term=${encodeURIComponent((song.artist || '') + ' ' + (song.title || ''))}`;
         const ytUrl = song.ytUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent((song.artist || '') + ' ' + (song.title || ''))}`;
         const gearUrl = `https://www.google.com/search?q=${encodeURIComponent((song.artist || '') + ' ' + (song.title || '') + ' guitar rig amp settings equipboard')}`;
-        
-        // MAGIA AQUÍ: Pasamos el género guardado (o rock por defecto si es antiguo)
         const tone = getToneProfile(song.artist || '', song.title || '', song.genre || 'Rock');
         const panelId = `gear-fav-${idx}`;
         
         return `<div class="song-item">
-            <div class="drag-handle" title="Arrastrar para reordenar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-            </div>
+            <div class="drag-handle" title="Arrastrar para reordenar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg></div>
             <div class="song-content">
                 <div class="song-row">
                     <div class="song-info"><strong>${song.title || 'Sin título'}</strong><br><small style="color:var(--text-muted);">${song.artist || 'Artista desconocido'}</small></div>
@@ -1419,44 +1282,18 @@ function renderFavs() {
     }).join('');
 }
 
-function saveFav(id, title, artist, url, appleMusicUrl, ytUrl, genre) {
-    if (!favorites.some(s => s.id === id)) {
-        // GUARDAMOS EL GÉNERO AQUÍ
-        favorites.push({ id, title, artist, url, appleMusicUrl, ytUrl, genre });
-        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-        renderFavs();
-        alert('Añadido a favoritos.');
-    } else {
-        alert('Esta canción ya está en favoritos.');
-    }
-}
-
-function removeFav(id) { 
-    favorites = favorites.filter(s => s.id !== id && s.id !== Number(id)); // Compatibilidad con strings y nums
-    localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); 
-    renderFavs(); 
-}
-
 function renderPlayground() {
     const list = document.getElementById('playground-list');
     if (!list) return;
-    
-    if (!playgroundData || playgroundData.length === 0) {
-        list.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:20px;">No hay progresiones guardadas.</p>';
-        return;
-    }
-    
+    if (!playgroundData || playgroundData.length === 0) { list.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:20px;">No hay progresiones guardadas.</p>'; return; }
     list.innerHTML = playgroundData.map((item, idx) => {
         const safeProg = item.progression.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         return `<div class="song-item">
-            <div class="drag-handle" title="Arrastrar para reordenar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg>
-            </div>
+            <div class="drag-handle" title="Arrastrar para reordenar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="12" r="1"></circle><circle cx="9" cy="5" r="1"></circle><circle cx="9" cy="19" r="1"></circle><circle cx="15" cy="12" r="1"></circle><circle cx="15" cy="5" r="1"></circle><circle cx="15" cy="19" r="1"></circle></svg></div>
             <div class="song-content">
                 <div class="song-row">
                     <div class="song-info" onclick="loadPlaygroundItem('${safeProg}')" style="cursor:pointer;">
-                        <strong>${item.name}</strong><br>
-                        <small style="color:var(--primary); font-family:monospace; font-size:0.9rem;">${item.progression}</small>
+                        <strong>${item.name}</strong><br><small style="color:var(--primary); font-family:monospace; font-size:0.9rem;">${item.progression}</small>
                     </div>
                     <div class="song-actions no-drag">
                         <button class="tool-btn" onclick="editPlayground(${item.id})" style="padding:8px 10px;" title="Editar nombre"><svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
@@ -1471,29 +1308,17 @@ function renderPlayground() {
 function loadPlaygroundItem(prog) {
     document.getElementById('compose-input').value = prog;
     renderCompose();
-    // Simular click en el botón de composición para cambiar de vista
     document.getElementById('btn-open-compose').click();
 }
-
 function editPlayground(id) {
     const item = playgroundData.find(i => i.id === id);
     if (!item) return;
-    const newName = prompt('Nuevo nombre para la progresión:', item.name);
-    if (newName && newName.trim() !== '') {
-        item.name = newName.trim();
-        localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
-        renderPlayground();
-    }
+    const newName = prompt('Nuevo nombre:', item.name);
+    if (newName && newName.trim() !== '') { item.name = newName.trim(); localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData)); renderPlayground(); }
 }
-
 function removePlayground(id) {
-    if (confirm('¿Eliminar esta progresión?')) {
-        playgroundData = playgroundData.filter(i => i.id !== id);
-        localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
-        renderPlayground();
-    }
+    if (confirm('¿Eliminar esta progresión?')) { playgroundData = playgroundData.filter(i => i.id !== id); localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData)); renderPlayground(); }
 }
-
 document.getElementById('btn-save-progression').addEventListener('click', () => {
     const inputVal = document.getElementById('compose-input').value.trim();
     if (!inputVal) return alert('Escribe una progresión primero.');
@@ -1502,10 +1327,10 @@ document.getElementById('btn-save-progression').addEventListener('click', () => 
     playgroundData.push({ id: Date.now(), name: name.trim(), progression: inputVal });
     localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
     renderPlayground();
-    alert('Progresión guardada en Playground.');
+    alert('Progresión guardada.');
 });
 
-// Pestañas de Mis Favoritos
+// Pestañas
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 tabBtns.forEach(btn => {
@@ -1517,66 +1342,27 @@ tabBtns.forEach(btn => {
     });
 });
 
-// --- INICIALIZACIÓN DE SORTABLE (DRAG & DROP) ---
+// Sortable (Drag & Drop)
 function initSortables() {
-    const favList = document.getElementById('fav-list');
-    const playList = document.getElementById('playground-list');
-
-    if (favList && typeof Sortable !== 'undefined') {
-        new Sortable(favList, {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            handle: '.drag-handle', // SOLO arrastra desde el icono
-            delay: 100, // Pequeño retardo para evitar clicks fantasma
-            delayOnTouchOnly: true,
-            onEnd: function (evt) {
-                if (evt.oldIndex === evt.newIndex) return;
-                const item = favorites.splice(evt.oldIndex, 1)[0];
-                favorites.splice(evt.newIndex, 0, item);
-                localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-                renderFavs();
-            }
-        });
-    }
-
-    if (playList && typeof Sortable !== 'undefined') {
-        new Sortable(playList, {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            handle: '.drag-handle',
-            delay: 100,
-            delayOnTouchOnly: true,
-            onEnd: function (evt) {
-                if (evt.oldIndex === evt.newIndex) return;
-                const item = playgroundData.splice(evt.oldIndex, 1)[0];
-                playgroundData.splice(evt.newIndex, 0, item);
-                localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
-                renderPlayground();
-            }
-        });
+    if (typeof Sortable !== 'undefined') {
+        const favList = document.getElementById('fav-list');
+        const playList = document.getElementById('playground-list');
+        if (favList) new Sortable(favList, { animation: 150, ghostClass: 'sortable-ghost', handle: '.drag-handle', delay: 100, delayOnTouchOnly: true, onEnd: function (evt) { if (evt.oldIndex === evt.newIndex) return; const item = favorites.splice(evt.oldIndex, 1)[0]; favorites.splice(evt.newIndex, 0, item); localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); renderFavs(); } });
+        if (playList) new Sortable(playList, { animation: 150, ghostClass: 'sortable-ghost', handle: '.drag-handle', delay: 100, delayOnTouchOnly: true, onEnd: function (evt) { if (evt.oldIndex === evt.newIndex) return; const item = playgroundData.splice(evt.oldIndex, 1)[0]; playgroundData.splice(evt.newIndex, 0, item); localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData)); renderPlayground(); } });
     }
 }
 
+// --- INIT UI ---
 function initUI() {
     const rootSelects = [document.getElementById('chord-root'), document.getElementById('scale-root')];
-    rootSelects.forEach(sel => {
-        sel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i === 0 ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
-    });
+    rootSelects.forEach(sel => { sel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i === 0 ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join(''); });
     document.getElementById('chord-root').addEventListener('change', generateChords);
     document.getElementById('chord-type').addEventListener('change', generateChords);
     document.getElementById('scale-root').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-type').addEventListener('change', renderScaleFretboard);
     document.getElementById('scale-pos').addEventListener('change', renderScaleFretboard);
-    
-    generateChords();
-    renderScaleFretboard();
-    renderAllNotesFretboard();
-    renderCompose();
-    
-    // Renderizar listas y luego activar drag & drop
-    renderFavs();
-    renderPlayground();
-    initSortables();
+    generateChords(); renderScaleFretboard(); renderAllNotesFretboard(); renderCompose();
+    renderFavs(); renderPlayground(); initSortables();
 }
 
 document.getElementById('compose-input').addEventListener('input', renderCompose);
@@ -1598,38 +1384,22 @@ document.getElementById('btn-toggle-not').addEventListener('click', function() {
     const sVal = scaleSel.value;
     chordSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == cVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
     scaleSel.innerHTML = notesSys.map((n, i) => `<option value="${i}" ${i == sVal ? 'selected' : ''}>${notationES ? n.es : n.us}</option>`).join('');
-    generateChords();
-    renderScaleFretboard();
-    renderAllNotesFretboard();
-    renderCompose();
+    generateChords(); renderScaleFretboard(); renderAllNotesFretboard(); renderCompose();
 });
 
-// --- REFERENCE / NAV ---
+// --- NAVEGACIÓN ---
 const viewReference = document.getElementById('view-reference');
 const btnOpenRef = document.getElementById('btn-open-reference');
 const refIframe = document.getElementById('ref-iframe');
-const refProgressBar = document.getElementById('ref-progress-bar');
-const refProgressText = document.getElementById('ref-progress-text');
 
-function closeReferenceView() {
-    viewReference.classList.remove('active');
-    btnOpenRef.classList.remove('active-book');
-}
+function closeReferenceView() { viewReference.classList.remove('active'); btnOpenRef.classList.remove('active-book'); }
+
 btnOpenRef.addEventListener('click', () => {
     const isOpening = !viewReference.classList.contains('active');
     if (isOpening) { viewReference.classList.add('active'); btnOpenRef.classList.add('active-book'); }
     else closeReferenceView();
 });
-document.getElementById('btn-ref-back').addEventListener('click', closeReferenceView);
-document.getElementById('btn-ref-top').addEventListener('click', () => { if (refIframe.contentWindow) refIframe.contentWindow.postMessage({ type: 'SCROLL_TOP' }, '*'); });
-document.getElementById('btn-ref-bookmark').addEventListener('click', () => { if (refIframe.contentWindow) refIframe.contentWindow.postMessage({ type: 'SAVE_BOOKMARK' }, '*'); });
-window.addEventListener('message', (event) => {
-    if (!event.data) return;
-    if (event.data.type === 'REF_PROGRESS') { refProgressBar.style.width = event.data.percent + '%'; refProgressText.textContent = event.data.percent + '%'; }
-    else if (event.data.type === 'BOOKMARK_SAVED') { alert(`Marcador guardado en el ${event.data.percent}% del libro.`); }
-});
 
-// Botón de Composición
 document.getElementById('btn-open-compose').addEventListener('click', () => {
     closeReferenceView();
     navItems.forEach(nav => nav.classList.remove('active'));
@@ -1658,25 +1428,13 @@ function renderKnob(label, val) {
 }
 
 const artistGearDatabase = {
-    "arde bogota - los perros": { amp: "Fender Deluxe / Vox AC30", drive: "Indie Rock", eq: {b:5, m:7, t:6}, p: "Overdrive, Chorus, Reverb" },
     "arde bogota": { amp: "Fender Twin / Marshall JCM800", drive: "Crunch Indie", eq: {b:6, m:6, t:7}, p: "Overdrive, Delay, Reverb" },
-    "ivan ferreiro - turnedo": { amp: "Ampli de bajo (según entrevista)", drive: "Limpio con octavador", eq: {b:7, m:5, t:5}, p: "Boss OC-3 (Octavador), MXR Overdrive" },
-    "ivan ferreiro - el equipaje abierto": { amp: "Vox AC30 / Fender Twin", drive: "Crunch suave", eq: {b:5, m:6, t:7}, p: "Overdrive, Delay (Timeline)" },
     "ivan ferreiro": { amp: "Fender / Vox AC30", drive: "Limpio a Crunch", eq: {b:5, m:6, t:6}, p: "OCD, Timeline Delay" },
-    "extremoduro - de profundis": { amp: "Marshall JCM800", drive: "Distorsión Cruda", eq: {b:6, m:7, t:6}, p: "Overdrive, Wah" },
-    "extremoduro - agila": { amp: "Mesa/Boogie", drive: "High Gain", eq: {b:7, m:5, t:8}, p: "Distorsión, Chorus" },
     "extremoduro": { amp: "Marshall / Mesa", drive: "Distorsión Rock", eq: {b:6, m:6, t:7}, p: "Overdrive, Distorsión" },
-    "fito fitipaldis - soldadito marinero": { amp: "Vox AC30", drive: "Limpio brillante", eq: {b:5, m:6, t:8}, p: "Compresor, Overdrive suave, Reverb" },
-    "fito fitipaldis - antes de que cuente diez": { amp: "Fender Hot Rod", drive: "Crunch medio", eq: {b:6, m:6, t:6}, p: "Overdrive, Delay" },
     "fito fitipaldis": { amp: "Vox AC30 / Fender", drive: "Crunch Clásico", eq: {b:5, m:7, t:6}, p: "Overdrive, Compresor" },
-    "metallica - master of puppets": { amp: "Mesa/Boogie Mark IIC+", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG 81, Tube Screamer (como boost)" },
-    "metallica - nothing else matters": { amp: "Mesa/Boogie Mark IIC+", drive: "Limpio Cristalino", eq: {b:6, m:5, t:6}, p: "Compresor, Reverb" },
-    "metallica": { amp: "Mesa/Boogie Mark IIC+ / Dual Rectifier", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG Pickups, TS9, Wah" },
-    "pink floyd - comfortably numb": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Delay, Compresor" },
+    "metallica": { amp: "Mesa/Boogie Mark IIC+", drive: "High Gain Seco", eq: {b:8, m:2, t:8}, p: "EMG Pickups, TS9, Wah" },
     "pink floyd": { amp: "Hiwatt DR103 Custom", drive: "Sustain / Fuzz", eq: {b:6, m:5, t:7}, p: "Big Muff, Binson Echorec" },
-    "ac/dc - back in black": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales), SG con Humbuckers" },
     "ac/dc": { amp: "Marshall Super Lead", drive: "Crunch Orgánico", eq: {b:6, m:7, t:6}, p: "Guitarra directa (Sin Pedales)" },
-    "muse - hysteria": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy, Animato" },
     "muse": { amp: "Diezel VH4", drive: "Fuzz Caótico / Synth", eq: {b:7, m:4, t:8}, p: "Fuzz Factory, Whammy" }
 };
 
@@ -1687,38 +1445,17 @@ const genreGearDatabase = {
     "indie": { amp: "Fender Hot Rod / Vox AC30", drive: "Overdrive Texturizado", eq: {b:6, m:6, t:7}, p: "Fuzz, Analog Delay, Reverb" },
     "pop": { amp: "Vox AC30 / Matchless", drive: "Limpio Brillante (Edge)", eq: {b:5, m:6, t:7}, p: "Compressor, Chorus, Delay" },
     "blues": { amp: "Fender Blues Deluxe", drive: "Overdrive Bluesero", eq: {b:6, m:7, t:6}, p: "Blues Driver / Klon Centaur" },
-    "jazz": { amp: "Roland JC-120", drive: "Limpio Cristalino", eq: {b:7, m:5, t:4}, p: "Compressor, Reverb suave" },
-    "grunge": { amp: "Fender Twin / Mesa", drive: "Distorsión Pesada", eq: {b:7, m:5, t:7}, p: "Boss DS-2, Small Clone Chorus" },
     "default": { amp: "Amplificador Versátil", drive: "Ganancia Media", eq: {b:6, m:6, t:6}, p: "Overdrive, Reverb, Delay" }
 };
 
 function getToneProfile(artistName, trackName, genreName) {
     const normalize = (str) => str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9 ]/g, "") : "";
     const qArtist = normalize(artistName);
-    const qTrack = normalize(trackName);
-    
-    // 1. Buscar coincidencia exacta de canción
-    if (qTrack) {
-        const songKey = `${qArtist} - ${qTrack}`;
-        if (artistGearDatabase[songKey]) return artistGearDatabase[songKey];
-    }
-
-    // 2. Buscar coincidencia de artista (sin título específico)
-    for (let key in artistGearDatabase) { 
-        if (!key.includes(" - ") && (qArtist.includes(key) || key.includes(qArtist))) {
-            return artistGearDatabase[key]; 
-        }
-    }
-    
-    // 3. Si no está el artista, usar el género guardado (crucial para los guardados en favoritos)
+    for (let key in artistGearDatabase) { if (!key.includes(" - ") && (qArtist.includes(key) || key.includes(qArtist))) return artistGearDatabase[key]; }
     if (genreName) {
         const qGenre = normalize(genreName);
-        for (let key in genreGearDatabase) { 
-            if (qGenre.includes(key)) return genreGearDatabase[key]; 
-        }
+        for (let key in genreGearDatabase) { if (qGenre.includes(key)) return genreGearDatabase[key]; }
     }
-    
-    // 4. Fallback a Rock genérico en vez de "Amplificador Versátil" si no hay nada
     return genreGearDatabase["rock"];
 }
 
@@ -1752,10 +1489,7 @@ searchInput.addEventListener('input', (e) => {
                     const tabUrl = `https://www.songsterr.com/a/wa/search?pattern=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const appleMusicUrl = song.trackViewUrl || `https://music.apple.com/es/search?term=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
                     const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(song.artistName + ' ' + song.trackName)}`;
-                    
-                    // Búsqueda de Rig más profesional
                     const gearUrl = `https://www.google.com/search?q=${encodeURIComponent(song.artistName + ' ' + song.trackName + ' guitar rig amp settings equipboard')}`;
-                    
                     const tone = getToneProfile(song.artistName, song.trackName, song.primaryGenreName);
                     const panelId = `gear-panel-${idx}`;
                     return `<div class="song-item">
@@ -1772,7 +1506,6 @@ searchInput.addEventListener('input', (e) => {
                             </div>
                             <div class="gear-panel no-drag" id="${panelId}">
                                 <h4><span>🎛️ Ajustes Estimados (${song.primaryGenreName || 'Rock'})</span></h4>
-                                <p style="font-size:0.75rem; color:#888; margin-bottom:12px; font-style:italic;">*Ajustes sugeridos basados en el estilo. Usa el buscador de abajo para ver el equipo exacto del artista.</p>
                                 <div class="gear-grid">
                                     <div class="gear-badge"><span class="g-title">Amplificador</span>${tone.amp}</div>
                                     <div class="gear-badge"><span class="g-title">Saturación / Drive</span>${tone.drive}</div>
@@ -1784,14 +1517,19 @@ searchInput.addEventListener('input', (e) => {
                         </div>
                     </div>`;
                 }).join('');
-            } catch (e) {
-                searchResults.innerHTML = `<p style="color:#ff4444;">Error al conectar con el servicio de búsqueda.</p>`;
-            }
+            } catch (e) { searchResults.innerHTML = `<p style="color:#ff4444;">Error al conectar con el servicio de búsqueda.</p>`; }
         }, 600);
-    } else {
-        searchResults.innerHTML = '';
-    }
+    } else searchResults.innerHTML = '';
 });
+
+function saveFav(id, title, artist, url, appleMusicUrl, ytUrl, genre) {
+    if (!favorites.some(s => s.id === id)) {
+        favorites.push({ id, title, artist, url, appleMusicUrl, ytUrl, genre });
+        localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
+        renderFavs();
+        alert('Añadido a favoritos.');
+    } else alert('Esta canción ya está en favoritos.');
+}
 
 document.getElementById('btn-export').addEventListener('click', async () => {
     const backupData = { favorites: favorites, playground: playgroundData };
@@ -1799,10 +1537,7 @@ document.getElementById('btn-export').addEventListener('click', async () => {
     const fileName = "guitarhall_backup.json";
     try {
         const file = new File([jsonString], fileName, { type: "application/json" });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: "Backup GuitarHall", text: "Respaldo de canciones y progresiones" });
-            return;
-        }
+        if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: "Backup GuitarHall" }); return; }
     } catch (err) { if (err.name === 'AbortError') return; }
     try {
         const blob = new Blob([jsonString], { type: "application/json" });
@@ -1810,9 +1545,7 @@ document.getElementById('btn-export').addEventListener('click', async () => {
         const anchor = document.createElement('a'); anchor.href = url; anchor.download = fileName;
         document.body.appendChild(anchor); anchor.click();
         setTimeout(() => { document.body.removeChild(anchor); URL.revokeObjectURL(url); }, 500);
-    } catch (e) {
-        if (navigator.clipboard) { await navigator.clipboard.writeText(jsonString); alert("JSON copiado al portapapeles."); }
-    }
+    } catch (e) { if (navigator.clipboard) { await navigator.clipboard.writeText(jsonString); alert("JSON copiado al portapapeles."); } }
 });
 
 document.getElementById('btn-import').addEventListener('change', function(e) {
@@ -1822,20 +1555,13 @@ document.getElementById('btn-import').addEventListener('change', function(e) {
     reader.onload = function(ev) {
         try {
             const importedData = JSON.parse(ev.target.result);
-            if (Array.isArray(importedData)) { // Compatibilidad con versiones anteriores
-                favorites = importedData; 
-                localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
-            } else if (importedData.favorites !== undefined) {
-                favorites = importedData.favorites || [];
-                playgroundData = importedData.playground || [];
+            if (Array.isArray(importedData)) { favorites = importedData; localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites)); } 
+            else if (importedData.favorites !== undefined) {
+                favorites = importedData.favorites || []; playgroundData = importedData.playground || [];
                 localStorage.setItem('guitarhall_favs_v3', JSON.stringify(favorites));
                 localStorage.setItem('guitarhall_playground_v1', JSON.stringify(playgroundData));
-            } else {
-                throw new Error();
-            }
-            renderFavs(); 
-            renderPlayground();
-            alert('Copia restaurada con éxito.');
+            } else throw new Error();
+            renderFavs(); renderPlayground(); alert('Copia restaurada con éxito.');
         } catch (error) { alert('Error al leer el archivo JSON.'); }
     };
     reader.readAsText(file); e.target.value = '';
@@ -1843,8 +1569,7 @@ document.getElementById('btn-import').addEventListener('change', function(e) {
 
 document.getElementById('btn-ota').addEventListener('click', async () => {
     const status = document.getElementById('ota-status');
-    status.style.display = 'block';
-    status.textContent = 'Actualizando y limpiando caché...';
+    status.style.display = 'block'; status.textContent = 'Actualizando y limpiando caché...';
     try {
         if ('caches' in window) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); }
         if ('serviceWorker' in navigator) { const regs = await navigator.serviceWorker.getRegistrations(); for (let r of regs) await r.update(); }
@@ -1853,11 +1578,8 @@ document.getElementById('btn-ota').addEventListener('click', async () => {
     } catch (e) { status.textContent = 'Recargando aplicación...'; setTimeout(() => window.location.reload(), 1000); }
 });
 
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); });
-}
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.error('Error SW:', err)); }); }
 
-// ¡CRÍTICO! Inicializar la app AL FINAL
 try { initUI(); } catch (e) { console.error("Error en initUI:", e); }
 </script>
 </body>
