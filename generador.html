@@ -2,645 +2,114 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teoría de Guitarra Simplificada</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Generador de Logo GuitarHall</title>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; }
-        ::-webkit-scrollbar-thumb { background: #0f766e; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0f766e; }
-        
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        body { 
+            background-color: #121212; 
+            color: white; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
         }
-        
-        .quiz-option input[type="radio"] { display: none; }
-        .quiz-option span {
-            display: block;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s;
+        button { 
+            background-color: #FF5E00; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin-top: 30px; 
+            font-weight: bold; 
+            transition: 0.2s;
         }
-        .quiz-option input[type="radio"]:checked + span {
-            border-color: #0d9488;
-            background-color: #f0fdfa;
-            color: #0f766e;
-            font-weight: 600;
-        }
-
-        #sidebar { transition: transform 0.3s ease-in-out; }
-        .sidebar-open { transform: translateX(0); }
-        .sidebar-closed { transform: translateX(-100%); }
-        @media (min-width: 768px) {
-            .sidebar-closed { transform: translateX(0); } 
+        button:hover { 
+            background-color: #FFEA00; 
+            color: black; 
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased overflow-hidden flex h-screen">
-
-    <!-- Menú Lateral -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-teal-950 text-slate-300 flex flex-col sidebar-closed md:relative shadow-2xl">
-        <div class="p-6 border-b border-teal-800/50 flex justify-between items-center bg-teal-900">
-            <h1 class="font-bold text-xl leading-tight text-white">Teoría de Guitarra<br><span class="text-teal-400 text-sm font-normal">Simplificada</span></h1>
-            <button onclick="toggleSidebar()" class="md:hidden text-teal-200 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-        <nav class="flex-1 overflow-y-auto py-2" id="sidebar-nav">
-            <!-- Capítulos generados por JS -->
-        </nav>
-        <div class="p-5 bg-teal-900 border-t border-teal-800/50">
-            <div class="flex justify-between text-xs font-semibold text-teal-300 mb-2">
-                <span>PROGRESO DEL CURSO</span>
-                <span id="sidebar-progress-text">0%</span>
-            </div>
-            <div class="w-full bg-teal-950 h-2.5 rounded-full overflow-hidden">
-                <div id="sidebar-progress" class="bg-teal-400 h-full transition-all duration-700 ease-out" style="width: 0%;"></div>
-            </div>
-        </div>
-    </aside>
-
-    <div id="mobile-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/60 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
-
-    <!-- Contenido Principal -->
-    <div class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50">
+<body>
+    <h2>Visualizador del Icono (Diagonal Ascendente)</h2>
+    
+    <svg id="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="256" height="256">
+        <defs>
+            <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="1.5" result="blur1" />
+                <feGaussianBlur stdDeviation="3.5" result="blur2" />
+                <feMerge>
+                    <feMergeNode in="blur2" />
+                    <feMergeNode in="blur1" />
+                    <feMergeNode in="SourceGraphic" />
+                </feMerge>
+            </filter>
+        </defs>
         
-        <header class="bg-white shadow-sm z-20 flex items-center p-4 border-b border-slate-200 md:hidden">
-            <button onclick="toggleSidebar()" class="text-slate-500 hover:text-teal-700 mr-4 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <h2 class="font-bold text-slate-800 truncate">Teoría de Guitarra Simplificada</h2>
-        </header>
-
-        <main class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 scroll-smooth" id="main-scroll-area">
-            <div class="max-w-4xl mx-auto">
+        <rect width="100" height="100" rx="22" fill="#080808"/>
+        
+        <!-- Rotación ajustada a 135 grados para la diagonal ascendente ( / ) -->
+        <g transform="rotate(135 50 50)" filter="url(#neonGlow)">
+            <!-- Pastillas Neón Naranja -->
+            <g fill="none" stroke="#FF5E00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 
-                <nav class="mb-6 flex items-center text-sm font-medium text-slate-400" id="breadcrumbs">
-                    <!-- Migas de pan dinámicas -->
-                </nav>
+                <!-- Humbucker con cubierta -->
+                <rect x="32.5" y="11" width="5" height="4" rx="1" />
+                <rect x="32.5" y="85" width="5" height="4" rx="1" />
+                <rect x="25" y="15" width="20" height="70" rx="4" />
+                <circle cx="30" cy="23" r="1.2" /><circle cx="30" cy="34" r="1.2" /><circle cx="30" cy="45" r="1.2" /><circle cx="30" cy="56" r="1.2" /><circle cx="30" cy="67" r="1.2" /><circle cx="30" cy="78" r="1.2" />
+                
+                <!-- Pastilla Single Coil -->
+                <rect x="60" y="15" width="10" height="70" rx="4" />
+                <circle cx="65" cy="23" r="1.2" /><circle cx="65" cy="34" r="1.2" /><circle cx="65" cy="45" r="1.2" /><circle cx="65" cy="56" r="1.2" /><circle cx="65" cy="67" r="1.2" /><circle cx="65" cy="78" r="1.2" />
+            </g>
+            
+            <!-- Cuerdas Neón Amarillo -->
+            <g fill="none" stroke="#FFEA00" stroke-width="0.8" stroke-linecap="round">
+                <line x1="12" y1="23" x2="88" y2="23" />
+                <line x1="5"  y1="34" x2="95" y2="34" />
+                <line x1="18" y1="45" x2="83" y2="45" />
+                <line x1="8"  y1="56" x2="92" y2="56" />
+                <line x1="22" y1="67" x2="78" y2="67" />
+                <line x1="10" y1="78" x2="90" y2="78" />
+            </g>
+        </g>
+    </svg>
 
-                <div id="content-container" class="fade-in">
-                    <!-- Contenido dinámico -->
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Modal Motivacional -->
-    <div id="custom-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content-box">
-            <div class="p-6 text-center">
-                <div id="modal-icon" class="mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4"></div>
-                <h3 id="modal-title" class="text-xl font-bold text-slate-900 mb-2"></h3>
-                <p id="modal-message" class="text-slate-600 leading-relaxed"></p>
-            </div>
-            <div class="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
-                <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center items-center rounded-xl px-5 py-3 bg-teal-600 text-white font-semibold hover:bg-teal-700 transition-colors">
-                    Continuar al siguiente módulo
-                </button>
-            </div>
-        </div>
-    </div>
+    <button onclick="descargarPNG()">⬇️ Descargar icon.png (512x512)</button>
 
     <script>
-        // --- Generadores de SVG (Teoría Visual) ---
-        
-        function generatePianoSVG(highlightKeys = [], width = "100%") {
-            // highlightKeys format: ['C', 'C#', 'D']
-            const keyWidth = 40;
-            const keyHeight = 120;
-            const blackKeyWidth = 24;
-            const blackKeyHeight = 75;
+        function descargarPNG() {
+            const svg = document.getElementById('logo-svg');
+            const svgClone = svg.cloneNode(true);
+            svgClone.setAttribute('width', '512');
+            svgClone.setAttribute('height', '512');
             
-            const whiteKeys = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C2'];
-            const blackKeys = [
-                { id: 'C#', pos: 1 }, { id: 'D#', pos: 2 }, 
-                { id: 'F#', pos: 4 }, { id: 'G#', pos: 5 }, { id: 'A#', pos: 6 }
-            ];
-
-            let svgContent = `<svg viewBox="0 0 ${whiteKeys.length * keyWidth} ${keyHeight + 20}" width="${width}" class="mx-auto drop-shadow-md rounded-md overflow-hidden font-sans">`;
+            const svgData = new XMLSerializer().serializeToString(svgClone);
+            const canvas = document.createElement("canvas");
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext("2d");
             
-            // Render White Keys
-            whiteKeys.forEach((key, index) => {
-                const isHighlight = highlightKeys.includes(key.replace('2',''));
-                const fill = isHighlight ? '#ccfbf1' : '#ffffff';
-                const textFill = isHighlight ? '#0f766e' : '#94a3b8';
-                
-                svgContent += `<rect x="${index * keyWidth}" y="0" width="${keyWidth}" height="${keyHeight}" fill="${fill}" stroke="#cbd5e1" stroke-width="1.5" />`;
-                svgContent += `<text x="${index * keyWidth + (keyWidth/2)}" y="${keyHeight - 15}" text-anchor="middle" font-size="12" font-weight="600" fill="${textFill}">${key.replace('2','')}</text>`;
-                
-                if (isHighlight) {
-                    svgContent += `<circle cx="${index * keyWidth + (keyWidth/2)}" cy="${keyHeight - 35}" r="6" fill="#14b8a6" />`;
-                }
-            });
-
-            // Render Black Keys
-            blackKeys.forEach(bk => {
-                const isHighlight = highlightKeys.includes(bk.id);
-                const fill = isHighlight ? '#0f766e' : '#1e293b';
-                svgContent += `<rect x="${(bk.pos * keyWidth) - (blackKeyWidth/2)}" y="0" width="${blackKeyWidth}" height="${blackKeyHeight}" fill="${fill}" rx="2" />`;
-                
-                if (isHighlight) {
-                    svgContent += `<circle cx="${(bk.pos * keyWidth)}" cy="${blackKeyHeight - 15}" r="4" fill="#ccfbf1" />`;
-                }
-            });
-
-            svgContent += `</svg>`;
-            return svgContent;
-        }
-
-        function generateFretboardSVG(highlightNotes = [], width = "100%") {
-            // highlightNotes format: [{string: 6, fret: 3, label: 'G'}]
-            const strings = 6;
-            const frets = 12;
-            const stringSpacing = 20;
-            const fretSpacing = 50;
+            const img = new Image();
+            const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+            const url = URL.createObjectURL(svgBlob);
             
-            const boardWidth = frets * fretSpacing;
-            const boardHeight = (strings - 1) * stringSpacing;
-
-            let svgContent = `<svg viewBox="-20 -20 ${boardWidth + 40} ${boardHeight + 40}" width="${width}" class="mx-auto my-4 font-sans">`;
-            
-            // Fretboard background
-            svgContent += `<rect x="0" y="0" width="${boardWidth}" height="${boardHeight}" fill="#1e293b" />`;
-            
-            // Nut (Cejuela)
-            svgContent += `<line x1="0" y1="0" x2="0" y2="${boardHeight}" stroke="#cbd5e1" stroke-width="8" />`;
-
-            // Frets
-            for (let i = 1; i <= frets; i++) {
-                svgContent += `<line x1="${i * fretSpacing}" y1="0" x2="${i * fretSpacing}" y2="${boardHeight}" stroke="#475569" stroke-width="2" />`;
-            }
-
-            // Fret markers (3, 5, 7, 9, 12)
-            const markers = [3, 5, 7, 9];
-            markers.forEach(fret => {
-                svgContent += `<circle cx="${(fret * fretSpacing) - (fretSpacing/2)}" cy="${boardHeight/2}" r="6" fill="#334155" />`;
-            });
-            // 12th fret double marker
-            svgContent += `<circle cx="${(12 * fretSpacing) - (fretSpacing/2)}" cy="${(boardHeight/2) - 15}" r="6" fill="#334155" />`;
-            svgContent += `<circle cx="${(12 * fretSpacing) - (fretSpacing/2)}" cy="${(boardHeight/2) + 15}" r="6" fill="#334155" />`;
-
-            // Strings
-            for (let i = 0; i < strings; i++) {
-                // String thickness varies
-                const thickness = 1 + (i * 0.4);
-                svgContent += `<line x1="0" y1="${i * stringSpacing}" x2="${boardWidth}" y2="${i * stringSpacing}" stroke="#94a3b8" stroke-width="${thickness}" />`;
-            }
-
-            // Highlight Notes
-            highlightNotes.forEach(note => {
-                const cx = note.fret === 0 ? -10 : (note.fret * fretSpacing) - (fretSpacing/2);
-                const cy = (note.string - 1) * stringSpacing;
-                
-                svgContent += `<circle cx="${cx}" cy="${cy}" r="12" fill="#14b8a6" stroke="#ffffff" stroke-width="2" />`;
-                if(note.label) {
-                    svgContent += `<text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">${note.label}</text>`;
-                }
-            });
-
-            svgContent += `</svg>`;
-            return svgContent;
-        }
-
-        // --- Base de Datos del Curso ---
-        
-        const courseData = [
-            {
-                chapterTitle: "01 Introducción al piano",
-                content: `
-                    <div class="prose prose-slate max-w-none text-slate-700 text-lg">
-                        <p class="lead text-xl text-teal-800 font-semibold mb-6">Si eres un principiante absoluto, sin experiencia tocando el teclado o la guitarra, este libro está diseñado para ti. Comenzaremos desde lo más básico, empezando con el piano, ya que ofrece la forma más clara de comprender los fundamentos de la teoría musical.</p>
-                        
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">El patrón de 12 notas</h3>
-                        <p>Un teclado de piano de tamaño normal tiene 88 teclas. Sin embargo, <strong>sólo hay 12 notas únicas</strong>. Estas 12 notas son la base de toda composición musical, en todos los instrumentos (hip-hop, jazz, clásica, etc). Piensa en ello como si fuera la paleta de un pintor.</p>
-                        
-                        <div class="my-8 text-center bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                            <h4 class="font-bold text-slate-500 mb-4 uppercase text-sm tracking-wider">El patrón de 12 teclas (Escala Cromática)</h4>
-                            ${generatePianoSVG(['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'])}
-                        </div>
-
-                        <p>El patrón comienza en <strong>C</strong> y continúa por el teclado, incluidas las teclas negras, hasta que se repite en el siguiente C. A medida que bajas, las notas bajan de altura, y si subes, suben.</p>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">El nombre de las notas</h3>
-                        <p>Nombrar las notas del piano es (casi) tan sencillo como recitar el alfabeto. Utilizamos las letras de la A a la G. La secuencia de los nombres de las teclas "naturales" (blancas) es: <strong>A-B-C-D-E-F-G</strong>.</p>
-                        <p>Fíjate que la primera nota del piano suele enseñarse desde <strong>C</strong> (Do). Cada nota que sigue a C tiene una altura progresivamente mayor.</p>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Las notas negras (Sostenidos y Bemoles)</h3>
-                        <p>Las notas negras pueden verse como modificaciones de las notas blancas adyacentes. Al pasar a la derecha de una tecla blanca a una negra, la nota se <strong>agudiza (sostenido #)</strong>. Si te mueves a la izquierda de una tecla blanca a una negra, la nota se <strong>aplana (bemol b)</strong>.</p>
-                        
-                        <div class="bg-teal-50 border-l-4 border-teal-500 p-4 my-6 rounded-r-lg">
-                            <h4 class="font-bold text-teal-900">Equivalente enarmónico</h4>
-                            <p class="text-teal-800 text-base">La nota negra entre C y D puede llamarse C# o Db. Ambas notaciones representan el mismo sonido. Esto se llama equivalencia enarmónica.</p>
-                        </div>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Tonos y Semitonos</h3>
-                        <p>Un <strong>semitono (medio paso)</strong> es la menor distancia posible entre dos teclas adyacentes en el teclado, ya sean blancas o negras. Hay dos pares de teclas blancas que son excepciones: <strong>E/F</strong> y <strong>B/C</strong> no tienen teclas negras entre ellas, ya están separadas por un semitono.</p>
-                        <p>Un <strong>tono (paso entero)</strong> requiere saltarse una tecla para llegar a la siguiente (ejemplo, de C a D).</p>
-                    </div>
-                `,
-                quiz: [
-                    { q: "¿Cuántas notas únicas existen en la teoría musical occidental antes de que el patrón se repita?", options: ["7 notas", "12 notas", "88 notas"], correct: 1 },
-                    { q: "¿Qué nombre recibe la relación entre dos notas que suenan igual pero tienen distinto nombre (ej. C# y Db)?", options: ["Intervalo perfecto", "Tono entero", "Equivalente enarmónico"], correct: 2 },
-                    { q: "¿Entre qué notas naturales (blancas) hay solo distancia de un semitono?", options: ["C/D y F/G", "E/F y B/C", "A/B y C/D"], correct: 1 }
-                ]
-            },
-            {
-                chapterTitle: "02 Fundamentos de la guitarra",
-                content: `
-                    <div class="prose prose-slate max-w-none text-slate-700 text-lg">
-                        <p class="lead text-xl text-teal-800 font-semibold mb-6">Ahora que ya te has familiarizado con el teclado del piano, los intervalos y los sostenidos/bemoles, es hora de aplicar estos conocimientos a la guitarra. Todo lo que acabamos de ver es aplicable; la única diferencia es cómo se tocan las notas y su disposición.</p>
-                        
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Las cuerdas de una guitarra</h3>
-                        <p>Las cuerdas de la guitarra están numeradas desde la más gruesa y grave (6) hasta la más fina y aguda (1). En afinación estándar son:</p>
-                        <ul class="font-bold text-slate-800 mb-6">
-                            <li>6ª: E (Mi grave)</li>
-                            <li>5ª: A (La)</li>
-                            <li>4ª: D (Re)</li>
-                            <li>3ª: G (Sol)</li>
-                            <li>2ª: B (Si)</li>
-                            <li>1ª: E (Mi agudo)</li>
-                        </ul>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Piano vs. Guitarra</h3>
-                        <p>En el piano, la transición fluida de una nota A a la siguiente es lineal. En el diapasón de la guitarra, una octava abarca 12 trastes en una sola cuerda, pero su disposición es menos evidente visualmente porque la guitarra no tiene "teclas negras" físicas.</p>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Saltando trastes (Tonos y Semitonos)</h3>
-                        <p>La distancia de un traste se denomina medio paso o <strong>semitono</strong>. Saltarse un traste equivale a un <strong>tono entero</strong>.</p>
-                        <p>Para tocar el alfabeto musical (A-B-C-D-E-F-G) en una cuerda, debes saltarte un traste entre cada nota, EXCEPTO entre <strong>B y C</strong>, y entre <strong>E y F</strong> (ya que solo están separados por un semitono).</p>
-
-                        <div class="my-8 text-center bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                            <h4 class="font-bold text-slate-500 mb-4 uppercase text-sm tracking-wider">Alfabeto musical en la 5ª cuerda (A)</h4>
-                            ${generateFretboardSVG([
-                                {string: 5, fret: 0, label: 'A'},
-                                {string: 5, fret: 2, label: 'B'},
-                                {string: 5, fret: 3, label: 'C'}, // Semitono
-                                {string: 5, fret: 5, label: 'D'},
-                                {string: 5, fret: 7, label: 'E'},
-                                {string: 5, fret: 8, label: 'F'}, // Semitono
-                                {string: 5, fret: 10, label: 'G'},
-                                {string: 5, fret: 12, label: 'A'}
-                            ])}
-                            <p class="text-sm text-slate-500 mt-4">Fíjate cómo los trastes contiguos (3 y 8) corresponden a las distancias de semitono B-C y E-F.</p>
-                        </div>
-
-                        <h3 class="text-2xl font-bold text-slate-900 mt-8 mb-4">Entendiendo el diapasón</h3>
-                        <p>Una forma eficaz de aprender las notas del diapasón es utilizar la escala cromática. Después del duodécimo traste, las notas se repiten exactamente en el mismo orden, pero una octava más agudas.</p>
-                    </div>
-                `,
-                quiz: [
-                    { q: "¿En afinación estándar, cuál es la nota de la 6ª cuerda (la más gruesa)?", options: ["A (La)", "E (Mi)", "G (Sol)"], correct: 1 },
-                    { q: "Si tocas el 3er traste de la 5ª cuerda (A) estás tocando un C. ¿En qué traste está la nota D en esa misma cuerda?", options: ["4to traste", "5to traste", "6to traste"], correct: 1 },
-                    { q: "¿En qué traste se repiten las notas de las cuerdas al aire, completando una octava?", options: ["5to traste", "7mo traste", "12vo traste"], correct: 2 }
-                ]
-            },
-            {
-                chapterTitle: "03 Tonalidades y escalas",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "03 Tonalidades y escalas"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 3?", options: ["Opción A", "Opción Correcta", "Opción C"], correct: 1 }
-                ]
-            },
-            {
-                chapterTitle: "04 Armonía y Acordes",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "04 Armonía"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 4?", options: ["Opción Correcta", "Opción B", "Opción C"], correct: 0 }
-                ]
-            },
-            {
-                chapterTitle: "05 El sistema CAGED",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "05 El sistema CAGED"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 5?", options: ["Opción A", "Opción B", "Opción Correcta"], correct: 2 }
-                ]
-            },
-            {
-                chapterTitle: "06 Progresiones de acordes",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "06 Progresiones de acordes"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 6?", options: ["Opción Correcta", "Opción B", "Opción C"], correct: 0 }
-                ]
-            },
-            {
-                chapterTitle: "07 Notación musical",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "07 Notación musical"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 7?", options: ["Opción A", "Opción Correcta", "Opción C"], correct: 1 }
-                ]
-            },
-            {
-                chapterTitle: "08 Ritmo y tiempo",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "08 Ritmo y tiempo"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 8?", options: ["Opción Correcta", "Opción B", "Opción C"], correct: 0 }
-                ]
-            },
-            {
-                chapterTitle: "09 El círculo de quintas",
-                content: `<div class="prose prose-slate max-w-none text-slate-700 text-lg"><p class="text-slate-400 italic text-center py-12 border-2 border-dashed border-slate-300 rounded-xl">Pega aquí el texto del PDF para "09 El círculo de quintas"...</p></div>`,
-                quiz: [
-                    { q: "¿Pregunta de prueba para el módulo 9?", options: ["Opción A", "Opción B", "Opción Correcta"], correct: 2 }
-                ]
-            }
-        ];
-
-        const motivationalQuotes = [
-            "«Las obras de arte crean reglas; las reglas no crean obras de arte» - Claude Debussy",
-            "¡Excelente! Entender lo que tocas ya no es un misterio.",
-            "¡Muy bien! Un paso más cerca del dominio total del diapasón.",
-            "¡Bravo! Estás descifrando la matriz de la música.",
-            "¡Sigue así! La teoría es la herramienta, tu creatividad es la música."
-        ];
-
-        // --- Estado Global ---
-        let currentChapter = 'intro';
-        let maxUnlockedChapter = 0;
-
-        // --- Inicialización ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderSidebar();
-            renderContent();
-        });
-
-        // --- Renderizado UI ---
-        function renderSidebar() {
-            const nav = document.getElementById('sidebar-nav');
-            let html = `
-                <a href="#" onclick="goTo('intro')" class="flex items-center px-6 py-3.5 transition-colors ${currentChapter === 'intro' ? 'bg-teal-800 border-l-4 border-teal-400 text-white' : 'hover:bg-teal-800/40 border-l-4 border-transparent text-teal-100'}">
-                    <svg class="w-5 h-5 mr-3 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Inicio del Curso
-                </a>
-            `;
-
-            courseData.forEach((chapter, index) => {
-                const isLocked = index > maxUnlockedChapter;
-                const isActive = currentChapter === index;
-                
-                let icon = '';
-                if (isLocked) {
-                    icon = `<svg class="w-4 h-4 ml-auto text-teal-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>`;
-                } else if (index < maxUnlockedChapter || currentChapter === 'completed') {
-                    icon = `<svg class="w-4 h-4 ml-auto text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>`;
-                }
-
-                const clickAction = isLocked ? `onclick="showLockedModal()"` : `onclick="goTo(${index})"`;
-                const activeClasses = isActive ? 'bg-teal-800 border-l-4 border-teal-400 text-white font-medium' : 'hover:bg-teal-800/40 border-l-4 border-transparent text-slate-300';
-                const opacityClass = isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
-
-                html += `
-                    <a ${clickAction} class="flex items-center px-6 py-3.5 transition-colors ${activeClasses} ${opacityClass}">
-                        <span class="text-sm truncate pr-2">${chapter.chapterTitle}</span>
-                        ${icon}
-                    </a>
-                `;
-            });
-
-            nav.innerHTML = html;
-            updateProgress();
-        }
-
-        function updateProgress() {
-            let progress = 0;
-            if (currentChapter === 'intro') { progress = 0; }
-            else if (currentChapter === 'completed' || maxUnlockedChapter >= courseData.length) { progress = 100; }
-            else { progress = (maxUnlockedChapter / courseData.length) * 100; }
-            
-            document.getElementById('sidebar-progress').style.width = `${progress}%`;
-            document.getElementById('sidebar-progress-text').innerText = `${Math.round(progress)}%`;
-        }
-
-        function renderBreadcrumbs() {
-            const bc = document.getElementById('breadcrumbs');
-            let html = `<a href="#" onclick="goTo('intro')" class="hover:text-teal-600 transition-colors">Inicio</a>`;
-            
-            if (typeof currentChapter === 'number') {
-                html += `
-                    <svg class="w-4 h-4 mx-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    <span class="text-teal-700 font-bold truncate">${courseData[currentChapter].chapterTitle}</span>
-                `;
-            }
-            bc.innerHTML = html;
-        }
-
-        function renderContent() {
-            const container = document.getElementById('content-container');
-            let html = '';
-
-            if (currentChapter === 'intro') {
-                html = `
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 md:p-14 text-center mt-4">
-                        <div class="w-24 h-24 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
-                        </div>
-                        <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">Teoría de Guitarra Simplificada</h2>
-                        <p class="text-slate-600 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">Bienvenido al curso interactivo basado en el método de Melvin Tellier. Diseñado para desmitificar la música y darte el control total sobre tu diapasón.</p>
-                        <button onclick="goTo(0)" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-12 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all inline-flex items-center text-lg">
-                            Comenzar el Curso
-                            <svg class="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
-                `;
-            } else if (currentChapter === 'completed') {
-                html = `
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 md:p-14 text-center mt-4">
-                        <div class="w-24 h-24 bg-yellow-50 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        </div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">¡Curso Completado!</h2>
-                        <p class="text-slate-600 mb-10 max-w-2xl mx-auto text-lg leading-relaxed">Has desbloqueado todo el conocimiento. Ahora la teoría es tu herramienta y el diapasón es tu lienzo. ¡A crear música!</p>
-                        <button onclick="goTo(0)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-8 rounded-xl transition-all">Volver a repasar</button>
-                    </div>
-                `;
-            } else {
-                const chapter = courseData[currentChapter];
-                const isPassed = maxUnlockedChapter > currentChapter;
-                
-                let quizHtml = '';
-                chapter.quiz.forEach((q, qIndex) => {
-                    let optionsHtml = '';
-                    q.options.forEach((opt, oIndex) => {
-                        const isChecked = isPassed && q.correct === oIndex ? 'checked' : '';
-                        optionsHtml += `
-                            <label class="quiz-option">
-                                <input type="radio" name="q${qIndex}" value="${oIndex}" ${isPassed ? 'disabled' : ''} ${isChecked}>
-                                <span>${opt}</span>
-                            </label>
-                        `;
-                    });
-                    quizHtml += `
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-5">
-                            <p class="font-bold text-slate-800 mb-4 text-lg">${qIndex + 1}. ${q.q}</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${optionsHtml}</div>
-                        </div>
-                    `;
-                });
-
-                html = `
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
-                        <div class="p-8 md:p-12">
-                            <h2 class="text-3xl font-extrabold text-slate-900 mb-8 pb-6 border-b border-slate-100">${chapter.chapterTitle}</h2>
-                            ${chapter.content}
-                        </div>
-                        
-                        <div class="bg-slate-50 p-8 md:p-12 border-t border-slate-100">
-                            <div class="flex items-center mb-6">
-                                <div class="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center mr-4">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-900">Evaluación del Capítulo</h3>
-                                    <p class="text-sm text-slate-500">${isPassed ? 'Completado con éxito.' : 'Responde correctamente para avanzar.'}</p>
-                                </div>
-                            </div>
-                            
-                            <div id="quiz-container">${quizHtml}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center justify-between pb-12">
-                        <button onclick="goTo(${currentChapter - 1})" class="text-slate-500 hover:text-teal-700 font-semibold py-3 px-5 rounded-xl transition-colors flex items-center bg-white border border-slate-200 shadow-sm hover:shadow">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                            Anterior
-                        </button>
-                        
-                        ${!isPassed ? 
-                            `<button onclick="evaluateChapter()" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                                Evaluar y Avanzar
-                            </button>` 
-                            : 
-                            `<button onclick="goTo(${currentChapter + 1})" class="bg-slate-900 hover:bg-black text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center">
-                                Siguiente Capítulo
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </button>`
-                        }
-                    </div>
-                `;
-            }
-
-            container.innerHTML = html;
-            renderBreadcrumbs();
-            
-            container.classList.remove('fade-in');
-            void container.offsetWidth; 
-            container.classList.add('fade-in');
-            
-            document.getElementById('main-scroll-area').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- Navegación ---
-        function goTo(target) {
-            if (target === -1) target = 'intro';
-            if (target === courseData.length) target = 'completed';
-            
-            currentChapter = target;
-            renderSidebar();
-            renderContent();
-            
-            if (document.getElementById('sidebar').classList.contains('sidebar-open')) {
-                toggleSidebar();
-            }
-        }
-
-        function evaluateChapter() {
-            const chapter = courseData[currentChapter];
-            const totalQs = chapter.quiz.length;
-            let correctCount = 0;
-            let allAnswered = true;
-
-            for (let i = 0; i < totalQs; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                if (!selected) {
-                    allAnswered = false;
-                    break;
-                }
-                if (parseInt(selected.value) === chapter.quiz[i].correct) {
-                    correctCount++;
-                }
-            }
-
-            if (!allAnswered) {
-                showModal("Faltan respuestas", "Debes seleccionar una opción en cada pregunta antes de evaluar.", false);
-                return;
-            }
-
-            if (correctCount === totalQs) {
-                maxUnlockedChapter = Math.max(maxUnlockedChapter, currentChapter + 1);
-                const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
-                showModal("¡Evaluación Superada!", randomQuote, true, () => {
-                    renderSidebar();
-                    renderContent();
-                });
-            } else {
-                showModal("Revisa tus respuestas", `Has acertado ${correctCount} de ${totalQs}. Vuelve a leer el material y corrige tus errores.`, false);
-            }
-        }
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            
-            if (sidebar.classList.contains('sidebar-closed')) {
-                sidebar.classList.remove('sidebar-closed');
-                sidebar.classList.add('sidebar-open');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.remove('sidebar-open');
-                sidebar.classList.add('sidebar-closed');
-                overlay.classList.add('hidden');
-            }
-        }
-
-        // --- Modal System ---
-        let onModalClose = null;
-
-        function showModal(title, message, isSuccess, callback = null) {
-            onModalClose = callback;
-            const modal = document.getElementById('custom-modal');
-            const box = document.getElementById('modal-content-box');
-            
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            
-            const iconContainer = document.getElementById('modal-icon');
-            if (isSuccess) {
-                iconContainer.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-teal-100 text-teal-600";
-                iconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`;
-            } else {
-                iconContainer.className = "mx-auto flex items-center justify-center h-16 w-16 rounded-full mb-4 bg-red-100 text-red-600";
-                iconContainer.innerHTML = `<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
-            }
-
-            modal.classList.remove('hidden');
-            void modal.offsetWidth;
-            modal.classList.remove('opacity-0');
-            box.classList.remove('scale-95');
-            box.classList.add('scale-100');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('custom-modal');
-            const box = document.getElementById('modal-content-box');
-            
-            modal.classList.add('opacity-0');
-            box.classList.remove('scale-100');
-            box.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                if (onModalClose) {
-                    onModalClose();
-                    onModalClose = null;
-                }
-            }, 300);
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+                const pngUrl = canvas.toDataURL("image/png");
+                const downloadLink = document.createElement("a");
+                downloadLink.href = pngUrl;
+                downloadLink.download = "icon.png";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            };
+            img.src = url;
         }
     </script>
 </body>
