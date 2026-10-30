@@ -1,4 +1,4 @@
-const CACHE_NAME = 'guitarhall-v27'; // <--- CAMBIA ESTO (v22 -> v23)
+const CACHE_NAME = 'guitarhall-v28'; // <--- CAMBIA ESTO (v22 -> v23)
 const ASSETS = [
   './',
   './index.html',
